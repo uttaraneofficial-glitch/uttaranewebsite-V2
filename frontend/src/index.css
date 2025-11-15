@@ -1,0 +1,417 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles can be added here */
+:root {
+  --primary-black: #000000;
+  --primary-red: #e53935;
+  --dark-red: #c62828;
+  --light-red: #ff5252;
+  --secondary-black: #121212;
+  --text-white: #ffffff;
+  --text-gray: #cccccc;
+  --text-light: #f0f0f0;
+  --text-dark: #333333;
+  --gradient-black-red: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #e53935 100%);
+  --gradient-red-black: linear-gradient(135deg, #e53935 0%, #1a1a1a 50%, #000000 100%);
+  --gradient-dark: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+  --gradient-card: linear-gradient(135deg, rgba(0, 0, 0, 0.9) 0%, rgba(26, 26, 26, 0.9) 100%);
+  --gradient-card-hover: linear-gradient(135deg, rgba(26, 26, 26, 0.95) 0%, rgba(0, 0, 0, 0.95) 100%);
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: var(--gradient-dark);
+  background-attachment: fixed;
+  color: var(--text-light);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Logo bar animation */
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.logo-track {
+  display: flex;
+  width: max-content;
+  animation: scroll 20s linear infinite;
+}
+
+.logo-track:hover {
+  animation-play-state: paused;
+}
+
+.animate-scroll {
+  animation: scroll 20s linear infinite;
+}
+
+.paused {
+  animation-play-state: paused;
+}
+
+/* Black and Red Gradient Theme Overrides */
+.bg-gray-50 {
+  background: var(--gradient-dark) !important;
+}
+
+.bg-gray-100 {
+  background: var(--gradient-dark) !important;
+}
+
+.bg-gray-200 {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%) !important;
+}
+
+.bg-gray-300 {
+  background: linear-gradient(135deg, #2d2d2d 0%, #404040 100%) !important;
+}
+
+.bg-gray-400 {
+  background: linear-gradient(135deg, #404040 0%, #525252 100%) !important;
+}
+
+.bg-gray-500 {
+  background: linear-gradient(135deg, #525252 0%, #656565 100%) !important;
+}
+
+.bg-gray-600 {
+  background: linear-gradient(135deg, #656565 0%, #787878 100%) !important;
+}
+
+.bg-gray-700 {
+  background: linear-gradient(135deg, #787878 0%, #1a1a1a 100%) !important;
+}
+
+.bg-gray-800 {
+  background: var(--gradient-dark) !important;
+}
+
+.bg-gray-900 {
+  background: var(--primary-black) !important;
+}
+
+.bg-white {
+  background: var(--primary-black) !important;
+}
+
+/* Text color improvements for better visibility */
+.text-gray-300 {
+  color: var(--text-gray) !important;
+}
+
+.text-gray-400 {
+  color: #aaaaaa !important;
+}
+
+.text-gray-500 {
+  color: #999999 !important;
+}
+
+.text-gray-600 {
+  color: var(--text-gray) !important;
+}
+
+.text-gray-700 {
+  color: var(--text-light) !important;
+}
+
+.text-gray-800 {
+  color: var(--text-light) !important;
+}
+
+.text-white {
+  color: var(--text-light) !important;
+}
+
+.text-blue-500 {
+  color: var(--primary-red) !important;
+}
+
+.text-blue-600 {
+  color: var(--light-red) !important;
+}
+
+.text-blue-700 {
+  color: var(--dark-red) !important;
+}
+
+.bg-blue-100 {
+  background: var(--gradient-dark) !important;
+}
+
+.bg-blue-500 {
+  background: var(--primary-red) !important;
+}
+
+.hover\:bg-blue-600:hover {
+  background: var(--dark-red) !important;
+}
+
+.hover\:bg-gray-100:hover {
+  background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%) !important;
+}
+
+.hover\:bg-gray-600:hover {
+  background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%) !important;
+}
+
+.border-red-500 {
+  border-color: var(--primary-red) !important;
+}
+
+.border-gray-200 {
+  border-color: #2d2d2d !important;
+}
+
+.border-gray-300 {
+  border-color: #404040 !important;
+}
+
+.shadow-md {
+  box-shadow: 0 4px 6px rgba(229, 57, 53, 0.2) !important;
+}
+
+.shadow {
+  box-shadow: 0 1px 3px rgba(229, 57, 53, 0.2) !important;
+}
+
+.shadow-sm {
+  box-shadow: 0 1px 2px rgba(229, 57, 53, 0.2) !important;
+}
+
+.shadow-lg {
+  box-shadow: 0 10px 15px rgba(229, 57, 53, 0.2) !important;
+}
+
+.text-red-400 {
+  color: var(--light-red) !important;
+}
+
+.text-red-500 {
+  color: var(--primary-red) !important;
+}
+
+.hover\:text-red-400:hover {
+  color: var(--light-red) !important;
+}
+
+.hover\:text-red-500:hover {
+  color: var(--primary-red) !important;
+}
+
+.bg-red-50 {
+  background: linear-gradient(135deg, rgba(229, 57, 53, 0.1) 0%, rgba(0, 0, 0, 0.1) 100%) !important;
+}
+
+.bg-red-500 {
+  background: var(--primary-red) !important;
+}
+
+.bg-red-600 {
+  background: var(--dark-red) !important;
+}
+
+.hover\:bg-red-600:hover {
+  background: var(--dark-red) !important;
+}
+
+/* Gradient backgrounds for specific sections */
+.hero-section {
+  background: var(--gradient-black-red) !important;
+}
+
+.companies-section {
+  background: var(--gradient-dark) !important;
+}
+
+.ngo-posts-section {
+  background: var(--gradient-red-black) !important;
+}
+
+.video-section {
+  background: var(--gradient-dark) !important;
+}
+
+.company-detail-page {
+  background: var(--gradient-dark) !important;
+}
+
+.homepage {
+  background: var(--gradient-dark) !important;
+}
+
+/* Admin panel gradients */
+.admin-layout {
+  background: var(--gradient-dark) !important;
+}
+
+.sidebar {
+  background: var(--gradient-dark) !important;
+}
+
+.main-header {
+  background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%) !important;
+}
+
+.main-content {
+  background: var(--gradient-dark) !important;
+}
+
+/* Enhanced text visibility and hover effects */
+.company-card {
+  background: var(--gradient-card) !important;
+  transition: all 0.3s ease;
+}
+
+.company-card:hover {
+  background: var(--gradient-card-hover) !important;
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(229, 57, 53, 0.3) !important;
+}
+
+.video-card {
+  background: var(--gradient-card) !important;
+  transition: all 0.3s ease;
+}
+
+.video-card:hover {
+  background: var(--gradient-card-hover) !important;
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(229, 57, 53, 0.3) !important;
+}
+
+.candidate-card {
+  background: var(--gradient-card) !important;
+  transition: all 0.3s ease;
+}
+
+.candidate-card:hover {
+  background: var(--gradient-card-hover) !important;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 16px rgba(229, 57, 53, 0.2) !important;
+}
+
+/* Enhanced text contrast */
+.text-white {
+  color: var(--text-light) !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+.text-xl, .text-2xl, .text-3xl, .text-4xl, .text-5xl {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+/* Admin panel text improvements */
+.admin-sidebar-text {
+  color: var(--text-light) !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+.admin-header-text {
+  color: var(--text-light) !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+/* Button hover effects */
+.btn-hover-effect {
+  transition: all 0.3s ease;
+}
+
+.btn-hover-effect:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(229, 57, 53, 0.3) !important;
+}
+
+/* Link hover effects */
+.link-hover-effect {
+  transition: all 0.2s ease;
+}
+
+.link-hover-effect:hover {
+  transform: translateX(5px);
+}
+
+/* Card hover effects */
+.card-hover-effect {
+  transition: all 0.3s ease;
+}
+
+.card-hover-effect:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 16px rgba(229, 57, 53, 0.2) !important;
+}
+
+/* Specific text color fixes for better visibility */
+.contrast-text-light {
+  color: var(--text-light) !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+.contrast-text-dark {
+  color: var(--text-dark) !important;
+  text-shadow: 0 1px 3px rgba(255, 255, 255, 0.3);
+}
+
+.contrast-text-gray {
+  color: var(--text-gray) !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+/* Admin panel specific contrast improvements */
+.admin-panel .contrast-text-light {
+  color: var(--text-light) !important;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+}
+
+.admin-panel .contrast-text-gray {
+  color: var(--text-gray) !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+.admin-panel .bg-gray-700 {
+  background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%) !important;
+}
+
+.admin-panel .bg-gray-800 {
+  background: var(--gradient-dark) !important;
+}
+
+.admin-panel .border-gray-700 {
+  border-color: #404040 !important;
+}
+
+/* Form element improvements for admin panel */
+.admin-panel input, 
+.admin-panel textarea, 
+.admin-panel select {
+  background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%) !important;
+  border-color: #404040 !important;
+  color: var(--text-light) !important;
+}
+
+.admin-panel input::placeholder,
+.admin-panel textarea::placeholder {
+  color: var(--text-gray) !important;
+}
+
+.admin-panel option {
+  background: #1a1a1a !important;
+  color: var(--text-light) !important;
+}
