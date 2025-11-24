@@ -1,8 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [logoUrl, setLogoUrl] = useState('');
+
+  useEffect(() => {
+    // Fetch logo URL from the hero content API
+    const fetchLogo = async () => {
+      try {
+        const response = await fetch('/api/public/hero');
+        if (response.ok) {
+          const data = await response.json();
+          setLogoUrl(data.logoUrl || '');
+        }
+      } catch (error) {
+        console.error('Failed to fetch logo:', error);
+      }
+    };
+
+    fetchLogo();
+  }, []);
 
   return (
     <nav className="bg-gray-900 text-white shadow-lg">
@@ -10,7 +28,11 @@ const Navbar = () => {
         <div className="flex justify-between items-center py-4">
           {/* Logo */}
           <Link to="/" className="text-xl font-bold text-red-500 hover:text-red-400 transition-colors">
-            AH Interviews
+            {logoUrl ? (
+              <img src={logoUrl} alt="Logo" className="h-10" />
+            ) : (
+              'AH Interviews'
+            )}
           </Link>
 
           {/* Desktop Menu */}

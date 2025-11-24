@@ -13,6 +13,9 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Trust proxy for proper request handling
+app.set('trust proxy', 1);
+
 // Security Middleware
 app.use(securityHeaders); // Helmet security headers
 app.use(preventPollution); // Prevent HTTP Parameter Pollution

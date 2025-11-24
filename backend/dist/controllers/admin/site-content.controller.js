@@ -47,7 +47,7 @@ const updateSiteContent = async (req, res) => {
             content = await prisma.siteContent.update({
                 where: { key },
                 data: {
-                    value: contentData.value,
+                    value: contentData.value ? contentData.value.trim() : undefined,  // ✅ REAL FIX
                 },
             });
         }
@@ -56,7 +56,7 @@ const updateSiteContent = async (req, res) => {
             content = await prisma.siteContent.create({
                 data: {
                     key,
-                    value: contentData.value,
+                    value: contentData.value ? contentData.value.trim() : undefined,  // ✅ REAL FIX
                 },
             });
         }

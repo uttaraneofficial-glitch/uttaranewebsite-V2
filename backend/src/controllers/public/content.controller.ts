@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 // Get hero content
 export const getHeroContent = async (req: Request, res: Response) => {
   try {
-    const [tagline, imageUrl, headline, description, youtube, instagram, twitter, linkedin] = await Promise.all([
+    const [tagline, imageUrl, headline, description, youtube, instagram, twitter, linkedin, logoUrl] = await Promise.all([
       prisma.siteContent.findUnique({ where: { key: 'hero_tagline' } }),
       prisma.siteContent.findUnique({ where: { key: 'hero_image_url' } }),
       prisma.siteContent.findUnique({ where: { key: 'hero_headline' } }),
@@ -15,6 +15,7 @@ export const getHeroContent = async (req: Request, res: Response) => {
       prisma.siteContent.findUnique({ where: { key: 'social_instagram' } }),
       prisma.siteContent.findUnique({ where: { key: 'social_twitter' } }),
       prisma.siteContent.findUnique({ where: { key: 'social_linkedin' } }),
+      prisma.siteContent.findUnique({ where: { key: 'navbar_logo_url' } }),
     ]);
     
     console.log('Retrieved hero content from DB:', {
@@ -32,6 +33,7 @@ export const getHeroContent = async (req: Request, res: Response) => {
       imageUrl: imageUrl?.value || 'https://placehold.co/1200x400',
       headline: headline?.value || '',
       description: description?.value || '',
+      logoUrl: logoUrl?.value || '',
       socialLinks: {
         youtube: youtube?.value || '',
         instagram: instagram?.value || '',
@@ -97,6 +99,40 @@ export const getAboutContent = async (req: Request, res: Response) => {
   } catch (error) {
     console.error('Get about content error:', error);
     res.status(500).json({ message: 'Error retrieving about content' });
+  }
+};
+
+// Get privacy policy content
+export const getPrivacyPolicyContent = async (req: Request, res: Response) => {
+  try {
+    // Get privacy policy HTML content
+    const privacyPolicyHtml = await prisma.siteContent.findUnique({ 
+      where: { key: 'privacy_policy' } 
+    });
+
+    res.json({
+      content: privacyPolicyHtml?.value || '<p>No privacy policy content available.</p>'
+    });
+  } catch (error) {
+    console.error('Get privacy policy content error:', error);
+    res.status(500).json({ message: 'Error retrieving privacy policy content' });
+  }
+};
+
+// Get terms of service content
+export const getTermsOfServiceContent = async (req: Request, res: Response) => {
+  try {
+    // Get terms of service HTML content
+    const termsOfServiceHtml = await prisma.siteContent.findUnique({ 
+      where: { key: 'terms_of_service' } 
+    });
+
+    res.json({
+      content: termsOfServiceHtml?.value || '<p>No terms of service content available.</p>'
+    });
+  } catch (error) {
+    console.error('Get terms of service content error:', error);
+    res.status(500).json({ message: 'Error retrieving terms of service content' });
   }
 };
 

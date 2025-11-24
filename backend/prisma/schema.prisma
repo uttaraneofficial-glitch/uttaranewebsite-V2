@@ -107,6 +107,18 @@ model MkStudioPost {
   @@map("mkstudio_posts")
 }
 
+model ContactMessage {
+  id        String   @id @default(uuid())
+  fullName  String
+  email     String
+  subject   String
+  message   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("contact_messages")
+}
+
 enum Role {
   ADMIN
   USER

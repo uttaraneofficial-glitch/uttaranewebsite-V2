@@ -218,34 +218,121 @@ async function main() {
   });
   
   if (!existingTeamMembers) {
-    const defaultTeamMembers = [
-      {
-        id: '1',
-        name: 'John Doe',
-        role: 'CEO & Founder',
-        imageUrl: '',
-        linkedinUrl: ''
-      },
-      {
-        id: '2',
-        name: 'Jane Smith',
-        role: 'CTO',
-        imageUrl: '',
-        linkedinUrl: ''
-      },
-      {
-        id: '3',
-        name: 'Mike Johnson',
-        role: 'Head of Operations',
-        imageUrl: '',
-        linkedinUrl: ''
-      }
-    ];
-    
     await prisma.siteContent.create({
       data: {
         key: 'team_members',
-        value: JSON.stringify(defaultTeamMembers),
+        value: JSON.stringify([
+          {
+            id: '1',
+            name: 'John Doe',
+            role: 'CEO & Founder',
+            imageUrl: '',
+            linkedinUrl: ''
+          },
+          {
+            id: '2',
+            name: 'Jane Smith',
+            role: 'CTO',
+            imageUrl: '',
+            linkedinUrl: ''
+          },
+          {
+            id: '3',
+            name: 'Mike Johnson',
+            role: 'Head of Operations',
+            imageUrl: '',
+            linkedinUrl: ''
+          }
+        ]),
+      },
+    });
+  }
+
+  // Create default privacy policy content if it doesn't exist
+  const existingPrivacyPolicy = await prisma.siteContent.findUnique({
+    where: { key: 'privacy_policy' },
+  });
+  
+  if (!existingPrivacyPolicy) {
+    await prisma.siteContent.create({
+      data: {
+        key: 'privacy_policy',
+        value: `<h2>Privacy Policy</h2>
+<p>Last updated: ${new Date().toLocaleDateString()}</p>
+
+<h3>1. Information We Collect</h3>
+<p>We collect information you provide directly to us, such as when you create an account, subscribe to our newsletter, or contact us for support.</p>
+
+<h3>2. How We Use Your Information</h3>
+<p>We use the information we collect to provide, maintain, and improve our services, to communicate with you, and to comply with legal obligations.</p>
+
+<h3>3. Information Sharing and Disclosure</h3>
+<p>We do not sell, trade, or otherwise transfer your personal information to outside parties without your consent, except as described in this policy.</p>
+
+<h3>4. Data Security</h3>
+<p>We implement a variety of security measures to maintain the safety of your personal information.</p>
+
+<h3>5. Your Rights</h3>
+<p>You have the right to access, update, or delete your personal information at any time.</p>
+
+<h3>6. Changes to This Policy</h3>
+<p>We may update this privacy policy from time to time. We will notify you of any changes by posting the new policy on this page.</p>
+
+<h3>7. Contact Us</h3>
+<p>If you have any questions about this privacy policy, please contact us at privacy@example.com.</p>`,
+      },
+    });
+  }
+
+  // Create default terms of service content if it doesn't exist
+  const existingTermsOfService = await prisma.siteContent.findUnique({
+    where: { key: 'terms_of_service' },
+  });
+  
+  if (!existingTermsOfService) {
+    await prisma.siteContent.create({
+      data: {
+        key: 'terms_of_service',
+        value: `<h2>Terms of Service</h2>
+<p>Last updated: ${new Date().toLocaleDateString()}</p>
+
+<h3>1. Acceptance of Terms</h3>
+<p>By accessing or using our services, you agree to be bound by these Terms of Service and all applicable laws and regulations.</p>
+
+<h3>2. Description of Service</h3>
+<p>Our service provides a platform for connecting companies with talented individuals through interview content and resources.</p>
+
+<h3>3. User Responsibilities</h3>
+<p>You are responsible for maintaining the confidentiality of your account and password and for restricting access to your computer.</p>
+
+<h3>4. Intellectual Property</h3>
+<p>All content included as part of the service, such as text, graphics, logos, and software, is the property of our company.</p>
+
+<h3>5. Limitation of Liability</h3>
+<p>In no event shall our company be liable for any indirect, incidental, special, or consequential damages.</p>
+
+<h3>6. Changes to Terms</h3>
+<p>We reserve the right to modify these terms at any time. Your continued use of the service after any such changes constitutes your acceptance.</p>
+
+<h3>7. Governing Law</h3>
+<p>These terms shall be governed by and construed in accordance with the laws of your jurisdiction.</p>
+
+<h3>8. Contact Information</h3>
+<p>If you have any questions about these Terms of Service, please contact us at terms@example.com.</p>`,
+      },
+    });
+  }
+
+  // Create default contact email if it doesn't exist
+  const existingContactEmail = await prisma.siteContent.findUnique({
+    where: { key: 'contact_email' },
+  });
+  
+  if (!existingContactEmail) {
+    await prisma.siteContent.create({
+      data: {
+        key: 'contact_email',
+        value: 'akshaytech01@gmail.com',
       },
     });
   }

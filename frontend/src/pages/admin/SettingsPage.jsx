@@ -6,6 +6,7 @@ const SettingsPage = () => {
     hero_headline: '',
     hero_description: '',
     hero_image_url: '',
+    navbar_logo_url: '',
     primary_color: '#e53935',
     social_youtube: '',
     social_instagram: '',
@@ -17,6 +18,7 @@ const SettingsPage = () => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
+  const [logoPreview, setLogoPreview] = useState(null);
 
   useEffect(() => {
     fetchSettings();
@@ -30,6 +32,7 @@ const SettingsPage = () => {
         headlineResponse,
         descriptionResponse,
         imageResponse,
+        logoResponse,
         youtubeResponse,
         instagramResponse,
         twitterResponse,
@@ -39,6 +42,7 @@ const SettingsPage = () => {
         fetch('/api/admin/site-content/hero_headline'),
         fetch('/api/admin/site-content/hero_description'),
         fetch('/api/admin/site-content/hero_image_url'),
+        fetch('/api/admin/site-content/navbar_logo_url'),
         fetch('/api/admin/site-content/social_youtube'),
         fetch('/api/admin/site-content/social_instagram'),
         fetch('/api/admin/site-content/social_twitter'),
@@ -49,6 +53,7 @@ const SettingsPage = () => {
       const headlineData = await headlineResponse.json();
       const descriptionData = await descriptionResponse.json();
       const imageData = await imageResponse.json();
+      const logoData = await logoResponse.json();
       const youtubeData = await youtubeResponse.json();
       const instagramData = await instagramResponse.json();
       const twitterData = await twitterResponse.json();
@@ -59,6 +64,7 @@ const SettingsPage = () => {
         hero_headline: headlineData.data?.value || '',
         hero_description: descriptionData.data?.value || '',
         hero_image_url: imageData.data?.value || '',
+        navbar_logo_url: logoData.data?.value || '',
         primary_color: '#e53935', // Default color
         social_youtube: youtubeData.data?.value || '',
         social_instagram: instagramData.data?.value || '',
@@ -72,6 +78,12 @@ const SettingsPage = () => {
       // This prevents overriding a newly uploaded image preview
       if (imageData.data?.value && (!imagePreview || imagePreview !== imageData.data?.value)) {
         setImagePreview(imageData.data?.value);
+      }
+      
+      // Only set logo preview if we have a logo URL and it's not already set
+      // This prevents overriding a newly uploaded logo preview
+      if (logoData.data?.value && (!logoPreview || logoPreview !== logoData.data?.value)) {
+        setLogoPreview(logoData.data?.value);
       }
       
       setLoading(false);
@@ -157,6 +169,74 @@ const SettingsPage = () => {
     }
   }, [settings.hero_image_url]);
 
+  const handleLogoUpload = async (file) => {
+    if (!file) return;
+    
+    console.log('Handling logo upload for file:', file.name, file.type, file.size);
+
+    // Check file size (5MB max)
+    if (file.size > 5 * 1024 * 1024) {
+      setError('Logo size must be less than 5MB');
+      return;
+    }
+
+    // For now, we'll convert to data URL and save it
+    // In a production environment, you would upload to a service like Cloudinary
+    const reader = new FileReader();
+    reader.onloadstart = () => {
+      // Show a loading state if needed
+      console.log('Starting to read logo file...');
+    };
+    
+    reader.onloadend = () => {
+      const logoDataUrl = reader.result;
+      
+      // Check if the data URL is too large
+      if (typeof logoDataUrl === 'string' && logoDataUrl.length > 10 * 1024 * 1024) { // 10MB limit
+        setError('Logo is too large. Please select a smaller logo.');
+        return;
+      }
+      
+      console.log('Logo data URL generated, length:', logoDataUrl?.length);
+      setLogoPreview(logoDataUrl);
+      setSettings(prev => ({
+        ...prev,
+        navbar_logo_url: logoDataUrl
+      }));
+      
+      // Log the updated settings
+      console.log('Updated settings with logo URL');
+    };
+    
+    reader.onerror = () => {
+      setError('Failed to read the logo file. Please try another logo.');
+      console.error('FileReader error:', reader.error);
+    };
+    
+    reader.readAsDataURL(file);
+  };
+
+  // Effect to sync logoPreview with navbar_logo_url when settings change
+  useEffect(() => {
+    if (settings.navbar_logo_url && !logoPreview) {
+      console.log('Syncing logo preview from settings:', settings.navbar_logo_url);
+      setLogoPreview(settings.navbar_logo_url);
+    }
+    // Also sync when navbar_logo_url changes and is different from current preview
+    else if (settings.navbar_logo_url && logoPreview && settings.navbar_logo_url !== logoPreview) {
+      console.log('Updating logo preview from settings change:', settings.navbar_logo_url);
+      setLogoPreview(settings.navbar_logo_url);
+    }
+  }, [settings.navbar_logo_url, logoPreview]);
+  
+  // Effect to clear logoPreview when navbar_logo_url is cleared
+  useEffect(() => {
+    if (!settings.navbar_logo_url) {
+      console.log('Clearing logo preview');
+      setLogoPreview(null);
+    }
+  }, [settings.navbar_logo_url]);
+
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     console.log('File input changed, selected file:', file);
@@ -178,6 +258,30 @@ const SettingsPage = () => {
       }
       
       handleImageUpload(file);
+    }
+  };
+
+  const handleLogoChange = (e) => {
+    const file = e.target.files[0];
+    console.log('Logo input changed, selected file:', file);
+    
+    if (file) {
+      // Clear any previous errors
+      setError(null);
+      
+      // Validate file type
+      if (!file.type.match('image.*')) {
+        setError('Please select an image file (JPEG, PNG, GIF, etc.)');
+        return;
+      }
+      
+      // Validate file size (5MB max)
+      if (file.size > 5 * 1024 * 1024) {
+        setError('Logo size must be less than 5MB');
+        return;
+      }
+      
+      handleLogoUpload(file);
     }
   };
 
@@ -250,6 +354,25 @@ const SettingsPage = () => {
       
       if (!imageResponse.ok) {
         throw new Error(`Failed to save hero image`);
+      }
+      
+      // Save navbar logo URL
+      // Check if the logo data is too large
+      if (settings.navbar_logo_url && settings.navbar_logo_url.length > 10 * 1024 * 1024) { // 10MB limit
+        throw new Error('Navbar logo is too large. Please select a smaller logo.');
+      }
+      
+      const logoResponse = await fetch('/api/admin/site-content/navbar_logo_url', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+        },
+        body: JSON.stringify({ value: settings.navbar_logo_url })
+      });
+      
+      if (!logoResponse.ok) {
+        throw new Error(`Failed to save navbar logo`);
       }
       
       // Save social links
@@ -362,6 +485,47 @@ const SettingsPage = () => {
           <h2 className="text-lg font-semibold mb-4 contrast-text-light">Appearance</h2>
           
           <div className="space-y-6">
+            <div>
+              <label className="block text-sm font-medium contrast-text-gray mb-1">
+                Navbar Logo
+              </label>
+              <div className="flex items-center space-x-4">
+                <div className="flex-1">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleLogoChange}
+                    className="w-full px-3 py-2 border border-gray-600 rounded-md bg-gray-700 contrast-text-light"
+                  />
+                  <p className="text-xs contrast-text-gray mt-1">Upload a logo for the navbar</p>
+                </div>
+                {(logoPreview || settings.navbar_logo_url) && (
+                  <div className="w-24 h-24 border rounded-md overflow-hidden">
+                    <img 
+                      src={logoPreview || settings.navbar_logo_url} 
+                      alt="Logo Preview" 
+                      className="w-full h-full object-contain"
+                      onError={(e) => {
+                        // Handle image load errors
+                        console.error('Logo preview failed to load:', e);
+                        e.target.src = 'https://via.placeholder.com/80x80?text=Error';
+                      }}
+                    />
+                  </div>
+                )}
+              </div>
+              <div className="mt-2">
+                <input
+                  type="text"
+                  name="navbar_logo_url"
+                  value={settings.navbar_logo_url}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-600 rounded-md bg-gray-700 contrast-text-light"
+                  placeholder="Or enter logo URL"
+                />
+              </div>
+            </div>
+            
             <div>
               <label className="block text-sm font-medium contrast-text-gray mb-1">
                 Hero Tagline
