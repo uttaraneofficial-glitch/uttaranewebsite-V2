@@ -12,6 +12,7 @@ exports.createCompanySchema = zod_1.z.object({
             .string()
             .max(500, 'Description must be less than 500 characters')
             .optional(),
+        bannerUrl: zod_1.z.string().optional(),
     }),
 });
 exports.updateCompanySchema = zod_1.z.object({
@@ -25,5 +26,6 @@ exports.updateCompanySchema = zod_1.z.object({
             .string()
             .max(500, 'Description must be less than 500 characters')
             .optional(),
+        bannerUrl: zod_1.z.string().optional(),
     }),
 });

@@ -10,6 +10,7 @@ const mkStudioPostSchema = zod_1.z.object({
     title: zod_1.z.string().min(1),
     description: zod_1.z.string().optional(),
     publishedAt: zod_1.z.string().optional(),
+    thumbnail: zod_1.z.string().optional(),
 });
 // Get all MK Studio posts (admin)
 const getAdminMkStudioPosts = async (req, res) => {
@@ -54,7 +55,10 @@ const createMkStudioPost = async (req, res) => {
                 youtubeId: postData.youtubeId,
                 title: postData.title,
                 description: postData.description,
-                publishedAt: postData.publishedAt ? new Date(postData.publishedAt) : new Date(),
+                publishedAt: postData.publishedAt
+                    ? new Date(postData.publishedAt)
+                    : new Date(),
+                thumbnail: postData.thumbnail,
             },
         });
         res.status(201).json({
@@ -66,7 +70,7 @@ const createMkStudioPost = async (req, res) => {
         if (error instanceof zod_1.z.ZodError) {
             return res.status(400).json({
                 message: 'Invalid input',
-                errors: error.errors
+                errors: error.errors,
             });
         }
         console.error('Create MK Studio post error:', error);
@@ -92,7 +96,10 @@ const updateMkStudioPost = async (req, res) => {
                 youtubeId: postData.youtubeId,
                 title: postData.title,
                 description: postData.description,
-                publishedAt: postData.publishedAt ? new Date(postData.publishedAt) : undefined,
+                publishedAt: postData.publishedAt
+                    ? new Date(postData.publishedAt)
+                    : existingPost.publishedAt,
+                thumbnail: postData.thumbnail,
             },
         });
         res.json({
@@ -104,7 +111,7 @@ const updateMkStudioPost = async (req, res) => {
         if (error instanceof zod_1.z.ZodError) {
             return res.status(400).json({
                 message: 'Invalid input',
-                errors: error.errors
+                errors: error.errors,
             });
         }
         console.error('Update MK Studio post error:', error);

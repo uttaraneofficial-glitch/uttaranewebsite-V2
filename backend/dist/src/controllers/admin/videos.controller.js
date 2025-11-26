@@ -11,6 +11,8 @@ const videoSchema = zod_1.z.object({
     title: zod_1.z.string().min(1),
     roundType: zod_1.z.string().optional(),
     publishedAt: zod_1.z.string().optional(),
+    thumbnail: zod_1.z.string().optional(),
+    candidateId: zod_1.z.string().optional(), // Add candidateId field
 });
 // Get all videos (admin)
 const getAdminVideos = async (req, res) => {
@@ -18,6 +20,7 @@ const getAdminVideos = async (req, res) => {
         const videos = await prisma.video.findMany({
             include: {
                 company: true,
+                candidate: true, // Include candidate in response
             },
             orderBy: { createdAt: 'desc' },
         });
@@ -39,6 +42,7 @@ const getAdminVideoById = async (req, res) => {
             where: { id },
             include: {
                 company: true,
+                candidate: true, // Include candidate in response
             },
         });
         if (!video) {
@@ -63,16 +67,31 @@ const createVideo = async (req, res) => {
         if (!company) {
             return res.status(400).json({ message: 'Company not found' });
         }
+        // Check if candidate exists (if provided)
+        let candidate = null;
+        if (videoData.candidateId) {
+            candidate = await prisma.candidate.findUnique({
+                where: { id: videoData.candidateId },
+            });
+            if (!candidate) {
+                return res.status(400).json({ message: 'Candidate not found' });
+            }
+        }
         const video = await prisma.video.create({
             data: {
                 companyId: videoData.companyId,
                 title: videoData.title,
                 youtubeId: videoData.youtubeId,
                 roundType: videoData.roundType,
-                publishedAt: videoData.publishedAt ? new Date(videoData.publishedAt) : undefined,
+                publishedAt: videoData.publishedAt
+                    ? new Date(videoData.publishedAt)
+                    : null,
+                thumbnail: videoData.thumbnail,
+                candidateId: videoData.candidateId, // Add candidateId to video creation
             },
             include: {
                 company: true,
+                candidate: true, // Include candidate in response
             },
         });
         res.status(201).json({
@@ -84,7 +103,7 @@ const createVideo = async (req, res) => {
         if (error instanceof zod_1.z.ZodError) {
             return res.status(400).json({
                 message: 'Invalid input',
-                errors: error.errors
+                errors: error.errors,
             });
         }
         console.error('Create video error:', error);
@@ -105,12 +124,23 @@ const updateVideo = async (req, res) => {
             return res.status(404).json({ message: 'Video not found' });
         }
         // Check if company exists (if provided)
+        let company = null;
         if (videoData.companyId) {
-            const company = await prisma.company.findUnique({
+            company = await prisma.company.findUnique({
                 where: { id: videoData.companyId },
             });
             if (!company) {
                 return res.status(400).json({ message: 'Company not found' });
+            }
+        }
+        // Check if candidate exists (if provided)
+        let candidate = null;
+        if (videoData.candidateId) {
+            candidate = await prisma.candidate.findUnique({
+                where: { id: videoData.candidateId },
+            });
+            if (!candidate) {
+                return res.status(400).json({ message: 'Candidate not found' });
             }
         }
         const video = await prisma.video.update({
@@ -120,10 +150,15 @@ const updateVideo = async (req, res) => {
                 title: videoData.title,
                 youtubeId: videoData.youtubeId,
                 roundType: videoData.roundType,
-                publishedAt: videoData.publishedAt ? new Date(videoData.publishedAt) : undefined,
+                publishedAt: videoData.publishedAt
+                    ? new Date(videoData.publishedAt)
+                    : existingVideo.publishedAt,
+                thumbnail: videoData.thumbnail,
+                candidateId: videoData.candidateId, // Add candidateId to video update
             },
             include: {
                 company: true,
+                candidate: true, // Include candidate in response
             },
         });
         res.json({
@@ -135,7 +170,7 @@ const updateVideo = async (req, res) => {
         if (error instanceof zod_1.z.ZodError) {
             return res.status(400).json({
                 message: 'Invalid input',
-                errors: error.errors
+                errors: error.errors,
             });
         }
         console.error('Update video error:', error);

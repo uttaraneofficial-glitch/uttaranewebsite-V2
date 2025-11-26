@@ -8,7 +8,6 @@ const prisma = new client_1.PrismaClient();
 const ngoPostSchema = zod_1.z.object({
     imageUrl: zod_1.z.string().url(),
     caption: zod_1.z.string().optional(),
-    postedAt: zod_1.z.string().optional(),
 });
 // Get all NGO posts (admin)
 const getAdminNgoPosts = async (req, res) => {
@@ -52,7 +51,7 @@ const createNgoPost = async (req, res) => {
             data: {
                 imageUrl: postData.imageUrl,
                 caption: postData.caption,
-                postedAt: postData.postedAt ? new Date(postData.postedAt) : new Date(),
+                postedAt: new Date(),
             },
         });
         res.status(201).json({
@@ -64,7 +63,7 @@ const createNgoPost = async (req, res) => {
         if (error instanceof zod_1.z.ZodError) {
             return res.status(400).json({
                 message: 'Invalid input',
-                errors: error.errors
+                errors: error.errors,
             });
         }
         console.error('Create NGO post error:', error);
@@ -89,7 +88,6 @@ const updateNgoPost = async (req, res) => {
             data: {
                 imageUrl: postData.imageUrl,
                 caption: postData.caption,
-                postedAt: postData.postedAt ? new Date(postData.postedAt) : undefined,
             },
         });
         res.json({
@@ -101,7 +99,7 @@ const updateNgoPost = async (req, res) => {
         if (error instanceof zod_1.z.ZodError) {
             return res.status(400).json({
                 message: 'Invalid input',
-                errors: error.errors
+                errors: error.errors,
             });
         }
         console.error('Update NGO post error:', error);

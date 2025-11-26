@@ -9,9 +9,16 @@ const ngo_posts_controller_1 = require("../controllers/admin/ngo-posts.controlle
 const mkstudio_posts_controller_1 = require("../controllers/admin/mkstudio-posts.controller");
 const site_content_controller_1 = require("../controllers/admin/site-content.controller");
 const users_controller_1 = require("../controllers/admin/users.controller");
+const candidates_controller_1 = require("../controllers/admin/candidates.controller");
+const dashboard_controller_1 = require("../controllers/dashboard.controller");
 const router = (0, express_1.Router)();
 // Apply authentication middleware to all admin routes
 router.use(auth_1.authenticate, (0, auth_1.requireRole)([prisma_1.Role.ADMIN]));
+// Dashboard routes
+router.get('/dashboard/stats', dashboard_controller_1.getDashboardStats);
+router.get('/dashboard/search', dashboard_controller_1.getGlobalSearch);
+router.get('/dashboard/charts', dashboard_controller_1.getDashboardCharts);
+router.get('/dashboard/notifications', dashboard_controller_1.getNotifications);
 // Company management routes
 router.get('/companies', companies_controller_1.getAdminCompanies);
 router.get('/companies/:id', companies_controller_1.getAdminCompanyById);
@@ -24,6 +31,12 @@ router.get('/videos/:id', videos_controller_1.getAdminVideoById);
 router.post('/videos', videos_controller_1.createVideo);
 router.put('/videos/:id', videos_controller_1.updateVideo);
 router.delete('/videos/:id', videos_controller_1.deleteVideo);
+// Candidate management routes
+router.get('/candidates', candidates_controller_1.getAdminCandidates);
+router.get('/candidates/:id', candidates_controller_1.getAdminCandidateById);
+router.post('/candidates', candidates_controller_1.createCandidate);
+router.put('/candidates/:id', candidates_controller_1.updateCandidate);
+router.delete('/candidates/:id', candidates_controller_1.deleteCandidate);
 // NGO Post management routes
 router.get('/ngo-posts', ngo_posts_controller_1.getAdminNgoPosts);
 router.get('/ngo-posts/:id', ngo_posts_controller_1.getAdminNgoPostById);

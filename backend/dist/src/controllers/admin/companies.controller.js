@@ -11,11 +11,16 @@ const companySchema = zod_1.z.object({
     logoUrl: zod_1.z.string().optional(),
     shortBio: zod_1.z.string().optional(),
     orderIndex: zod_1.z.number().optional(),
+    thumbnail: zod_1.z.string().optional(),
+    bannerUrl: zod_1.z.string().optional(),
 });
 // Get all companies (admin)
 const getAdminCompanies = async (req, res) => {
     try {
         const companies = await prisma.company.findMany({
+            include: {
+                candidates: true, // Include candidates in response
+            },
             orderBy: { name: 'asc' },
         });
         res.json({
@@ -34,6 +39,9 @@ const getAdminCompanyById = async (req, res) => {
         const { id } = req.params;
         const company = await prisma.company.findUnique({
             where: { id },
+            include: {
+                candidates: true, // Include candidates in response
+            },
         });
         if (!company) {
             return res.status(404).json({ message: 'Company not found' });
@@ -53,15 +61,12 @@ const createCompany = async (req, res) => {
         // Check if company with same name or slug already exists
         const existingCompany = await prisma.company.findFirst({
             where: {
-                OR: [
-                    { name: companyData.name },
-                    { slug: companyData.slug },
-                ],
+                OR: [{ name: companyData.name }, { slug: companyData.slug }],
             },
         });
         if (existingCompany) {
             return res.status(400).json({
-                message: 'Company with this name or slug already exists'
+                message: 'Company with this name or slug already exists',
             });
         }
         const company = await prisma.company.create({
@@ -71,6 +76,8 @@ const createCompany = async (req, res) => {
                 logoUrl: companyData.logoUrl,
                 shortBio: companyData.shortBio,
                 orderIndex: companyData.orderIndex,
+                thumbnail: companyData.thumbnail,
+                bannerUrl: companyData.bannerUrl,
             },
         });
         res.status(201).json({
@@ -82,7 +89,7 @@ const createCompany = async (req, res) => {
         if (error instanceof zod_1.z.ZodError) {
             return res.status(400).json({
                 message: 'Invalid input',
-                errors: error.errors
+                errors: error.errors,
             });
         }
         console.error('Create company error:', error);
@@ -106,15 +113,12 @@ const updateCompany = async (req, res) => {
         const duplicateCompany = await prisma.company.findFirst({
             where: {
                 id: { not: id },
-                OR: [
-                    { name: companyData.name },
-                    { slug: companyData.slug },
-                ],
+                OR: [{ name: companyData.name }, { slug: companyData.slug }],
             },
         });
         if (duplicateCompany) {
             return res.status(400).json({
-                message: 'Another company with this name or slug already exists'
+                message: 'Another company with this name or slug already exists',
             });
         }
         const company = await prisma.company.update({
@@ -125,6 +129,8 @@ const updateCompany = async (req, res) => {
                 logoUrl: companyData.logoUrl,
                 shortBio: companyData.shortBio,
                 orderIndex: companyData.orderIndex,
+                thumbnail: companyData.thumbnail,
+                bannerUrl: companyData.bannerUrl,
             },
         });
         res.json({
@@ -136,7 +142,7 @@ const updateCompany = async (req, res) => {
         if (error instanceof zod_1.z.ZodError) {
             return res.status(400).json({
                 message: 'Invalid input',
-                errors: error.errors
+                errors: error.errors,
             });
         }
         console.error('Update company error:', error);

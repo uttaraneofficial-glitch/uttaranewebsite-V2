@@ -14,7 +14,8 @@ const security_1 = require("./middleware/security");
 // Load environment variables
 dotenv_1.default.config();
 const app = (0, express_1.default)();
-const PORT = process.env.PORT || 3000;
+// Trust proxy for proper request handling
+app.set('trust proxy', 1);
 // Security Middleware
 app.use(security_1.securityHeaders); // Helmet security headers
 app.use(security_1.preventPollution); // Prevent HTTP Parameter Pollution
@@ -27,11 +28,13 @@ app.use((0, cors_1.default)({
     credentials: true,
     maxAge: 86400, // 24 hours
 }));
-app.use(express_1.default.json({ limit: '10kb' })); // Limit request body size
-app.use(express_1.default.urlencoded({ extended: true })); // For parsing form data
+app.use(express_1.default.json({ limit: '50mb' })); // Increase limit for larger payloads
+app.use(express_1.default.urlencoded({ extended: true, limit: '50mb' })); // For parsing form data
 app.use((0, cookie_parser_1.default)()); // Cookie parser middleware
 // Basic error handler
-app.use((err, req, res, next) => {
+app.use((err, req, res, 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+next) => {
     console.error(err.stack);
     res.status(500).json({
         message: 'Internal server error',
@@ -46,7 +49,4 @@ app.use('/api/admin', admin_routes_1.default);
 app.get('/health', (req, res) => {
     res.json({ status: 'ok' });
 });
-// Start server
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+exports.default = app;

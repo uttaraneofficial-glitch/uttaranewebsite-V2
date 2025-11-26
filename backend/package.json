@@ -2,9 +2,9 @@
   "name": "ah-interviews-backend",
   "version": "1.0.0",
   "description": "Backend for interview scheduling system",
-  "main": "dist/index.js",
+  "main": "dist/src/index.js",
   "scripts": {
-    "start": "node dist/index.js",
+    "start": "node dist/src/index.js",
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
     "build": "tsc",
     "prisma:generate": "prisma generate",
