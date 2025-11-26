@@ -65,9 +65,9 @@ export const createNgoPost = async (req: Request, res: Response) => {
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return res.status(400).json({ 
-        message: 'Invalid input', 
-        errors: error.errors 
+      return res.status(400).json({
+        message: 'Invalid input',
+        errors: error.errors,
       });
     }
     console.error('Create NGO post error:', error);
@@ -104,9 +104,9 @@ export const updateNgoPost = async (req: Request, res: Response) => {
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return res.status(400).json({ 
-        message: 'Invalid input', 
-        errors: error.errors 
+      return res.status(400).json({
+        message: 'Invalid input',
+        errors: error.errors,
       });
     }
     console.error('Update NGO post error:', error);

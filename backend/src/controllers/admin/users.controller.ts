@@ -107,9 +107,9 @@ export const createUser = async (req: Request, res: Response) => {
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return res.status(400).json({ 
-        message: 'Invalid input', 
-        errors: error.errors 
+      return res.status(400).json({
+        message: 'Invalid input',
+        errors: error.errors,
       });
     }
     console.error('Create user error:', error);
@@ -172,9 +172,9 @@ export const updateUser = async (req: Request, res: Response) => {
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return res.status(400).json({ 
-        message: 'Invalid input', 
-        errors: error.errors 
+      return res.status(400).json({
+        message: 'Invalid input',
+        errors: error.errors,
       });
     }
     console.error('Update user error:', error);
@@ -197,14 +197,19 @@ export const deleteUser = async (req: Request, res: Response) => {
     }
 
     // Prevent deleting the main admin user
-    if (existingUser.username === process.env.ADMIN_USERNAME || existingUser.role === 'ADMIN') {
+    if (
+      existingUser.username === process.env.ADMIN_USERNAME ||
+      existingUser.role === 'ADMIN'
+    ) {
       // Check if this is the only admin user
       const adminUsers = await prisma.user.count({
         where: { role: 'ADMIN' },
       });
 
       if (adminUsers <= 1) {
-        return res.status(400).json({ message: 'Cannot delete the last admin user' });
+        return res
+          .status(400)
+          .json({ message: 'Cannot delete the last admin user' });
       }
     }
 
@@ -249,9 +254,9 @@ export const changeUserPassword = async (req: Request, res: Response) => {
     res.json({ message: 'Password changed successfully' });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return res.status(400).json({ 
-        message: 'Invalid input', 
-        errors: error.errors 
+      return res.status(400).json({
+        message: 'Invalid input',
+        errors: error.errors,
       });
     }
     console.error('Change password error:', error);

@@ -25,17 +25,22 @@ const NgoPostsGrid = () => {
     fetchPosts();
   }, []);
 
-  if (loading) return <div className="text-center py-8">Loading NGO posts...</div>;
-  if (error) return <div className="text-center py-8 text-red-500">Error: {error}</div>;
+  if (loading)
+    return <div className="text-center py-8">Loading NGO posts...</div>;
+  if (error)
+    return <div className="text-center py-8 text-red-500">Error: {error}</div>;
 
   return (
     <div className="ngo-posts-grid">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {posts.map(post => (
-          <div key={post.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition">
-            <img 
-              src={post.imageUrl} 
-              alt={post.caption || 'NGO post'} 
+          <div
+            key={post.id}
+            className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition"
+          >
+            <img
+              src={post.imageUrl}
+              alt={post.caption || 'NGO post'}
               className="w-full h-48 object-cover"
             />
             {post.caption && (

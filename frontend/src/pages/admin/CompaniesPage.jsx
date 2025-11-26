@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import DataTable from '../../components/admin/DataTable';
+import { PlusIcon } from '@heroicons/react/24/outline';
 
 const CompaniesPage = () => {
   const [companies, setCompanies] = useState([]);
@@ -12,9 +14,11 @@ const CompaniesPage = () => {
     logoUrl: '',
     shortBio: '',
     orderIndex: 0,
-    thumbnail: '' // Add thumbnail field
+    thumbnail: '',
+    bannerUrl: '',
   });
-  const [thumbnailPreview, setThumbnailPreview] = useState(null); // Add thumbnail preview state
+  const [thumbnailPreview, setThumbnailPreview] = useState(null);
+  const [bannerPreview, setBannerPreview] = useState(null);
 
   useEffect(() => {
     fetchCompanies();
@@ -35,37 +39,37 @@ const CompaniesPage = () => {
     }
   };
 
-  const handleInputChange = (e) => {
+  const handleInputChange = e => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    
+
     try {
-      const url = editingCompany 
-        ? `/api/admin/companies/${editingCompany.id}` 
+      const url = editingCompany
+        ? `/api/admin/companies/${editingCompany.id}`
         : '/api/admin/companies';
-      
+
       const method = editingCompany ? 'PUT' : 'POST';
-      
+
       const response = await fetch(url, {
         method,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
       });
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       // Reset form and refresh data
       setFormData({
         name: '',
@@ -73,9 +77,11 @@ const CompaniesPage = () => {
         logoUrl: '',
         shortBio: '',
         orderIndex: 0,
-        thumbnail: '' // Reset thumbnail
+        thumbnail: '',
+        bannerUrl: '',
       });
-      setThumbnailPreview(null); // Reset thumbnail preview
+      setThumbnailPreview(null);
+      setBannerPreview(null);
       setEditingCompany(null);
       setShowForm(false);
       fetchCompanies();
@@ -84,36 +90,39 @@ const CompaniesPage = () => {
     }
   };
 
-  const handleEdit = (company) => {
+  const handleEdit = company => {
     setFormData({
       name: company.name,
       slug: company.slug,
       logoUrl: company.logoUrl || '',
       shortBio: company.shortBio || '',
       orderIndex: company.orderIndex || 0,
-      thumbnail: company.thumbnail || '' // Set thumbnail
+      thumbnail: company.thumbnail || '',
+      bannerUrl: company.bannerUrl || '',
     });
+    setThumbnailPreview(company.thumbnail);
+    setBannerPreview(company.bannerUrl);
     setEditingCompany(company);
     setShowForm(true);
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async company => {
     if (!window.confirm('Are you sure you want to delete this company?')) {
       return;
     }
-    
+
     try {
-      const response = await fetch(`/api/admin/companies/${id}`, {
+      const response = await fetch(`/api/admin/companies/${company.id}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-        }
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
       });
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       fetchCompanies();
     } catch (err) {
       setError('Failed to delete company: ' + err.message);
@@ -127,71 +136,116 @@ const CompaniesPage = () => {
       logoUrl: '',
       shortBio: '',
       orderIndex: 0,
-      thumbnail: '' // Reset thumbnail
+      thumbnail: '',
+      bannerUrl: '',
     });
-    setThumbnailPreview(null); // Reset thumbnail preview
+    setThumbnailPreview(null);
+    setBannerPreview(null);
     setEditingCompany(null);
     setShowForm(false);
   };
 
-  const handleImageUpload = async (file) => {
-    if (!file) return;
-
-    // In a real implementation, we would upload to Cloudinary here
-    // For now, we'll just create a preview
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setThumbnailPreview(reader.result);
-      setFormData(prev => ({
-        ...prev,
-        thumbnail: reader.result // In real implementation, this would be the Cloudinary URL
-      }));
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const handleFileChange = (e) => {
+  const handleFileChange = (e, field) => {
     const file = e.target.files[0];
     if (file) {
-      handleImageUpload(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (field === 'thumbnail') {
+          setThumbnailPreview(reader.result);
+        } else if (field === 'bannerUrl') {
+          setBannerPreview(reader.result);
+        }
+        setFormData(prev => ({
+          ...prev,
+          [field]: reader.result,
+        }));
+      };
+      reader.readAsDataURL(file);
     }
   };
 
-  const getCompanyThumbnail = (company) => {
-    // Use thumbnail if available, otherwise fallback to logoUrl
-    if (company.thumbnail) {
-      return company.thumbnail;
-    }
-    if (company.logoUrl) {
-      return company.logoUrl;
-    }
-    return 'https://via.placeholder.com/100x100?text=Logo';
-  };
+  const columns = [
+    {
+      key: 'thumbnail',
+      label: 'Thumbnail',
+      render: company => (
+        <div className="w-16 h-9 rounded bg-gray-800 overflow-hidden border border-gray-700">
+          {company.thumbnail ? (
+            <img
+              src={company.thumbnail}
+              alt={`${company.name} thumbnail`}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-gray-500 text-xs">
+              No Img
+            </div>
+          )}
+        </div>
+      ),
+    },
+    {
+      key: 'name',
+      label: 'Name',
+      sortable: true,
+      render: company => (
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded bg-gray-800 flex items-center justify-center overflow-hidden">
+            {company.logoUrl ? (
+              <img
+                src={company.logoUrl}
+                alt={company.name}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <span className="text-xs font-bold text-white">
+                {company.name.charAt(0)}
+              </span>
+            )}
+          </div>
+          <span className="font-medium text-white">{company.name}</span>
+        </div>
+      ),
+    },
+    { key: 'slug', label: 'Slug', sortable: true },
+    {
+      key: 'shortBio',
+      label: 'Bio',
+      render: company => (
+        <span
+          className="text-gray-400 truncate max-w-xs block"
+          title={company.shortBio}
+        >
+          {company.shortBio || '-'}
+        </span>
+      ),
+    },
+    {
+      key: 'createdAt',
+      label: 'Created',
+      sortable: true,
+      render: company => new Date(company.createdAt).toLocaleDateString(),
+    },
+  ];
 
-  if (loading) return <div className="p-4 contrast-text-light">Loading...</div>;
-  if (error) return <div className="p-4 text-red-500">Error: {error}</div>;
+  if (loading)
+    return (
+      <div className="p-8 text-center text-gray-400">Loading companies...</div>
+    );
+  if (error)
+    return <div className="p-8 text-center text-red-500">Error: {error}</div>;
 
   return (
-    <div className="companies-page">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold contrast-text-light">Companies</h1>
-        <button 
-          onClick={() => setShowForm(true)}
-          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
-        >
-          Add Company
-        </button>
-      </div>
-
-      {showForm && (
-        <div className="bg-gray-800 p-6 rounded-lg shadow mb-6">
-          <h2 className="text-xl font-semibold mb-4 contrast-text-light">
+    <div className="h-full flex flex-col gap-6">
+      {showForm ? (
+        <div className="bg-[#1a1a1a] border border-gray-800 rounded-xl p-6">
+          <h2 className="text-xl font-bold text-white mb-6">
             {editingCompany ? 'Edit Company' : 'Add New Company'}
           </h2>
-          <form onSubmit={handleSubmit}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium contrast-text-gray mb-1">
+                <label className="block text-sm font-medium text-gray-400 mb-2">
                   Name
                 </label>
                 <input
@@ -199,12 +253,12 @@ const CompaniesPage = () => {
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-600 rounded-md bg-gray-700 contrast-text-light"
+                  className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-red-500"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium contrast-text-gray mb-1">
+                <label className="block text-sm font-medium text-gray-400 mb-2">
                   Slug
                 </label>
                 <input
@@ -212,12 +266,12 @@ const CompaniesPage = () => {
                   name="slug"
                   value={formData.slug}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-600 rounded-md bg-gray-700 contrast-text-light"
+                  className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-red-500"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium contrast-text-gray mb-1">
+                <label className="block text-sm font-medium text-gray-400 mb-2">
                   Logo URL
                 </label>
                 <input
@@ -225,11 +279,11 @@ const CompaniesPage = () => {
                   name="logoUrl"
                   value={formData.logoUrl}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-600 rounded-md bg-gray-700 contrast-text-light"
+                  className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-red-500"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium contrast-text-gray mb-1">
+                <label className="block text-sm font-medium text-gray-400 mb-2">
                   Order Index
                 </label>
                 <input
@@ -237,125 +291,123 @@ const CompaniesPage = () => {
                   name="orderIndex"
                   value={formData.orderIndex}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-600 rounded-md bg-gray-700 contrast-text-light"
+                  className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-red-500"
                 />
               </div>
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium contrast-text-gray mb-1">
+                <label className="block text-sm font-medium text-gray-400 mb-2">
                   Short Bio
                 </label>
                 <textarea
                   name="shortBio"
                   value={formData.shortBio}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-600 rounded-md bg-gray-700 contrast-text-light"
+                  className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-red-500"
                   rows="3"
                 />
               </div>
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium contrast-text-gray mb-1">
+                <label className="block text-sm font-medium text-gray-400 mb-2">
                   Thumbnail
                 </label>
-                <div className="flex items-center space-x-4">
-                  <div className="flex-1">
+                <div className="flex flex-col sm:flex-row items-start gap-4">
+                  <div className="flex-1 w-full">
                     <input
                       type="file"
                       accept="image/*"
-                      onChange={handleFileChange}
-                      className="w-full px-3 py-2 border border-gray-600 rounded-md bg-gray-700 contrast-text-light"
+                      onChange={e => handleFileChange(e, 'thumbnail')}
+                      className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-red-500"
                     />
-                    <p className="text-xs contrast-text-gray mt-1">Upload a custom thumbnail</p>
+                    <input
+                      type="text"
+                      name="thumbnail"
+                      value={formData.thumbnail}
+                      onChange={handleInputChange}
+                      className="w-full mt-2 px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-red-500"
+                      placeholder="Or enter thumbnail URL"
+                    />
                   </div>
                   {thumbnailPreview && (
-                    <div className="w-24 h-24 border rounded-md overflow-hidden">
-                      <img 
-                        src={thumbnailPreview} 
-                        alt="Preview" 
+                    <div className="w-24 h-24 rounded-lg overflow-hidden border border-gray-700 flex-shrink-0">
+                      <img
+                        src={thumbnailPreview}
+                        alt="Preview"
                         className="w-full h-full object-cover"
                       />
                     </div>
                   )}
                 </div>
-                <input
-                  type="text"
-                  name="thumbnail"
-                  value={formData.thumbnail}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-600 rounded-md mt-2 bg-gray-700 contrast-text-light"
-                  placeholder="Or enter thumbnail URL"
-                />
+              </div>
+
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-400 mb-2">
+                  Banner Image (Upper Background)
+                </label>
+                <div className="flex flex-col sm:flex-row items-start gap-4">
+                  <div className="flex-1 w-full">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={e => handleFileChange(e, 'bannerUrl')}
+                      className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-red-500"
+                    />
+                    <input
+                      type="text"
+                      name="bannerUrl"
+                      value={formData.bannerUrl}
+                      onChange={handleInputChange}
+                      className="w-full mt-2 px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-red-500"
+                      placeholder="Or enter banner URL"
+                    />
+                  </div>
+                  {bannerPreview && (
+                    <div className="w-full sm:w-48 h-24 rounded-lg overflow-hidden border border-gray-700 flex-shrink-0">
+                      <img
+                        src={bannerPreview}
+                        alt="Banner Preview"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
-            <div className="flex space-x-2">
-              <button
-                type="submit"
-                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
-              >
-                {editingCompany ? 'Update' : 'Create'}
-              </button>
+            <div className="flex justify-end gap-3">
               <button
                 type="button"
                 onClick={handleCancel}
-                className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
+                className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition-colors"
               >
                 Cancel
+              </button>
+              <button
+                type="submit"
+                className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+              >
+                {editingCompany ? 'Update Company' : 'Create Company'}
               </button>
             </div>
           </form>
         </div>
+      ) : (
+        <DataTable
+          title="Companies"
+          columns={columns}
+          data={companies}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+          searchPlaceholder="Search companies..."
+          actions={
+            <button
+              onClick={() => setShowForm(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-colors"
+            >
+              <PlusIcon className="w-4 h-4" />
+              Add Company
+            </button>
+          }
+        />
       )}
-
-      <div className="bg-gray-800 rounded-lg shadow overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-700">
-          <thead className="bg-gray-700">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium contrast-text-gray uppercase tracking-wider">
-                Name
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium contrast-text-gray uppercase tracking-wider">
-                Slug
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium contrast-text-gray uppercase tracking-wider">
-                Bio
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium contrast-text-gray uppercase tracking-wider">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-gray-800 divide-y divide-gray-700">
-            {companies.map((company) => (
-              <tr key={company.id}>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium contrast-text-light">{company.name}</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm contrast-text-gray">{company.slug}</div>
-                </td>
-                <td className="px-6 py-4">
-                  <div className="text-sm contrast-text-gray">
-                    {company.shortBio?.substring(0, 50)}...
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                  <button
-                    onClick={() => handleEdit(company)}
-                    className="text-blue-400 hover:text-blue-300 mr-3"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(company.id)}
-                    className="text-red-400 hover:text-red-300"
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
     </div>
   );
 };

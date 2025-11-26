@@ -11,277 +11,120 @@ const SettingsPage = () => {
     social_youtube: '',
     social_instagram: '',
     social_twitter: '',
-    social_linkedin: ''
+    social_linkedin: '',
+    instructor_name: '',
+    instructor_title: '',
+    instructor_bio: '',
+    instructor_image_url: '',
+    instructor_social_linkedin: '',
+    instructor_social_twitter: '',
+    instructor_social_instagram: '',
+    instructor_company_logos: '',
+    mkstudio_channel_name: '',
+    mkstudio_channel_tagline: '',
+    mkstudio_subscribe_url: '',
+    mkstudio_channel_image: '',
   });
+
+  // State for loading, saving, and messages
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
-  const [imagePreview, setImagePreview] = useState(null);
-  const [logoPreview, setLogoPreview] = useState(null);
 
+  // State for image previews
+  const [logoPreview, setLogoPreview] = useState('');
+  const [imagePreview, setImagePreview] = useState('');
+  const [instructorImagePreview, setInstructorImagePreview] = useState('');
+
+  // Fetch settings on component mount
   useEffect(() => {
     fetchSettings();
   }, []);
 
   const fetchSettings = async () => {
+    setLoading(true);
+    setError(null);
+
     try {
-      // Fetch all individual site content keys
-      const [
-        taglineResponse,
-        headlineResponse,
-        descriptionResponse,
-        imageResponse,
-        logoResponse,
-        youtubeResponse,
-        instagramResponse,
-        twitterResponse,
-        linkedinResponse
-      ] = await Promise.all([
-        fetch('/api/admin/site-content/hero_tagline'),
-        fetch('/api/admin/site-content/hero_headline'),
-        fetch('/api/admin/site-content/hero_description'),
-        fetch('/api/admin/site-content/hero_image_url'),
-        fetch('/api/admin/site-content/navbar_logo_url'),
-        fetch('/api/admin/site-content/social_youtube'),
-        fetch('/api/admin/site-content/social_instagram'),
-        fetch('/api/admin/site-content/social_twitter'),
-        fetch('/api/admin/site-content/social_linkedin')
-      ]);
+      const keys = Object.keys(settings);
+      const newSettings = { ...settings };
 
-      const taglineData = await taglineResponse.json();
-      const headlineData = await headlineResponse.json();
-      const descriptionData = await descriptionResponse.json();
-      const imageData = await imageResponse.json();
-      const logoData = await logoResponse.json();
-      const youtubeData = await youtubeResponse.json();
-      const instagramData = await instagramResponse.json();
-      const twitterData = await twitterResponse.json();
-      const linkedinData = await linkedinResponse.json();
+      for (const key of keys) {
+        if (key === 'primary_color') continue;
 
-      const newSettings = {
-        hero_tagline: taglineData.data?.value || '',
-        hero_headline: headlineData.data?.value || '',
-        hero_description: descriptionData.data?.value || '',
-        hero_image_url: imageData.data?.value || '',
-        navbar_logo_url: logoData.data?.value || '',
-        primary_color: '#e53935', // Default color
-        social_youtube: youtubeData.data?.value || '',
-        social_instagram: instagramData.data?.value || '',
-        social_twitter: twitterData.data?.value || '',
-        social_linkedin: linkedinData.data?.value || ''
-      };
+        const response = await fetch(`/api/admin/site-content/${key}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.data?.value) {
+            newSettings[key] = data.data.value;
+
+            // Set previews for images
+            if (key === 'navbar_logo_url') setLogoPreview(data.data.value);
+            if (key === 'hero_image_url') setImagePreview(data.data.value);
+            if (key === 'instructor_image_url')
+              setInstructorImagePreview(data.data.value);
+          }
+        }
+      }
 
       setSettings(newSettings);
-      
-      // Only set image preview if we have an image URL and it's not already set
-      // This prevents overriding a newly uploaded image preview
-      if (imageData.data?.value && (!imagePreview || imagePreview !== imageData.data?.value)) {
-        setImagePreview(imageData.data?.value);
-      }
-      
-      // Only set logo preview if we have a logo URL and it's not already set
-      // This prevents overriding a newly uploaded logo preview
-      if (logoData.data?.value && (!logoPreview || logoPreview !== logoData.data?.value)) {
-        setLogoPreview(logoData.data?.value);
-      }
-      
-      setLoading(false);
     } catch (err) {
       setError('Failed to load settings: ' + err.message);
+    } finally {
       setLoading(false);
     }
   };
 
-  const handleInputChange = (e) => {
+  const handleInputChange = e => {
     const { name, value } = e.target;
     setSettings(prev => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
-  const handleImageUpload = async (file) => {
+  const handleImageUpload = (file, fieldName, setPreview) => {
     if (!file) return;
-    
-    console.log('Handling image upload for file:', file.name, file.type, file.size);
 
-    // Check file size (5MB max)
     if (file.size > 5 * 1024 * 1024) {
       setError('Image size must be less than 5MB');
       return;
     }
 
-    // For now, we'll convert to data URL and save it
-    // In a production environment, you would upload to a service like Cloudinary
     const reader = new FileReader();
-    reader.onloadstart = () => {
-      // Show a loading state if needed
-      console.log('Starting to read image file...');
-    };
-    
     reader.onloadend = () => {
       const imageDataUrl = reader.result;
-      
-      // Check if the data URL is too large
-      if (typeof imageDataUrl === 'string' && imageDataUrl.length > 10 * 1024 * 1024) { // 10MB limit
+      if (
+        typeof imageDataUrl === 'string' &&
+        imageDataUrl.length > 10 * 1024 * 1024
+      ) {
         setError('Image is too large. Please select a smaller image.');
         return;
       }
-      
-      console.log('Image data URL generated, length:', imageDataUrl?.length);
-      setImagePreview(imageDataUrl);
+      setPreview(imageDataUrl);
       setSettings(prev => ({
         ...prev,
-        hero_image_url: imageDataUrl
+        [fieldName]: imageDataUrl,
       }));
-      
-      // Log the updated settings
-      console.log('Updated settings with image URL');
     };
-    
-    reader.onerror = () => {
-      setError('Failed to read the image file. Please try another image.');
-      console.error('FileReader error:', reader.error);
-    };
-    
     reader.readAsDataURL(file);
   };
 
-  // Effect to sync imagePreview with hero_image_url when settings change
-  useEffect(() => {
-    if (settings.hero_image_url && !imagePreview) {
-      console.log('Syncing image preview from settings:', settings.hero_image_url);
-      setImagePreview(settings.hero_image_url);
-    }
-    // Also sync when hero_image_url changes and is different from current preview
-    else if (settings.hero_image_url && imagePreview && settings.hero_image_url !== imagePreview) {
-      console.log('Updating image preview from settings change:', settings.hero_image_url);
-      setImagePreview(settings.hero_image_url);
-    }
-  }, [settings.hero_image_url, imagePreview]);
-  
-  // Effect to clear imagePreview when hero_image_url is cleared
-  useEffect(() => {
-    if (!settings.hero_image_url) {
-      console.log('Clearing image preview');
-      setImagePreview(null);
-    }
-  }, [settings.hero_image_url]);
-
-  const handleLogoUpload = async (file) => {
-    if (!file) return;
-    
-    console.log('Handling logo upload for file:', file.name, file.type, file.size);
-
-    // Check file size (5MB max)
-    if (file.size > 5 * 1024 * 1024) {
-      setError('Logo size must be less than 5MB');
-      return;
-    }
-
-    // For now, we'll convert to data URL and save it
-    // In a production environment, you would upload to a service like Cloudinary
-    const reader = new FileReader();
-    reader.onloadstart = () => {
-      // Show a loading state if needed
-      console.log('Starting to read logo file...');
-    };
-    
-    reader.onloadend = () => {
-      const logoDataUrl = reader.result;
-      
-      // Check if the data URL is too large
-      if (typeof logoDataUrl === 'string' && logoDataUrl.length > 10 * 1024 * 1024) { // 10MB limit
-        setError('Logo is too large. Please select a smaller logo.');
-        return;
-      }
-      
-      console.log('Logo data URL generated, length:', logoDataUrl?.length);
-      setLogoPreview(logoDataUrl);
-      setSettings(prev => ({
-        ...prev,
-        navbar_logo_url: logoDataUrl
-      }));
-      
-      // Log the updated settings
-      console.log('Updated settings with logo URL');
-    };
-    
-    reader.onerror = () => {
-      setError('Failed to read the logo file. Please try another logo.');
-      console.error('FileReader error:', reader.error);
-    };
-    
-    reader.readAsDataURL(file);
-  };
-
-  // Effect to sync logoPreview with navbar_logo_url when settings change
-  useEffect(() => {
-    if (settings.navbar_logo_url && !logoPreview) {
-      console.log('Syncing logo preview from settings:', settings.navbar_logo_url);
-      setLogoPreview(settings.navbar_logo_url);
-    }
-    // Also sync when navbar_logo_url changes and is different from current preview
-    else if (settings.navbar_logo_url && logoPreview && settings.navbar_logo_url !== logoPreview) {
-      console.log('Updating logo preview from settings change:', settings.navbar_logo_url);
-      setLogoPreview(settings.navbar_logo_url);
-    }
-  }, [settings.navbar_logo_url, logoPreview]);
-  
-  // Effect to clear logoPreview when navbar_logo_url is cleared
-  useEffect(() => {
-    if (!settings.navbar_logo_url) {
-      console.log('Clearing logo preview');
-      setLogoPreview(null);
-    }
-  }, [settings.navbar_logo_url]);
-
-  const handleFileChange = (e) => {
+  const handleFileChange = (e, fieldName, setPreview) => {
     const file = e.target.files[0];
-    console.log('File input changed, selected file:', file);
-    
     if (file) {
-      // Clear any previous errors
       setError(null);
-      
-      // Validate file type
       if (!file.type.match('image.*')) {
-        setError('Please select an image file (JPEG, PNG, GIF, etc.)');
+        setError('Please select an image file');
         return;
       }
-      
-      // Validate file size (5MB max)
-      if (file.size > 5 * 1024 * 1024) {
-        setError('Image size must be less than 5MB');
-        return;
-      }
-      
-      handleImageUpload(file);
-    }
-  };
-
-  const handleLogoChange = (e) => {
-    const file = e.target.files[0];
-    console.log('Logo input changed, selected file:', file);
-    
-    if (file) {
-      // Clear any previous errors
-      setError(null);
-      
-      // Validate file type
-      if (!file.type.match('image.*')) {
-        setError('Please select an image file (JPEG, PNG, GIF, etc.)');
-        return;
-      }
-      
-      // Validate file size (5MB max)
-      if (file.size > 5 * 1024 * 1024) {
-        setError('Logo size must be less than 5MB');
-        return;
-      }
-      
-      handleLogoUpload(file);
+      handleImageUpload(file, fieldName, setPreview);
     }
   };
 
@@ -289,156 +132,32 @@ const SettingsPage = () => {
     setSaving(true);
     setSuccess(false);
     setError(null);
-    
-    // Debug log to see what we're sending
-    console.log('Saving hero image URL:', settings.hero_image_url);
-    console.log('Saving all settings:', settings);
-    
+
     try {
-      // Save hero tagline
-      const taglineResponse = await fetch('/api/admin/site-content/hero_tagline', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-        },
-        body: JSON.stringify({ value: settings.hero_tagline })
-      });
-      
-      if (!taglineResponse.ok) {
-        throw new Error(`Failed to save hero tagline`);
+      const keys = Object.keys(settings);
+
+      for (const key of keys) {
+        // Skip primary_color as it's not in DB yet or handled differently
+        if (key === 'primary_color') continue;
+
+        const response = await fetch(`/api/admin/site-content/${key}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+          },
+          body: JSON.stringify({ value: settings[key] }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`Failed to save ${key}`);
+        }
       }
-      
-      // Save hero headline
-      const headlineResponse = await fetch('/api/admin/site-content/hero_headline', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-        },
-        body: JSON.stringify({ value: settings.hero_headline })
-      });
-      
-      if (!headlineResponse.ok) {
-        throw new Error(`Failed to save hero headline`);
-      }
-      
-      // Save hero description
-      const descriptionResponse = await fetch('/api/admin/site-content/hero_description', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-        },
-        body: JSON.stringify({ value: settings.hero_description })
-      });
-      
-      if (!descriptionResponse.ok) {
-        throw new Error(`Failed to save hero description`);
-      }
-      
-      // Save hero image URL
-      // Check if the image data is too large
-      if (settings.hero_image_url && settings.hero_image_url.length > 10 * 1024 * 1024) { // 10MB limit
-        throw new Error('Hero image is too large. Please select a smaller image.');
-      }
-      
-      const imageResponse = await fetch('/api/admin/site-content/hero_image_url', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-        },
-        body: JSON.stringify({ value: settings.hero_image_url })
-      });
-      
-      if (!imageResponse.ok) {
-        throw new Error(`Failed to save hero image`);
-      }
-      
-      // Save navbar logo URL
-      // Check if the logo data is too large
-      if (settings.navbar_logo_url && settings.navbar_logo_url.length > 10 * 1024 * 1024) { // 10MB limit
-        throw new Error('Navbar logo is too large. Please select a smaller logo.');
-      }
-      
-      const logoResponse = await fetch('/api/admin/site-content/navbar_logo_url', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-        },
-        body: JSON.stringify({ value: settings.navbar_logo_url })
-      });
-      
-      if (!logoResponse.ok) {
-        throw new Error(`Failed to save navbar logo`);
-      }
-      
-      // Save social links
-      const youtubeResponse = await fetch('/api/admin/site-content/social_youtube', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-        },
-        body: JSON.stringify({ value: settings.social_youtube })
-      });
-      
-      if (!youtubeResponse.ok) {
-        throw new Error(`Failed to save YouTube link`);
-      }
-      
-      const instagramResponse = await fetch('/api/admin/site-content/social_instagram', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-        },
-        body: JSON.stringify({ value: settings.social_instagram })
-      });
-      
-      if (!instagramResponse.ok) {
-        throw new Error(`Failed to save Instagram link`);
-      }
-      
-      const twitterResponse = await fetch('/api/admin/site-content/social_twitter', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-        },
-        body: JSON.stringify({ value: settings.social_twitter })
-      });
-      
-      if (!twitterResponse.ok) {
-        throw new Error(`Failed to save Twitter link`);
-      }
-      
-      const linkedinResponse = await fetch('/api/admin/site-content/social_linkedin', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-        },
-        body: JSON.stringify({ value: settings.social_linkedin })
-      });
-      
-      if (!linkedinResponse.ok) {
-        throw new Error(`Failed to save LinkedIn link`);
-      }
-      
+
       setSuccess(true);
-      // Don't re-fetch settings immediately after saving to preserve the preview
-      // The preview is already set in the state, so we don't need to fetch it again
-      setTimeout(() => {
-        setSuccess(false);
-        // Remove the automatic re-fetch to preserve the preview
-        // fetchSettings(); // Re-fetch settings to ensure consistency
-      }, 3000);
+      setTimeout(() => setSuccess(false), 3000);
     } catch (err) {
       setError('Failed to save settings: ' + err.message);
-      console.error('Save error:', err);
     } finally {
       setSaving(false);
     }
@@ -449,16 +168,18 @@ const SettingsPage = () => {
   return (
     <div className="settings-page">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold contrast-text-light">Site Settings</h1>
+        <h1 className="text-2xl font-bold contrast-text-light">
+          Site Settings
+        </h1>
         <div className="flex space-x-2">
-          <button 
+          <button
             onClick={fetchSettings}
             disabled={loading}
             className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded"
           >
             Refresh
           </button>
-          <button 
+          <button
             onClick={handleSave}
             disabled={saving}
             className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded disabled:opacity-50"
@@ -473,7 +194,6 @@ const SettingsPage = () => {
           {error}
         </div>
       )}
-
       {success && (
         <div className="bg-green-900 border border-green-700 text-green-100 px-4 py-3 rounded mb-6">
           Settings saved successfully!
@@ -481,51 +201,32 @@ const SettingsPage = () => {
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Appearance Section */}
         <div className="bg-gray-800 p-6 rounded-lg shadow">
-          <h2 className="text-lg font-semibold mb-4 contrast-text-light">Appearance</h2>
-          
+          <h2 className="text-lg font-semibold mb-4 contrast-text-light">
+            Appearance & Hero
+          </h2>
           <div className="space-y-6">
             <div>
               <label className="block text-sm font-medium contrast-text-gray mb-1">
                 Navbar Logo
               </label>
-              <div className="flex items-center space-x-4">
-                <div className="flex-1">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleLogoChange}
-                    className="w-full px-3 py-2 border border-gray-600 rounded-md bg-gray-700 contrast-text-light"
-                  />
-                  <p className="text-xs contrast-text-gray mt-1">Upload a logo for the navbar</p>
-                </div>
-                {(logoPreview || settings.navbar_logo_url) && (
-                  <div className="w-24 h-24 border rounded-md overflow-hidden">
-                    <img 
-                      src={logoPreview || settings.navbar_logo_url} 
-                      alt="Logo Preview" 
-                      className="w-full h-full object-contain"
-                      onError={(e) => {
-                        // Handle image load errors
-                        console.error('Logo preview failed to load:', e);
-                        e.target.src = 'https://via.placeholder.com/80x80?text=Error';
-                      }}
-                    />
-                  </div>
-                )}
-              </div>
-              <div className="mt-2">
-                <input
-                  type="text"
-                  name="navbar_logo_url"
-                  value={settings.navbar_logo_url}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-600 rounded-md bg-gray-700 contrast-text-light"
-                  placeholder="Or enter logo URL"
+              <input
+                type="file"
+                accept="image/*"
+                onChange={e =>
+                  handleFileChange(e, 'navbar_logo_url', setLogoPreview)
+                }
+                className="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-600 file:text-white hover:file:bg-red-700 mb-2"
+              />
+              {logoPreview && (
+                <img
+                  src={logoPreview}
+                  alt="Logo Preview"
+                  className="h-12 object-contain bg-black p-2 rounded"
                 />
-              </div>
+              )}
             </div>
-            
             <div>
               <label className="block text-sm font-medium contrast-text-gray mb-1">
                 Hero Tagline
@@ -536,10 +237,8 @@ const SettingsPage = () => {
                 value={settings.hero_tagline}
                 onChange={handleInputChange}
                 className="w-full px-3 py-2 border border-gray-600 rounded-md bg-gray-700 contrast-text-light"
-                placeholder="Enter hero tagline"
               />
             </div>
-            
             <div>
               <label className="block text-sm font-medium contrast-text-gray mb-1">
                 Hero Headline
@@ -550,10 +249,8 @@ const SettingsPage = () => {
                 value={settings.hero_headline}
                 onChange={handleInputChange}
                 className="w-full px-3 py-2 border border-gray-600 rounded-md bg-gray-700 contrast-text-light"
-                placeholder="Enter hero headline"
               />
             </div>
-            
             <div>
               <label className="block text-sm font-medium contrast-text-gray mb-1">
                 Hero Description
@@ -562,146 +259,197 @@ const SettingsPage = () => {
                 name="hero_description"
                 value={settings.hero_description}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-600 rounded-md bg-gray-700 contrast-text-light"
-                placeholder="Enter hero description"
                 rows="3"
+                className="w-full px-3 py-2 border border-gray-600 rounded-md bg-gray-700 contrast-text-light"
               />
             </div>
-            
             <div>
               <label className="block text-sm font-medium contrast-text-gray mb-1">
                 Hero Image
               </label>
-              <div className="flex items-center space-x-4">
-                <div className="flex-1">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                    className="w-full px-3 py-2 border border-gray-600 rounded-md bg-gray-700 contrast-text-light"
-                  />
-                  <p className="text-xs contrast-text-gray mt-1">Upload a hero image</p>
-                </div>
-                {(imagePreview || settings.hero_image_url) && (
-                  <div className="w-24 h-24 border rounded-md overflow-hidden">
-                    <img 
-                      src={imagePreview || settings.hero_image_url} 
-                      alt="Preview" 
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        // Handle image load errors
-                        console.error('Preview image failed to load:', e);
-                        e.target.src = 'https://via.placeholder.com/80x80?text=Error';
-                      }}
-                    />
-                  </div>
-                )}
-              </div>
-              <div className="mt-2">
-                <input
-                  type="text"
-                  name="hero_image_url"
-                  value={settings.hero_image_url}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-600 rounded-md bg-gray-700 contrast-text-light"
-                  placeholder="Or enter image URL"
+              <input
+                type="file"
+                accept="image/*"
+                onChange={e =>
+                  handleFileChange(e, 'hero_image_url', setImagePreview)
+                }
+                className="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-600 file:text-white hover:file:bg-red-700 mb-2"
+              />
+              {imagePreview && (
+                <img
+                  src={imagePreview}
+                  alt="Hero Preview"
+                  className="w-full h-32 object-cover rounded"
                 />
-              </div>
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium contrast-text-gray mb-1">
-                Primary Color
-              </label>
-              <div className="flex items-center space-x-4">
-                <input
-                  type="color"
-                  name="primary_color"
-                  value={settings.primary_color}
-                  onChange={handleInputChange}
-                  className="w-12 h-12 border border-gray-600 rounded-md cursor-pointer bg-gray-700"
-                />
-                <input
-                  type="text"
-                  value={settings.primary_color}
-                  onChange={handleInputChange}
-                  name="primary_color"
-                  className="w-32 px-3 py-2 border border-gray-600 rounded-md bg-gray-700 contrast-text-light"
-                />
-              </div>
+              )}
             </div>
           </div>
         </div>
 
+        {/* Instructor Section */}
         <div className="bg-gray-800 p-6 rounded-lg shadow">
-          <h2 className="text-lg font-semibold mb-4 contrast-text-light">Preview</h2>
-          <div className="border border-gray-700 rounded-lg overflow-hidden">
-            <div 
-              className="h-48 bg-cover bg-center relative"
-              style={{ 
-                backgroundImage: settings.hero_image_url ? `url("${settings.hero_image_url}")` : 'none',
-                backgroundColor: settings.primary_color || '#e53935'
-              }}
-            >
-              <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-                <div className="text-center px-4">
-                  <h2 className="text-3xl font-bold contrast-text-light mb-2">
-                    {settings.hero_headline || settings.hero_tagline || 'Your Hero Headline Here'}
-                  </h2>
-                  <p className="text-xl contrast-text-light">
-                    {settings.hero_description || 'Your hero description here'}
-                  </p>
-                </div>
-              </div>
+          <h2 className="text-lg font-semibold mb-4 contrast-text-light">
+            Instructor Section
+          </h2>
+          <div className="space-y-6">
+            <div>
+              <label className="block text-sm font-medium contrast-text-gray mb-1">
+                Instructor Name
+              </label>
+              <input
+                type="text"
+                name="instructor_name"
+                value={settings.instructor_name}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-600 rounded-md bg-gray-700 contrast-text-light"
+              />
             </div>
-            <div className="p-4 bg-gray-800">
-              <h3 className="font-semibold text-lg mb-2 contrast-text-light">Social Links</h3>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm contrast-text-gray mb-1">YouTube</label>
-                  <input
-                    type="text"
-                    name="social_youtube"
-                    value={settings.social_youtube}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-600 rounded-md bg-gray-700 contrast-text-light"
-                    placeholder="https://youtube.com/"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm contrast-text-gray mb-1">Instagram</label>
-                  <input
-                    type="text"
-                    name="social_instagram"
-                    value={settings.social_instagram}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-600 rounded-md bg-gray-700 contrast-text-light"
-                    placeholder="https://instagram.com/"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm contrast-text-gray mb-1">Twitter</label>
-                  <input
-                    type="text"
-                    name="social_twitter"
-                    value={settings.social_twitter}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-600 rounded-md bg-gray-700 contrast-text-light"
-                    placeholder="https://twitter.com/"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm contrast-text-gray mb-1">LinkedIn</label>
-                  <input
-                    type="text"
-                    name="social_linkedin"
-                    value={settings.social_linkedin}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-600 rounded-md bg-gray-700 contrast-text-light"
-                    placeholder="https://linkedin.com/"
-                  />
-                </div>
-              </div>
+            <div>
+              <label className="block text-sm font-medium contrast-text-gray mb-1">
+                Instructor Title
+              </label>
+              <input
+                type="text"
+                name="instructor_title"
+                value={settings.instructor_title}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-600 rounded-md bg-gray-700 contrast-text-light"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium contrast-text-gray mb-1">
+                Instructor Bio
+              </label>
+              <textarea
+                name="instructor_bio"
+                value={settings.instructor_bio}
+                onChange={handleInputChange}
+                rows="4"
+                className="w-full px-3 py-2 border border-gray-600 rounded-md bg-gray-700 contrast-text-light"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium contrast-text-gray mb-1">
+                Instructor Image
+              </label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={e =>
+                  handleFileChange(
+                    e,
+                    'instructor_image_url',
+                    setInstructorImagePreview
+                  )
+                }
+                className="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-600 file:text-white hover:file:bg-red-700 mb-2"
+              />
+              {instructorImagePreview && (
+                <img
+                  src={instructorImagePreview}
+                  alt="Instructor Preview"
+                  className="w-32 h-32 object-cover rounded-full border-2 border-red-500"
+                />
+              )}
+            </div>
+
+            <h3 className="text-md font-medium contrast-text-light mt-4">
+              Instructor Social Links
+            </h3>
+            <div className="grid grid-cols-1 gap-4">
+              <input
+                type="text"
+                name="instructor_social_linkedin"
+                value={settings.instructor_social_linkedin}
+                onChange={handleInputChange}
+                placeholder="LinkedIn URL"
+                className="w-full px-3 py-2 border border-gray-600 rounded-md bg-gray-700 contrast-text-light"
+              />
+              <input
+                type="text"
+                name="instructor_social_twitter"
+                value={settings.instructor_social_twitter}
+                onChange={handleInputChange}
+                placeholder="Twitter URL"
+                className="w-full px-3 py-2 border border-gray-600 rounded-md bg-gray-700 contrast-text-light"
+              />
+              <input
+                type="text"
+                name="instructor_social_instagram"
+                value={settings.instructor_social_instagram}
+                onChange={handleInputChange}
+                placeholder="Instagram URL"
+                className="w-full px-3 py-2 border border-gray-600 rounded-md bg-gray-700 contrast-text-light"
+              />
+            </div>
+
+            <h3 className="text-md font-medium contrast-text-light mt-4">
+              Company Logos (JSON Array)
+            </h3>
+            <textarea
+              name="instructor_company_logos"
+              value={settings.instructor_company_logos}
+              onChange={handleInputChange}
+              rows="3"
+              placeholder='["url1", "url2"]'
+              className="w-full px-3 py-2 border border-gray-600 rounded-md bg-gray-700 contrast-text-light font-mono text-xs"
+            />
+          </div>
+        </div>
+
+        {/* Social Media Section */}
+        <div className="bg-gray-800 p-6 rounded-lg shadow lg:col-span-2">
+          <h2 className="text-lg font-semibold mb-4 contrast-text-light">
+            Platform Social Media
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium contrast-text-gray mb-1">
+                YouTube
+              </label>
+              <input
+                type="text"
+                name="social_youtube"
+                value={settings.social_youtube}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-600 rounded-md bg-gray-700 contrast-text-light"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium contrast-text-gray mb-1">
+                Instagram
+              </label>
+              <input
+                type="text"
+                name="social_instagram"
+                value={settings.social_instagram}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-600 rounded-md bg-gray-700 contrast-text-light"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium contrast-text-gray mb-1">
+                Twitter
+              </label>
+              <input
+                type="text"
+                name="social_twitter"
+                value={settings.social_twitter}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-600 rounded-md bg-gray-700 contrast-text-light"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium contrast-text-gray mb-1">
+                LinkedIn
+              </label>
+              <input
+                type="text"
+                name="social_linkedin"
+                value={settings.social_linkedin}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-600 rounded-md bg-gray-700 contrast-text-light"
+              />
             </div>
           </div>
         </div>

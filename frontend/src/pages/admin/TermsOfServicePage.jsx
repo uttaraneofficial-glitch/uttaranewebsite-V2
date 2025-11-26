@@ -15,14 +15,14 @@ const TermsOfServiceAdminPage = () => {
     try {
       const response = await fetch('/api/admin/site-content/terms_of_service', {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-        }
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
       });
-      
+
       if (!response.ok) {
         throw new Error(`Failed to fetch terms of service`);
       }
-      
+
       const data = await response.json();
       setContent(data.data?.value || '');
     } catch (err) {
@@ -36,21 +36,21 @@ const TermsOfServiceAdminPage = () => {
     setSaving(true);
     setSuccess(false);
     setError(null);
-    
+
     try {
       const response = await fetch('/api/admin/site-content/terms_of_service', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
         },
-        body: JSON.stringify({ value: content })
+        body: JSON.stringify({ value: content }),
       });
-      
+
       if (!response.ok) {
         throw new Error(`Failed to save terms of service`);
       }
-      
+
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
     } catch (err) {
@@ -65,8 +65,10 @@ const TermsOfServiceAdminPage = () => {
   return (
     <div className="terms-of-service-admin">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold contrast-text-light">Terms of Service</h1>
-        <button 
+        <h1 className="text-2xl font-bold contrast-text-light">
+          Terms of Service
+        </h1>
+        <button
           onClick={handleSave}
           disabled={saving}
           className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded disabled:opacity-50"
@@ -94,7 +96,7 @@ const TermsOfServiceAdminPage = () => {
           </label>
           <textarea
             value={content}
-            onChange={(e) => setContent(e.target.value)}
+            onChange={e => setContent(e.target.value)}
             rows={20}
             className="w-full px-3 py-2 border border-gray-600 rounded-md bg-gray-700 contrast-text-light"
             placeholder="Enter terms of service content (HTML allowed)"

@@ -91,7 +91,9 @@ export const createVideo = async (req: Request, res: Response) => {
         title: videoData.title,
         youtubeId: videoData.youtubeId,
         roundType: videoData.roundType,
-        publishedAt: videoData.publishedAt ? new Date(videoData.publishedAt) : null,
+        publishedAt: videoData.publishedAt
+          ? new Date(videoData.publishedAt)
+          : null,
         thumbnail: videoData.thumbnail,
         candidateId: videoData.candidateId, // Add candidateId to video creation
       },
@@ -107,9 +109,9 @@ export const createVideo = async (req: Request, res: Response) => {
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return res.status(400).json({ 
-        message: 'Invalid input', 
-        errors: error.errors 
+      return res.status(400).json({
+        message: 'Invalid input',
+        errors: error.errors,
       });
     }
     console.error('Create video error:', error);
@@ -163,7 +165,9 @@ export const updateVideo = async (req: Request, res: Response) => {
         title: videoData.title,
         youtubeId: videoData.youtubeId,
         roundType: videoData.roundType,
-        publishedAt: videoData.publishedAt ? new Date(videoData.publishedAt) : existingVideo.publishedAt,
+        publishedAt: videoData.publishedAt
+          ? new Date(videoData.publishedAt)
+          : existingVideo.publishedAt,
         thumbnail: videoData.thumbnail,
         candidateId: videoData.candidateId, // Add candidateId to video update
       },
@@ -179,9 +183,9 @@ export const updateVideo = async (req: Request, res: Response) => {
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return res.status(400).json({ 
-        message: 'Invalid input', 
-        errors: error.errors 
+      return res.status(400).json({
+        message: 'Invalid input',
+        errors: error.errors,
       });
     }
     console.error('Update video error:', error);

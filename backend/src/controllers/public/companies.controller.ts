@@ -32,8 +32,8 @@ export const getPublicCompanyBySlug = async (req: Request, res: Response) => {
       where: {
         slug: {
           mode: 'insensitive',
-          equals: slug
-        }
+          equals: slug,
+        },
       },
       include: {
         candidates: true, // Include candidates in response
@@ -62,8 +62,8 @@ export const getCompanyVideosBySlug = async (req: Request, res: Response) => {
       where: {
         slug: {
           mode: 'insensitive',
-          equals: slug
-        }
+          equals: slug,
+        },
       },
     });
 

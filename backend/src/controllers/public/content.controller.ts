@@ -6,7 +6,17 @@ const prisma = new PrismaClient();
 // Get hero content
 export const getHeroContent = async (req: Request, res: Response) => {
   try {
-    const [tagline, imageUrl, headline, description, youtube, instagram, twitter, linkedin, logoUrl] = await Promise.all([
+    const [
+      tagline,
+      imageUrl,
+      headline,
+      description,
+      youtube,
+      instagram,
+      twitter,
+      linkedin,
+      logoUrl,
+    ] = await Promise.all([
       prisma.siteContent.findUnique({ where: { key: 'hero_tagline' } }),
       prisma.siteContent.findUnique({ where: { key: 'hero_image_url' } }),
       prisma.siteContent.findUnique({ where: { key: 'hero_headline' } }),
@@ -17,14 +27,14 @@ export const getHeroContent = async (req: Request, res: Response) => {
       prisma.siteContent.findUnique({ where: { key: 'social_linkedin' } }),
       prisma.siteContent.findUnique({ where: { key: 'navbar_logo_url' } }),
     ]);
-    
+
     console.log('Retrieved hero content from DB:', {
       tagline: tagline?.value,
       imageUrl: imageUrl?.value,
       headline: headline?.value,
-      description: description?.value
+      description: description?.value,
     });
-    
+
     // Log the full imageUrl object for debugging
     console.log('Full imageUrl object:', imageUrl);
 
@@ -38,8 +48,8 @@ export const getHeroContent = async (req: Request, res: Response) => {
         youtube: youtube?.value || '',
         instagram: instagram?.value || '',
         twitter: twitter?.value || '',
-        linkedin: linkedin?.value || ''
-      }
+        linkedin: linkedin?.value || '',
+      },
     });
   } catch (error) {
     console.error('Get hero content error:', error);
@@ -51,41 +61,43 @@ export const getHeroContent = async (req: Request, res: Response) => {
 export const getAboutContent = async (req: Request, res: Response) => {
   try {
     // Get about HTML content
-    const aboutHtml = await prisma.siteContent.findUnique({ 
-      where: { key: 'about_html' } 
+    const aboutHtml = await prisma.siteContent.findUnique({
+      where: { key: 'about_html' },
     });
 
     // Get team members data
-    const teamMembersData = await prisma.siteContent.findUnique({ 
-      where: { key: 'team_members' } 
+    const teamMembersData = await prisma.siteContent.findUnique({
+      where: { key: 'team_members' },
     });
 
     // Parse team members JSON or use default
     let teamMembers = [];
     try {
-      teamMembers = teamMembersData?.value ? JSON.parse(teamMembersData.value) : [
-        {
-          id: '1',
-          name: 'John Doe',
-          role: 'CEO & Founder',
-          imageUrl: '',
-          linkedinUrl: ''
-        },
-        {
-          id: '2',
-          name: 'Jane Smith',
-          role: 'CTO',
-          imageUrl: '',
-          linkedinUrl: ''
-        },
-        {
-          id: '3',
-          name: 'Mike Johnson',
-          role: 'Head of Operations',
-          imageUrl: '',
-          linkedinUrl: ''
-        }
-      ];
+      teamMembers = teamMembersData?.value
+        ? JSON.parse(teamMembersData.value)
+        : [
+            {
+              id: '1',
+              name: 'John Doe',
+              role: 'CEO & Founder',
+              imageUrl: '',
+              linkedinUrl: '',
+            },
+            {
+              id: '2',
+              name: 'Jane Smith',
+              role: 'CTO',
+              imageUrl: '',
+              linkedinUrl: '',
+            },
+            {
+              id: '3',
+              name: 'Mike Johnson',
+              role: 'Head of Operations',
+              imageUrl: '',
+              linkedinUrl: '',
+            },
+          ];
     } catch (e) {
       teamMembers = [];
     }
@@ -93,8 +105,8 @@ export const getAboutContent = async (req: Request, res: Response) => {
     res.json({
       data: {
         html: aboutHtml?.value || '<p>Welcome to our platform</p>',
-        teamMembers: teamMembers
-      }
+        teamMembers: teamMembers,
+      },
     });
   } catch (error) {
     console.error('Get about content error:', error);
@@ -106,16 +118,20 @@ export const getAboutContent = async (req: Request, res: Response) => {
 export const getPrivacyPolicyContent = async (req: Request, res: Response) => {
   try {
     // Get privacy policy HTML content
-    const privacyPolicyHtml = await prisma.siteContent.findUnique({ 
-      where: { key: 'privacy_policy' } 
+    const privacyPolicyHtml = await prisma.siteContent.findUnique({
+      where: { key: 'privacy_policy' },
     });
 
     res.json({
-      content: privacyPolicyHtml?.value || '<p>No privacy policy content available.</p>'
+      content:
+        privacyPolicyHtml?.value ||
+        '<p>No privacy policy content available.</p>',
     });
   } catch (error) {
     console.error('Get privacy policy content error:', error);
-    res.status(500).json({ message: 'Error retrieving privacy policy content' });
+    res
+      .status(500)
+      .json({ message: 'Error retrieving privacy policy content' });
   }
 };
 
@@ -123,16 +139,20 @@ export const getPrivacyPolicyContent = async (req: Request, res: Response) => {
 export const getTermsOfServiceContent = async (req: Request, res: Response) => {
   try {
     // Get terms of service HTML content
-    const termsOfServiceHtml = await prisma.siteContent.findUnique({ 
-      where: { key: 'terms_of_service' } 
+    const termsOfServiceHtml = await prisma.siteContent.findUnique({
+      where: { key: 'terms_of_service' },
     });
 
     res.json({
-      content: termsOfServiceHtml?.value || '<p>No terms of service content available.</p>'
+      content:
+        termsOfServiceHtml?.value ||
+        '<p>No terms of service content available.</p>',
     });
   } catch (error) {
     console.error('Get terms of service content error:', error);
-    res.status(500).json({ message: 'Error retrieving terms of service content' });
+    res
+      .status(500)
+      .json({ message: 'Error retrieving terms of service content' });
   }
 };
 
@@ -181,11 +201,87 @@ export const getLatestMkStudioVideo = async (req: Request, res: Response) => {
       return res.status(404).json({ message: 'No MK Studio videos found' });
     }
 
+    const [channelName, channelTagline, subscribeUrl, channelImage] =
+      await Promise.all([
+        prisma.siteContent.findUnique({
+          where: { key: 'mkstudio_channel_name' },
+        }),
+        prisma.siteContent.findUnique({
+          where: { key: 'mkstudio_channel_tagline' },
+        }),
+        prisma.siteContent.findUnique({
+          where: { key: 'mkstudio_subscribe_url' },
+        }),
+        prisma.siteContent.findUnique({
+          where: { key: 'mkstudio_channel_image' },
+        }),
+      ]);
+
     res.json({
       data: video,
+      channel: {
+        name: channelName?.value || 'MK Studio',
+        tagline: channelTagline?.value || 'Official Channel',
+        subscribeUrl:
+          subscribeUrl?.value || 'https://www.youtube.com/@MKStudio',
+        imageUrl: channelImage?.value || '',
+      },
     });
   } catch (error) {
     console.error('Get latest MK Studio video error:', error);
-    res.status(500).json({ message: 'Error retrieving latest MK Studio video' });
+    res
+      .status(500)
+      .json({ message: 'Error retrieving latest MK Studio video' });
+  }
+};
+
+// Get instructor content
+export const getInstructorContent = async (req: Request, res: Response) => {
+  try {
+    const [
+      name,
+      title,
+      bio,
+      imageUrl,
+      linkedin,
+      twitter,
+      instagram,
+      companyLogos,
+    ] = await Promise.all([
+      prisma.siteContent.findUnique({ where: { key: 'instructor_name' } }),
+      prisma.siteContent.findUnique({ where: { key: 'instructor_title' } }),
+      prisma.siteContent.findUnique({ where: { key: 'instructor_bio' } }),
+      prisma.siteContent.findUnique({ where: { key: 'instructor_image_url' } }),
+      prisma.siteContent.findUnique({
+        where: { key: 'instructor_social_linkedin' },
+      }),
+      prisma.siteContent.findUnique({
+        where: { key: 'instructor_social_twitter' },
+      }),
+      prisma.siteContent.findUnique({
+        where: { key: 'instructor_social_instagram' },
+      }),
+      prisma.siteContent.findUnique({
+        where: { key: 'instructor_company_logos' },
+      }),
+    ]);
+
+    res.json({
+      name: name?.value || 'Akshay Hangaragi',
+      title: title?.value || 'Founder & Instructor',
+      bio:
+        bio?.value ||
+        'Passionate about teaching and helping students crack their dream interviews.',
+      imageUrl: imageUrl?.value || '',
+      socialLinks: {
+        linkedin: linkedin?.value || '',
+        twitter: twitter?.value || '',
+        instagram: instagram?.value || '',
+      },
+      companyLogos: companyLogos?.value ? JSON.parse(companyLogos.value) : [],
+    });
+  } catch (error) {
+    console.error('Get instructor content error:', error);
+    res.status(500).json({ message: 'Error retrieving instructor content' });
   }
 };

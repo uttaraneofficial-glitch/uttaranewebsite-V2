@@ -17,16 +17,16 @@ export const getSiteContent = async (req: Request, res: Response) => {
     const content = await prisma.siteContent.findUnique({
       where: { key },
     });
-    
+
     console.log(`Retrieved site content for key: ${key}`, content);
 
     if (!content) {
       // Return default empty content if not found
-      return res.json({ 
-        data: { 
-          key, 
-          value: '' 
-        } 
+      return res.json({
+        data: {
+          key,
+          value: '',
+        },
       });
     }
 
@@ -42,7 +42,7 @@ export const updateSiteContent = async (req: Request, res: Response) => {
   try {
     const { key } = req.params;
     const contentData = siteContentSchema.parse(req.body);
-    
+
     console.log(`Updating site content for key: ${key}`, contentData);
 
     // Check if content exists
@@ -56,7 +56,7 @@ export const updateSiteContent = async (req: Request, res: Response) => {
       content = await prisma.siteContent.update({
         where: { key },
         data: {
-          value: contentData.value ? contentData.value.trim() : undefined,  // ✅ REAL FIX
+          value: contentData.value ? contentData.value.trim() : undefined, // ✅ REAL FIX
         },
       });
     } else {
@@ -64,11 +64,11 @@ export const updateSiteContent = async (req: Request, res: Response) => {
       content = await prisma.siteContent.create({
         data: {
           key,
-          value: contentData.value ? contentData.value.trim() : undefined,  // ✅ REAL FIX
+          value: contentData.value ? contentData.value.trim() : undefined, // ✅ REAL FIX
         },
       });
     }
-    
+
     console.log(`Updated site content for key: ${key}`, content);
 
     res.json({
@@ -77,9 +77,9 @@ export const updateSiteContent = async (req: Request, res: Response) => {
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return res.status(400).json({ 
-        message: 'Invalid input', 
-        errors: error.errors 
+      return res.status(400).json({
+        message: 'Invalid input',
+        errors: error.errors,
       });
     }
     console.error('Update site content error:', error);

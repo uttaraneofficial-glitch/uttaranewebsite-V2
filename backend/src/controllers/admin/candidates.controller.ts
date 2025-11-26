@@ -1,7 +1,10 @@
 import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { z } from 'zod';
-import { candidateSchema, candidateUpdateSchema } from '../../schemas/candidates.schema';
+import {
+  candidateSchema,
+  candidateUpdateSchema,
+} from '../../schemas/candidates.schema';
 
 const prisma = new PrismaClient();
 
@@ -85,9 +88,9 @@ export const createCandidate = async (req: Request, res: Response) => {
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return res.status(400).json({ 
-        message: 'Invalid input', 
-        errors: error.errors 
+      return res.status(400).json({
+        message: 'Invalid input',
+        errors: error.errors,
       });
     }
     console.error('Create candidate error:', error);
@@ -146,9 +149,9 @@ export const updateCandidate = async (req: Request, res: Response) => {
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return res.status(400).json({ 
-        message: 'Invalid input', 
-        errors: error.errors 
+      return res.status(400).json({
+        message: 'Invalid input',
+        errors: error.errors,
       });
     }
     console.error('Update candidate error:', error);

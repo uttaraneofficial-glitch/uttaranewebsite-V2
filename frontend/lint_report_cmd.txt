@@ -1,0 +1,36 @@
+
+> ah-interviews-frontend@0.0.0 lint
+> eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0
+
+
+D:\ah-interviews\frontend\src\components\Sidebar.jsx
+   7:3   error  'VideoCameraIcon' is defined but never used       no-unused-vars
+  18:22  error  'VideoCameraIconSolid' is defined but never used  no-unused-vars
+
+D:\ah-interviews\frontend\src\components\SkeletonLoader.jsx
+  20:43  error  'width' is assigned a value but never used  no-unused-vars
+
+D:\ah-interviews\frontend\src\components\admin\DataTable.jsx
+  22:24  error  'setItemsPerPage' is assigned a value but never used  no-unused-vars
+
+D:\ah-interviews\frontend\src\components\admin\charts\RevenueChart.jsx
+  3:3  error  'BarChart' is defined but never used  no-unused-vars
+  4:3  error  'Bar' is defined but never used       no-unused-vars
+
+D:\ah-interviews\frontend\src\pages\ContactPage.jsx
+   80:61  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+   81:46  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  228:53  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+D:\ah-interviews\frontend\src\pages\admin\NgoPostsPage.jsx
+  14:21  error  'setUploading' is assigned a value but never used  no-unused-vars
+
+D:\ah-interviews\frontend\src\pages\admin\SearchResultsPage.jsx
+  54:28  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  54:36  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+
+D:\ah-interviews\frontend\src\pages\admin\SettingsPage.jsx
+  43:6  warning  React Hook useEffect has a missing dependency: 'fetchSettings'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+✖ 13 problems (12 errors, 1 warning)
+

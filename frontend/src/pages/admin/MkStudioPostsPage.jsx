@@ -11,7 +11,7 @@ const MkStudioPostsPage = () => {
     title: '',
     description: '',
     publishedAt: new Date().toISOString().split('T')[0], // Keep consistent format
-    thumbnail: '' // Add thumbnail field
+    thumbnail: '', // Add thumbnail field
   });
   const [thumbnailPreview, setThumbnailPreview] = useState(null); // Add thumbnail preview state
 
@@ -35,91 +35,93 @@ const MkStudioPostsPage = () => {
   };
 
   // Function to extract YouTube ID from various URL formats
-  const extractYouTubeId = (url) => {
+  const extractYouTubeId = url => {
     if (!url) return '';
-    
+
     // If it's already a simple ID (no slashes), return as is
     if (!url.includes('/') && !url.includes('\\')) {
       return url;
     }
-    
+
     // Handle various YouTube URL formats
-    const regExp = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|v\/)|youtu\.be\/)([^#&?]{11})/;
+    const regExp =
+      /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|v\/)|youtu\.be\/)([^#&?]{11})/;
     const match = url.match(regExp);
-    
+
     if (match && match[1]) {
       return match[1];
     }
-    
+
     // Handle YouTube channel URLs (like the one mentioned in the issue)
-    const channelRegExp = /^(?:https?:\/\/)?(?:www\.)?youtube\.com\/@([a-zA-Z0-9_]+)/;
+    const channelRegExp =
+      /^(?:https?:\/\/)?(?:www\.)?youtube\.com\/@([a-zA-Z0-9_]+)/;
     const channelMatch = url.match(channelRegExp);
-    
+
     if (channelMatch) {
       // For channel URLs, we can't extract a video ID, so we should show an error
       // But for now, let's just return the original URL to avoid breaking things
       return url;
     }
-    
+
     // If we can't parse it, return the original
     return url;
   };
 
-  const handleInputChange = (e) => {
+  const handleInputChange = e => {
     const { name, value } = e.target;
     let finalValue = value;
-    
+
     // Special handling for YouTube ID field
     if (name === 'youtubeId') {
       finalValue = extractYouTubeId(value);
     }
-    
+
     setFormData(prev => ({
       ...prev,
-      [name]: finalValue
+      [name]: finalValue,
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    
+
     // Validate YouTube ID
     if (!formData.youtubeId) {
       setError('YouTube ID is required');
       return;
     }
-    
+
     try {
-      const url = editingPost 
-        ? `/api/admin/mkstudio-posts/${editingPost.id}` 
+      const url = editingPost
+        ? `/api/admin/mkstudio-posts/${editingPost.id}`
         : '/api/admin/mkstudio-posts';
-      
+
       const method = editingPost ? 'PUT' : 'POST';
-      
+
       const response = await fetch(url, {
         method,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
         },
         body: JSON.stringify({
           ...formData,
           // Keep the date format consistent - send as is since it's already in YYYY-MM-DD format
-          publishedAt: formData.publishedAt // Don't convert to ISO string here
-        })
+          publishedAt: formData.publishedAt, // Don't convert to ISO string here
+        }),
       });
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       // Reset form and refresh data
       setFormData({
         youtubeId: '',
         title: '',
         description: '',
         publishedAt: new Date().toISOString().split('T')[0],
-        thumbnail: '' // Reset thumbnail
+        thumbnail: '', // Reset thumbnail
       });
       setThumbnailPreview(null); // Reset thumbnail preview
       setEditingPost(null);
@@ -131,35 +133,39 @@ const MkStudioPostsPage = () => {
     }
   };
 
-  const handleEdit = (post) => {
+  const handleEdit = post => {
     setFormData({
       youtubeId: post.youtubeId,
       title: post.title,
       description: post.description || '',
-      publishedAt: post.publishedAt ? new Date(post.publishedAt).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
-      thumbnail: post.thumbnail || '' // Add thumbnail
+      publishedAt: post.publishedAt
+        ? new Date(post.publishedAt).toISOString().split('T')[0]
+        : new Date().toISOString().split('T')[0],
+      thumbnail: post.thumbnail || '', // Add thumbnail
     });
     setEditingPost(post);
     setShowForm(true);
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this MK Studio post?')) {
+  const handleDelete = async id => {
+    if (
+      !window.confirm('Are you sure you want to delete this MK Studio post?')
+    ) {
       return;
     }
-    
+
     try {
       const response = await fetch(`/api/admin/mkstudio-posts/${id}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-        }
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
       });
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       fetchPosts();
     } catch (err) {
       setError('Failed to delete MK Studio post: ' + err.message);
@@ -172,7 +178,7 @@ const MkStudioPostsPage = () => {
       title: '',
       description: '',
       publishedAt: new Date().toISOString().split('T')[0],
-      thumbnail: '' // Reset thumbnail
+      thumbnail: '', // Reset thumbnail
     });
     setThumbnailPreview(null); // Reset thumbnail preview
     setEditingPost(null);
@@ -180,7 +186,7 @@ const MkStudioPostsPage = () => {
     setError(null);
   };
 
-  const handleImageUpload = async (file) => {
+  const handleImageUpload = async file => {
     if (!file) return;
 
     // In a real implementation, we would upload to Cloudinary here
@@ -190,20 +196,20 @@ const MkStudioPostsPage = () => {
       setThumbnailPreview(reader.result);
       setFormData(prev => ({
         ...prev,
-        thumbnail: reader.result // In real implementation, this would be the Cloudinary URL
+        thumbnail: reader.result, // In real implementation, this would be the Cloudinary URL
       }));
     };
     reader.readAsDataURL(file);
   };
 
-  const handleFileChange = (e) => {
+  const handleFileChange = e => {
     const file = e.target.files[0];
     if (file) {
       handleImageUpload(file);
     }
   };
 
-  const getThumbnail = (post) => {
+  const getThumbnail = post => {
     // Use thumbnail if available, otherwise fallback to YouTube thumbnail
     if (post.thumbnail) {
       return post.thumbnail;
@@ -221,7 +227,7 @@ const MkStudioPostsPage = () => {
     <div className="mkstudio-posts-page">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">MK Studio Posts Management</h1>
-        <button 
+        <button
           onClick={() => setShowForm(true)}
           className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
         >
@@ -302,9 +308,9 @@ const MkStudioPostsPage = () => {
                 />
                 {thumbnailPreview && (
                   <div className="mt-2">
-                    <img 
-                      src={thumbnailPreview} 
-                      alt="Thumbnail preview" 
+                    <img
+                      src={thumbnailPreview}
+                      alt="Thumbnail preview"
                       className="w-32 h-32 object-cover rounded"
                     />
                   </div>
@@ -350,25 +356,31 @@ const MkStudioPostsPage = () => {
               </tr>
             </thead>
             <tbody className="bg-gray-800 divide-y divide-gray-700">
-              {posts.map((post) => (
+              {posts.map(post => (
                 <tr key={post.id}>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
-                      <img 
-                        src={getThumbnail(post)} 
-                        alt={post.title} 
+                      <img
+                        src={getThumbnail(post)}
+                        alt={post.title}
                         className="w-16 h-16 object-cover rounded"
                       />
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium contrast-text-light">{post.title}</div>
+                    <div className="text-sm font-medium contrast-text-light">
+                      {post.title}
+                    </div>
                     {post.description && (
-                      <div className="text-sm contrast-text-gray">{post.description.substring(0, 50)}...</div>
+                      <div className="text-sm contrast-text-gray">
+                        {post.description.substring(0, 50)}...
+                      </div>
                     )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm contrast-text-light">
-                    {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString() : 'N/A'}
+                    {post.publishedAt
+                      ? new Date(post.publishedAt).toLocaleDateString()
+                      : 'N/A'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <button

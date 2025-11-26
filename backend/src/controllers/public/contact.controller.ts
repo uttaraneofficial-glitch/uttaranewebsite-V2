@@ -18,14 +18,14 @@ export const submitContactForm = async (req: Request, res: Response) => {
   try {
     // Validate input
     const formData = contactFormSchema.parse(req.body);
-    
+
     // Get contact email from site settings (default to akshaytech01@gmail.com)
     const contactEmailSetting = await prisma.siteContent.findUnique({
       where: { key: 'contact_email' },
     });
-    
+
     const contactEmail = contactEmailSetting?.value || 'akshaytech01@gmail.com';
-    
+
     // For now, we'll skip saving to database due to Prisma generation issues
     // In a production environment, you would want to save the message to the database
     // await prisma.contactMessage.create({
@@ -36,11 +36,11 @@ export const submitContactForm = async (req: Request, res: Response) => {
     //     message: formData.message,
     //   },
     // });
-    
+
     // Only send email if we have the required credentials
     const emailUser = process.env.CONTACT_EMAIL_USER;
     const emailPass = process.env.CONTACT_EMAIL_PASS;
-    
+
     if (emailUser && emailPass) {
       // Create nodemailer transporter (using Gmail SMTP)
       const transporter = nodemailer.createTransport({
@@ -50,7 +50,7 @@ export const submitContactForm = async (req: Request, res: Response) => {
           pass: emailPass,
         },
       });
-      
+
       // Prepare email content
       const mailOptions = {
         from: emailUser,
@@ -73,7 +73,7 @@ export const submitContactForm = async (req: Request, res: Response) => {
           <p>${formData.message.replace(/\n/g, '<br>')}</p>
         `,
       };
-      
+
       // Send email
       await transporter.sendMail(mailOptions);
     } else {
@@ -81,17 +81,19 @@ export const submitContactForm = async (req: Request, res: Response) => {
       // In a production environment, you might want to queue the email to be sent later
       // or use a different email service
     }
-    
+
     res.status(200).json({ message: 'Message sent successfully' });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return res.status(400).json({ 
-        message: 'Invalid input', 
-        errors: error.errors 
+      return res.status(400).json({
+        message: 'Invalid input',
+        errors: error.errors,
       });
     }
-    
+
     console.error('Contact form submission error:', error);
-    res.status(500).json({ message: 'Error sending message. Please try again later.' });
+    res
+      .status(500)
+      .json({ message: 'Error sending message. Please try again later.' });
   }
 };

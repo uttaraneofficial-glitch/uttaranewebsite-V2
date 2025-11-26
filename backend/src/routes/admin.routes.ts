@@ -6,32 +6,32 @@ import {
   getAdminCompanyById,
   createCompany,
   updateCompany,
-  deleteCompany
+  deleteCompany,
 } from '../controllers/admin/companies.controller';
 import {
   getAdminVideos,
   getAdminVideoById,
   createVideo,
   updateVideo,
-  deleteVideo
+  deleteVideo,
 } from '../controllers/admin/videos.controller';
 import {
   getAdminNgoPosts,
   getAdminNgoPostById,
   createNgoPost,
   updateNgoPost,
-  deleteNgoPost
+  deleteNgoPost,
 } from '../controllers/admin/ngo-posts.controller';
 import {
   getAdminMkStudioPosts,
   getAdminMkStudioPostById,
   createMkStudioPost,
   updateMkStudioPost,
-  deleteMkStudioPost
+  deleteMkStudioPost,
 } from '../controllers/admin/mkstudio-posts.controller';
 import {
   getSiteContent,
-  updateSiteContent
+  updateSiteContent,
 } from '../controllers/admin/site-content.controller';
 import {
   getUsers,
@@ -39,20 +39,33 @@ import {
   createUser,
   updateUser,
   deleteUser,
-  changeUserPassword
+  changeUserPassword,
 } from '../controllers/admin/users.controller';
 import {
   getAdminCandidates,
   getAdminCandidateById,
   createCandidate,
   updateCandidate,
-  deleteCandidate
+  deleteCandidate,
 } from '../controllers/admin/candidates.controller';
+
+import {
+  getDashboardStats,
+  getGlobalSearch,
+  getNotifications,
+  getDashboardCharts,
+} from '../controllers/dashboard.controller';
 
 const router = Router();
 
 // Apply authentication middleware to all admin routes
 router.use(authenticate, requireRole([Role.ADMIN]));
+
+// Dashboard routes
+router.get('/dashboard/stats', getDashboardStats);
+router.get('/dashboard/search', getGlobalSearch);
+router.get('/dashboard/charts', getDashboardCharts);
+router.get('/dashboard/notifications', getNotifications);
 
 // Company management routes
 router.get('/companies', getAdminCompanies);

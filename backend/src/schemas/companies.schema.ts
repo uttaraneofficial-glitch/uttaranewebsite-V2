@@ -10,6 +10,7 @@ export const createCompanySchema = z.object({
       .string()
       .max(500, 'Description must be less than 500 characters')
       .optional(),
+    bannerUrl: z.string().optional(),
   }),
 });
 
@@ -24,5 +25,6 @@ export const updateCompanySchema = z.object({
       .string()
       .max(500, 'Description must be less than 500 characters')
       .optional(),
+    bannerUrl: z.string().optional(),
   }),
 });

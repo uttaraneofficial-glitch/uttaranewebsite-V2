@@ -9,7 +9,7 @@ const UserManagementPage = () => {
   const [formData, setFormData] = useState({
     username: '',
     password: '',
-    role: 'USER'
+    role: 'USER',
   });
 
   // Role options
@@ -23,14 +23,14 @@ const UserManagementPage = () => {
     try {
       const response = await fetch('/api/admin/users', {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-        }
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
       });
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       const data = await response.json();
       setUsers(data.data || []);
       setLoading(false);
@@ -40,42 +40,42 @@ const UserManagementPage = () => {
     }
   };
 
-  const handleInputChange = (e) => {
+  const handleInputChange = e => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    
+
     try {
-      const url = editingUser 
-        ? `/api/admin/users/${editingUser.id}` 
+      const url = editingUser
+        ? `/api/admin/users/${editingUser.id}`
         : '/api/admin/users';
-      
+
       const method = editingUser ? 'PUT' : 'POST';
-      
+
       const response = await fetch(url, {
         method,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
       });
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       // Reset form and refresh data
       setFormData({
         username: '',
         password: '',
-        role: 'USER'
+        role: 'USER',
       });
       setEditingUser(null);
       setShowForm(false);
@@ -85,62 +85,62 @@ const UserManagementPage = () => {
     }
   };
 
-  const handleEdit = (user) => {
+  const handleEdit = user => {
     setFormData({
       username: user.username,
       password: '', // Don't prefill password
-      role: user.role
+      role: user.role,
     });
     setEditingUser(user);
     setShowForm(true);
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async id => {
     if (!window.confirm('Are you sure you want to delete this user?')) {
       return;
     }
-    
+
     try {
       const response = await fetch(`/api/admin/users/${id}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-        }
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
       });
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       fetchUsers();
     } catch (err) {
       setError('Failed to delete user: ' + err.message);
     }
   };
 
-  const handleChangePassword = async (userId) => {
+  const handleChangePassword = async userId => {
     const newPassword = prompt('Enter new password:');
     if (!newPassword) return;
-    
+
     if (newPassword.length < 8) {
       alert('Password must be at least 8 characters long');
       return;
     }
-    
+
     try {
       const response = await fetch(`/api/admin/users/${userId}/password`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
         },
-        body: JSON.stringify({ password: newPassword })
+        body: JSON.stringify({ password: newPassword }),
       });
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       alert('Password changed successfully');
     } catch (err) {
       setError('Failed to change password: ' + err.message);
@@ -151,7 +151,7 @@ const UserManagementPage = () => {
     setFormData({
       username: '',
       password: '',
-      role: 'USER'
+      role: 'USER',
     });
     setEditingUser(null);
     setShowForm(false);
@@ -163,8 +163,10 @@ const UserManagementPage = () => {
   return (
     <div className="user-management-page">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold contrast-text-light">User Management</h1>
-        <button 
+        <h1 className="text-2xl font-bold contrast-text-light">
+          User Management
+        </h1>
+        <button
           onClick={() => setShowForm(true)}
           className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
         >
@@ -211,7 +213,9 @@ const UserManagementPage = () => {
               </div>
               <div>
                 <label className="block text-sm font-medium contrast-text-gray mb-1">
-                  {editingUser ? 'New Password (leave blank to keep current)' : 'Password'}
+                  {editingUser
+                    ? 'New Password (leave blank to keep current)'
+                    : 'Password'}
                 </label>
                 <input
                   type="password"
@@ -223,7 +227,9 @@ const UserManagementPage = () => {
                   minLength="8"
                 />
                 <p className="text-xs contrast-text-gray mt-1">
-                  {editingUser ? 'Leave blank to keep current password' : 'Minimum 8 characters'}
+                  {editingUser
+                    ? 'Leave blank to keep current password'
+                    : 'Minimum 8 characters'}
                 </p>
               </div>
             </div>
@@ -265,17 +271,21 @@ const UserManagementPage = () => {
             </tr>
           </thead>
           <tbody className="bg-gray-800 divide-y divide-gray-700">
-            {users.map((user) => (
+            {users.map(user => (
               <tr key={user.id}>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium contrast-text-light">{user.username}</div>
+                  <div className="text-sm font-medium contrast-text-light">
+                    {user.username}
+                  </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                    user.role === 'ADMIN' 
-                      ? 'bg-red-900 text-red-100' 
-                      : 'bg-gray-700 text-gray-300'
-                  }`}>
+                  <span
+                    className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                      user.role === 'ADMIN'
+                        ? 'bg-red-900 text-red-100'
+                        : 'bg-gray-700 text-gray-300'
+                    }`}
+                  >
                     {user.role}
                   </span>
                 </td>

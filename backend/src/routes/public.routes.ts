@@ -12,6 +12,7 @@ import {
   getNgoPosts,
   getMkStudioPosts,
   getLatestMkStudioVideo,
+  getInstructorContent,
 } from '../controllers/public/content.controller';
 import { submitContactForm } from '../controllers/public/contact.controller';
 
@@ -30,6 +31,7 @@ router.get('/terms-of-service', getTermsOfServiceContent);
 router.get('/ngo-posts', getNgoPosts);
 router.get('/mkstudio-posts', getMkStudioPosts);
 router.get('/mkstudio-latest', getLatestMkStudioVideo);
+router.get('/instructor', getInstructorContent);
 
 // Contact form route
 router.post('/contact', submitContactForm);

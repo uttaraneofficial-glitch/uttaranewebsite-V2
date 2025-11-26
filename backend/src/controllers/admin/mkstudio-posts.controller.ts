@@ -59,7 +59,9 @@ export const createMkStudioPost = async (req: Request, res: Response) => {
         youtubeId: postData.youtubeId,
         title: postData.title,
         description: postData.description,
-        publishedAt: postData.publishedAt ? new Date(postData.publishedAt) : new Date(),
+        publishedAt: postData.publishedAt
+          ? new Date(postData.publishedAt)
+          : new Date(),
         thumbnail: postData.thumbnail,
       },
     });
@@ -70,9 +72,9 @@ export const createMkStudioPost = async (req: Request, res: Response) => {
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return res.status(400).json({ 
-        message: 'Invalid input', 
-        errors: error.errors 
+      return res.status(400).json({
+        message: 'Invalid input',
+        errors: error.errors,
       });
     }
     console.error('Create MK Studio post error:', error);
@@ -101,7 +103,9 @@ export const updateMkStudioPost = async (req: Request, res: Response) => {
         youtubeId: postData.youtubeId,
         title: postData.title,
         description: postData.description,
-        publishedAt: postData.publishedAt ? new Date(postData.publishedAt) : existingPost.publishedAt,
+        publishedAt: postData.publishedAt
+          ? new Date(postData.publishedAt)
+          : existingPost.publishedAt,
         thumbnail: postData.thumbnail,
       },
     });
@@ -112,9 +116,9 @@ export const updateMkStudioPost = async (req: Request, res: Response) => {
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return res.status(400).json({ 
-        message: 'Invalid input', 
-        errors: error.errors 
+      return res.status(400).json({
+        message: 'Invalid input',
+        errors: error.errors,
       });
     }
     console.error('Update MK Studio post error:', error);

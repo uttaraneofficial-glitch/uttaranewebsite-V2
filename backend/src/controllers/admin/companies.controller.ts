@@ -12,6 +12,7 @@ const companySchema = z.object({
   shortBio: z.string().optional(),
   orderIndex: z.number().optional(),
   thumbnail: z.string().optional(),
+  bannerUrl: z.string().optional(),
 });
 
 // Get all companies (admin)
@@ -64,16 +65,13 @@ export const createCompany = async (req: Request, res: Response) => {
     // Check if company with same name or slug already exists
     const existingCompany = await prisma.company.findFirst({
       where: {
-        OR: [
-          { name: companyData.name },
-          { slug: companyData.slug },
-        ],
+        OR: [{ name: companyData.name }, { slug: companyData.slug }],
       },
     });
 
     if (existingCompany) {
-      return res.status(400).json({ 
-        message: 'Company with this name or slug already exists' 
+      return res.status(400).json({
+        message: 'Company with this name or slug already exists',
       });
     }
 
@@ -85,6 +83,7 @@ export const createCompany = async (req: Request, res: Response) => {
         shortBio: companyData.shortBio,
         orderIndex: companyData.orderIndex,
         thumbnail: companyData.thumbnail,
+        bannerUrl: companyData.bannerUrl,
       },
     });
 
@@ -94,9 +93,9 @@ export const createCompany = async (req: Request, res: Response) => {
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return res.status(400).json({ 
-        message: 'Invalid input', 
-        errors: error.errors 
+      return res.status(400).json({
+        message: 'Invalid input',
+        errors: error.errors,
       });
     }
     console.error('Create company error:', error);
@@ -123,16 +122,13 @@ export const updateCompany = async (req: Request, res: Response) => {
     const duplicateCompany = await prisma.company.findFirst({
       where: {
         id: { not: id },
-        OR: [
-          { name: companyData.name },
-          { slug: companyData.slug },
-        ],
+        OR: [{ name: companyData.name }, { slug: companyData.slug }],
       },
     });
 
     if (duplicateCompany) {
-      return res.status(400).json({ 
-        message: 'Another company with this name or slug already exists' 
+      return res.status(400).json({
+        message: 'Another company with this name or slug already exists',
       });
     }
 
@@ -145,6 +141,7 @@ export const updateCompany = async (req: Request, res: Response) => {
         shortBio: companyData.shortBio,
         orderIndex: companyData.orderIndex,
         thumbnail: companyData.thumbnail,
+        bannerUrl: companyData.bannerUrl,
       },
     });
 
@@ -154,9 +151,9 @@ export const updateCompany = async (req: Request, res: Response) => {
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return res.status(400).json({ 
-        message: 'Invalid input', 
-        errors: error.errors 
+      return res.status(400).json({
+        message: 'Invalid input',
+        errors: error.errors,
       });
     }
     console.error('Update company error:', error);
