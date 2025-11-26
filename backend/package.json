@@ -1,25 +1,3 @@
-{
-  "name": "ah-interviews-backend",
-  "version": "1.0.0",
-  "description": "Backend for interview scheduling system",
-  "main": "dist/src/index.js",
-  "scripts": {
-    "start": "node dist/src/index.js",
-    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
-    "build": "npx prisma generate && tsc",
-    "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate dev",
-    "prisma:seed": "ts-node prisma/seed.ts",
-    "test": "jest",
-    "lint": "eslint src/**/*.ts",
-    "lint:fix": "eslint src/**/*.ts --fix",
-    "format": "prettier --write src/**/*.ts"
-  },
-  "prisma": {
-    "seed": "ts-node prisma/seed.ts"
-  },
-  "dependencies": {
-    "@prisma/client": "^5.22.0",
     "@types/bcryptjs": "^2.4.6",
     "@types/cookie-parser": "^1.4.10",
     "@types/cors": "^2.8.19",
