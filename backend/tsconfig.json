@@ -1,18 +1,29 @@
 {
   "compilerOptions": {
-    "target": "es2017",
+    "target": "ES2018",
     "module": "commonjs",
-    "lib": ["es6"],
-    "allowJs": true,
-    "outDir": "dist",
-    "rootDir": ".",
-    "strict": true,
-    "noImplicitAny": true,
+    "lib": [
+      "ES2018"
+    ],
+    "moduleResolution": "node",
     "esModuleInterop": true,
-    "resolveJsonModule": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "noEmitOnError": false,
+    "types": [
+      "node"
+    ],
+    "outDir": "dist",
+    "rootDir": "."
   },
-  "include": ["src/**/*", "prisma/**/*"],
-  "exclude": ["node_modules", "**/*.spec.ts"]
+  "include": [
+    "src/**/*.ts",
+    "prisma/seed.ts"
+  ],
+  "exclude": [
+    "src/__tests__",
+    "**/*.test.ts",
+    "node_modules"
+  ]
 }
