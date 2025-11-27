@@ -1,16 +1,18 @@
 {
   "compilerOptions": {
-    "target": "ES2019",
+    "target": "ES2020",
     "module": "CommonJS",
     "rootDir": "src",
     "outDir": "dist",
-    "esModuleInterop": true,
     "strict": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
     "skipLibCheck": true
   },
+  "include": [
+    "src/**/*.ts"
+  ],
   "exclude": [
-    "node_modules",
-    "src/__tests__",
-    "prisma"
+    "src/__tests__"
   ]
 }
