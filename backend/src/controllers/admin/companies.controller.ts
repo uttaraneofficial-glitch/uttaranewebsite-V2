@@ -10,7 +10,7 @@ const companySchema = z.object({
   slug: z.string().min(1),
   logoUrl: z.string().optional(),
   shortBio: z.string().optional(),
-  orderIndex: z.number().optional(),
+  orderIndex: z.coerce.number().optional(),
   thumbnail: z.string().optional(),
   bannerUrl: z.string().optional(),
 });

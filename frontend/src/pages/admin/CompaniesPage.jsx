@@ -43,7 +43,7 @@ const CompaniesPage = () => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: value,
+      [name]: name === 'orderIndex' ? parseInt(value) || 0 : value,
     }));
   };
 
