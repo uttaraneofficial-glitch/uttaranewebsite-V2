@@ -26,6 +26,7 @@ import UserManagementPage from './pages/admin/UserManagementPage';
 import CandidatesPage from './pages/admin/CandidatesPage';
 import MkStudioPage from './pages/MkStudioPage';
 import SearchResultsPage from './pages/admin/SearchResultsPage';
+import SoftwareDevelopment from './pages/SoftwareDevelopment';
 
 // Wrapper component to provide key to CompanyDetailPage
 const CompanyDetailWithKey = () => {
@@ -41,6 +42,7 @@ function App() {
         <Route element={<MainLayout />}>
           <Route path="/" element={<Homepage />} />
           <Route path="/company" element={<CompaniesPage />} />
+          <Route path="/company/software-development" element={<SoftwareDevelopment />} />
           <Route path="/company/:slug" element={<CompanyDetailWithKey />} />
           <Route path="/ngo" element={<NgoPostsPage />} />
           <Route path="/about" element={<AboutPage />} />

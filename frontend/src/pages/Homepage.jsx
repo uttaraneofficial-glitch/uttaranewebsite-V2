@@ -304,7 +304,7 @@ const Homepage = () => {
                 key={company.id}
                 className="glass-card rounded-2xl p-6 hover:-translate-y-2 transition-all duration-300 group"
               >
-                <Link to={`/ company / ${company.slug}`}>
+                <Link to={`/company/${company.slug}`}>
                   <div className="flex items-center gap-4 mb-6">
                     <div className="w-16 h-16 rounded-xl overflow-hidden border border-white/10 shadow-lg group-hover:border-red-500/50 transition-colors">
                       {company.thumbnail || company.logoUrl ? (

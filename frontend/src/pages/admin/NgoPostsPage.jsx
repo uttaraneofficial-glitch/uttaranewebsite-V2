@@ -11,6 +11,7 @@ const NgoPostsPage = () => {
     caption: '',
   });
   const [imagePreview, setImagePreview] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
@@ -43,15 +44,11 @@ const NgoPostsPage = () => {
   const handleImageUpload = async file => {
     if (!file) return;
 
-    // In a real implementation, we would upload to Cloudinary here
-    // For now, we'll just create a preview
+    setSelectedFile(file);
     const reader = new FileReader();
     reader.onloadend = () => {
       setImagePreview(reader.result);
-      setFormData(prev => ({
-        ...prev,
-        imageUrl: reader.result, // In real implementation, this would be the Cloudinary URL
-      }));
+      // We don't set formData.imageUrl here anymore as we'll send the file
     };
     reader.readAsDataURL(file);
   };
@@ -73,22 +70,27 @@ const NgoPostsPage = () => {
 
       const method = editingPost ? 'PUT' : 'POST';
 
-      const requestBody = {
-        ...formData,
-      };
+      const formDataToSend = new FormData();
+      formDataToSend.append('caption', formData.caption);
+
+      if (selectedFile) {
+        formDataToSend.append('image', selectedFile);
+      } else if (formData.imageUrl) {
+        formDataToSend.append('imageUrl', formData.imageUrl);
+      }
 
       // Only include postedAt for new posts, not updates
       if (!editingPost) {
-        requestBody.postedAt = new Date().toISOString();
+        formDataToSend.append('postedAt', new Date().toISOString());
       }
 
       const response = await fetch(url, {
         method,
         headers: {
-          'Content-Type': 'application/json',
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+          // Content-Type is automatically set for FormData
         },
-        body: JSON.stringify(requestBody),
+        body: formDataToSend,
       });
 
       if (!response.ok) {
@@ -101,6 +103,7 @@ const NgoPostsPage = () => {
         caption: '',
       });
       setImagePreview(null);
+      setSelectedFile(null);
       setEditingPost(null);
       setShowForm(false);
       fetchPosts();
@@ -115,6 +118,7 @@ const NgoPostsPage = () => {
       caption: post.caption || '',
     });
     setImagePreview(post.imageUrl);
+    setSelectedFile(null);
     setEditingPost(post);
     setShowForm(true);
   };
@@ -148,6 +152,7 @@ const NgoPostsPage = () => {
       caption: '',
     });
     setImagePreview(null);
+    setSelectedFile(null);
     setEditingPost(null);
     setShowForm(false);
   };

@@ -16,6 +16,7 @@ const CandidatesPage = () => {
   });
   const [companies, setCompanies] = useState([]);
   const [thumbnailPreview, setThumbnailPreview] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
 
   // Fetch companies for the dropdown
   useEffect(() => {
@@ -79,13 +80,11 @@ const CandidatesPage = () => {
   const handleFileUpload = async file => {
     if (!file) return;
 
+    setSelectedFile(file);
     const reader = new FileReader();
     reader.onloadend = () => {
       setThumbnailPreview(reader.result);
-      setFormData(prev => ({
-        ...prev,
-        profileImageUrl: reader.result,
-      }));
+      // We don't set formData.profileImageUrl here anymore as we'll send the file
     };
     reader.readAsDataURL(file);
   };
@@ -107,13 +106,27 @@ const CandidatesPage = () => {
 
       const method = editingCandidate ? 'PUT' : 'POST';
 
+      const formDataToSend = new FormData();
+      formDataToSend.append('name', formData.name);
+      formDataToSend.append('companyId', formData.companyId);
+      if (formData.linkedinUrl) formDataToSend.append('linkedinUrl', formData.linkedinUrl);
+
+      // Append other optional fields if they exist in formData (though current form doesn't seem to have them)
+      // If you add inputs for them later, make sure to append them here.
+
+      if (selectedFile) {
+        formDataToSend.append('image', selectedFile);
+      } else if (formData.profileImageUrl) {
+        formDataToSend.append('profileImageUrl', formData.profileImageUrl);
+      }
+
       const response = await fetch(url, {
         method,
         headers: {
-          'Content-Type': 'application/json',
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+          // Content-Type is automatically set for FormData
         },
-        body: JSON.stringify(formData),
+        body: formDataToSend,
       });
 
       if (!response.ok) {
@@ -128,6 +141,7 @@ const CandidatesPage = () => {
         companyId: '',
       });
       setThumbnailPreview(null);
+      setSelectedFile(null);
       setEditingCandidate(null);
       setShowForm(false);
       fetchCandidates();
@@ -144,6 +158,7 @@ const CandidatesPage = () => {
       companyId: candidate.companyId || '',
     });
     setThumbnailPreview(candidate.profileImageUrl || null);
+    setSelectedFile(null);
     setEditingCandidate(candidate);
     setShowForm(true);
   };
@@ -179,6 +194,7 @@ const CandidatesPage = () => {
       companyId: '',
     });
     setThumbnailPreview(null);
+    setSelectedFile(null);
     setEditingCandidate(null);
     setShowForm(false);
   };

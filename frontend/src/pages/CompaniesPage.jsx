@@ -84,8 +84,8 @@ const CompaniesPage = () => {
                 key={category}
                 onClick={() => setSelectedCategory(category)}
                 className={`px - 4 py - 1.5 rounded - lg text - sm font - medium whitespace - nowrap transition - colors ${selectedCategory === category
-                    ? 'bg-white text-black'
-                    : 'bg-white/10 text-white hover:bg-white/20'
+                  ? 'bg-white text-black'
+                  : 'bg-white/10 text-white hover:bg-white/20'
                   }`}
               >
                 {category}
@@ -113,7 +113,7 @@ const CompaniesPage = () => {
             <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-3 gap-y-6 md:gap-x-4 md:gap-y-8">
               {filteredCompanies.map(company => (
                 <Link
-                  to={`/ company / ${company.slug} `}
+                  to={`/company/${company.slug}`}
                   key={company.id}
                   className="group flex flex-col gap-2 md:gap-3 cursor-pointer"
                 >
