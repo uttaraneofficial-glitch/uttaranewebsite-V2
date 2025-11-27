@@ -8,7 +8,7 @@ const TestAPI = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('/api/public/companies');
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/public/companies`);
         const result = await response.json();
         setData(result);
         setLoading(false);

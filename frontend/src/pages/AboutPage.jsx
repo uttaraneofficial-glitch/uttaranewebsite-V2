@@ -9,7 +9,7 @@ const AboutPage = () => {
   useEffect(() => {
     const fetchContent = async () => {
       try {
-        const response = await fetch('/api/public/about');
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/public/about`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -80,7 +80,7 @@ const AboutPage = () => {
             }}
           />
 
-          <div className="mt-16">
+          < div className="mt-16" >
             <h2 className="text-3xl font-bold mb-8 text-white border-b border-gray-800 pb-4">
               Our Team
             </h2>
@@ -135,10 +135,10 @@ const AboutPage = () => {
                 </p>
               )}
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
+          </div >
+        </div >
+      </div >
+    </div >
   );
 };
 

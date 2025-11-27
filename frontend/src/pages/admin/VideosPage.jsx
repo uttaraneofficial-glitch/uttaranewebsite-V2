@@ -32,7 +32,7 @@ const VideosPage = () => {
 
   const fetchCompanies = async () => {
     try {
-      const response = await fetch('/api/public/companies');
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/public/companies`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -45,7 +45,7 @@ const VideosPage = () => {
 
   const fetchCandidates = async () => {
     try {
-      const response = await fetch('/api/admin/candidates', {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/admin/candidates`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
         },
@@ -62,7 +62,7 @@ const VideosPage = () => {
 
   const fetchVideos = async () => {
     try {
-      const response = await fetch('/api/admin/videos', {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/admin/videos`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
         },
@@ -101,8 +101,8 @@ const VideosPage = () => {
 
     try {
       const url = editingVideo
-        ? `/api/admin/videos/${editingVideo.id}`
-        : '/api/admin/videos';
+        ? `${import.meta.env.VITE_API_BASE_URL}/api/admin/videos/${editingVideo.id}`
+        : `${import.meta.env.VITE_API_BASE_URL}/api/admin/videos`;
 
       const method = editingVideo ? 'PUT' : 'POST';
 
@@ -166,7 +166,7 @@ const VideosPage = () => {
     }
 
     try {
-      const response = await fetch(`/api/admin/videos/${video.id}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/admin/videos/${video.id}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`,

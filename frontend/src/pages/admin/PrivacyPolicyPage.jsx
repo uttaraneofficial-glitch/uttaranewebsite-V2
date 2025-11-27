@@ -13,7 +13,7 @@ const PrivacyPolicyAdminPage = () => {
 
   const fetchPrivacyPolicy = async () => {
     try {
-      const response = await fetch('/api/admin/site-content/privacy_policy', {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/admin/site-content/privacy_policy`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
         },
@@ -38,7 +38,7 @@ const PrivacyPolicyAdminPage = () => {
     setError(null);
 
     try {
-      const response = await fetch('/api/admin/site-content/privacy_policy', {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/admin/site-content/privacy_policy`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

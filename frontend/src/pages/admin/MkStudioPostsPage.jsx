@@ -21,7 +21,7 @@ const MkStudioPostsPage = () => {
 
   const fetchPosts = async () => {
     try {
-      const response = await fetch('/api/public/mkstudio-posts');
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/public/mkstudio-posts`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -93,8 +93,8 @@ const MkStudioPostsPage = () => {
 
     try {
       const url = editingPost
-        ? `/api/admin/mkstudio-posts/${editingPost.id}`
-        : '/api/admin/mkstudio-posts';
+        ? `${import.meta.env.VITE_API_BASE_URL}/api/admin/mkstudio-posts/${editingPost.id}`
+        : `${import.meta.env.VITE_API_BASE_URL}/api/admin/mkstudio-posts`;
 
       const method = editingPost ? 'PUT' : 'POST';
 
@@ -155,7 +155,7 @@ const MkStudioPostsPage = () => {
     }
 
     try {
-      const response = await fetch(`/api/admin/mkstudio-posts/${id}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/admin/mkstudio-posts/${id}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`,

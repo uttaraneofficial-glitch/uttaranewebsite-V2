@@ -23,7 +23,7 @@ const SearchResultsPage = () => {
       setLoading(true);
       try {
         const response = await fetch(
-          `/api/admin/dashboard/search?q=${encodeURIComponent(query)}`,
+          `${import.meta.env.VITE_API_BASE_URL}/api/admin/dashboard/search?q=${encodeURIComponent(query)}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem('accessToken')}`,

@@ -24,8 +24,8 @@ const DashboardPage = () => {
         };
 
         const [statsRes, chartsRes] = await Promise.all([
-          fetch('/api/admin/dashboard/stats', { headers }),
-          fetch('/api/admin/dashboard/charts', { headers }),
+          fetch(`${import.meta.env.VITE_API_BASE_URL}/api/admin/dashboard/stats`, { headers }),
+          fetch(`${import.meta.env.VITE_API_BASE_URL}/api/admin/dashboard/charts`, { headers }),
         ]);
 
         if (!statsRes.ok || !chartsRes.ok) {

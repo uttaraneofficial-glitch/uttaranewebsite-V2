@@ -30,7 +30,7 @@ const AboutPage = () => {
 
   const fetchAboutContent = async () => {
     try {
-      const response = await fetch('/api/public/about');
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/public/about`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -56,7 +56,7 @@ const AboutPage = () => {
 
     try {
       // Save HTML content
-      const htmlResponse = await fetch('/api/admin/site-content/about_html', {
+      const htmlResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/admin/site-content/about_html`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -70,7 +70,7 @@ const AboutPage = () => {
       }
 
       // Save team members
-      const teamResponse = await fetch('/api/admin/site-content/team_members', {
+      const teamResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/admin/site-content/team_members`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

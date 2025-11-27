@@ -13,7 +13,7 @@ const TermsOfServiceAdminPage = () => {
 
   const fetchTermsOfService = async () => {
     try {
-      const response = await fetch('/api/admin/site-content/terms_of_service', {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/admin/site-content/terms_of_service`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
         },
@@ -38,7 +38,7 @@ const TermsOfServiceAdminPage = () => {
     setError(null);
 
     try {
-      const response = await fetch('/api/admin/site-content/terms_of_service', {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/admin/site-content/terms_of_service`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

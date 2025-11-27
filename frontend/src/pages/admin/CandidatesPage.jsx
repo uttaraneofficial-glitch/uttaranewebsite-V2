@@ -21,7 +21,7 @@ const CandidatesPage = () => {
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
-        const response = await fetch('/api/admin/companies', {
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/admin/companies`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
           },
@@ -48,7 +48,7 @@ const CandidatesPage = () => {
 
   const fetchCandidates = async () => {
     try {
-      const response = await fetch('/api/admin/candidates', {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/admin/candidates`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
         },
@@ -102,8 +102,8 @@ const CandidatesPage = () => {
 
     try {
       const url = editingCandidate
-        ? `/api/admin/candidates/${editingCandidate.id}`
-        : '/api/admin/candidates';
+        ? `${import.meta.env.VITE_API_BASE_URL}/api/admin/candidates/${editingCandidate.id}`
+        : `${import.meta.env.VITE_API_BASE_URL}/api/admin/candidates`;
 
       const method = editingCandidate ? 'PUT' : 'POST';
 
@@ -154,7 +154,7 @@ const CandidatesPage = () => {
     }
 
     try {
-      const response = await fetch(`/api/admin/candidates/${candidate.id}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/admin/candidates/${candidate.id}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`,

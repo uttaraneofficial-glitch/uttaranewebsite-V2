@@ -13,7 +13,7 @@ const ContactSettingsPage = () => {
 
   const fetchContactEmail = async () => {
     try {
-      const response = await fetch('/api/admin/site-content/contact_email', {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/admin/site-content/contact_email`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
         },
@@ -39,7 +39,7 @@ const ContactSettingsPage = () => {
     setSuccess(false);
 
     try {
-      const response = await fetch('/api/admin/site-content/contact_email', {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/admin/site-content/contact_email`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -121,11 +121,10 @@ const ContactSettingsPage = () => {
             <button
               type="submit"
               disabled={saving}
-              className={`px-4 py-2 rounded-md font-medium text-white ${
-                saving
+              className={`px-4 py-2 rounded-md font-medium text-white ${saving
                   ? 'bg-gray-600 cursor-not-allowed'
                   : 'bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500'
-              }`}
+                }`}
             >
               {saving ? 'Saving...' : 'Save Changes'}
             </button>

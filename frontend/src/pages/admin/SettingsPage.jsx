@@ -53,7 +53,7 @@ const SettingsPage = () => {
       for (const key of keys) {
         if (key === 'primary_color') continue;
 
-        const response = await fetch(`/api/admin/site-content/${key}`, {
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/admin/site-content/${key}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
           },
@@ -140,7 +140,7 @@ const SettingsPage = () => {
         // Skip primary_color as it's not in DB yet or handled differently
         if (key === 'primary_color') continue;
 
-        const response = await fetch(`/api/admin/site-content/${key}`, {
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/admin/site-content/${key}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',

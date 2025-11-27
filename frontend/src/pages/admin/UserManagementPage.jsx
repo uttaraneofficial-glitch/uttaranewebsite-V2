@@ -21,7 +21,7 @@ const UserManagementPage = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch('/api/admin/users', {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/admin/users`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
         },
@@ -53,8 +53,8 @@ const UserManagementPage = () => {
 
     try {
       const url = editingUser
-        ? `/api/admin/users/${editingUser.id}`
-        : '/api/admin/users';
+        ? `${import.meta.env.VITE_API_BASE_URL}/api/admin/users/${editingUser.id}`
+        : `${import.meta.env.VITE_API_BASE_URL}/api/admin/users`;
 
       const method = editingUser ? 'PUT' : 'POST';
 
@@ -101,7 +101,7 @@ const UserManagementPage = () => {
     }
 
     try {
-      const response = await fetch(`/api/admin/users/${id}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/admin/users/${id}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
@@ -128,7 +128,7 @@ const UserManagementPage = () => {
     }
 
     try {
-      const response = await fetch(`/api/admin/users/${userId}/password`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/admin/users/${userId}/password`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -280,11 +280,10 @@ const UserManagementPage = () => {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span
-                    className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                      user.role === 'ADMIN'
+                    className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${user.role === 'ADMIN'
                         ? 'bg-red-900 text-red-100'
                         : 'bg-gray-700 text-gray-300'
-                    }`}
+                      }`}
                   >
                     {user.role}
                   </span>

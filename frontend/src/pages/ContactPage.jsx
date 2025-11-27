@@ -26,7 +26,7 @@ const ContactPage = () => {
     setSubmitSuccess(false);
 
     try {
-      const response = await fetch('/api/public/contact', {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/public/contact`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -48,7 +48,7 @@ const ContactPage = () => {
     } catch (err) {
       setSubmitError(
         err.message ||
-          'An error occurred while sending your message. Please try again.'
+        'An error occurred while sending your message. Please try again.'
       );
     } finally {
       setIsSubmitting(false);
@@ -79,7 +79,7 @@ const ContactPage = () => {
               <p className="mb-6 text-gray-300">
                 Have questions, suggestions, or feedback? We'd love to hear from
                 you! Send us a message and we'll respond as soon as possible.
-              </p>
+              </p >
 
               <div className="space-y-4">
                 <div className="flex items-start">
@@ -132,10 +132,10 @@ const ContactPage = () => {
                   </div>
                 </div>
               </div>
-            </div>
+            </div >
 
             {/* Contact Form */}
-            <div className="glass-card rounded-2xl p-6 border border-white/10">
+            < div className="glass-card rounded-2xl p-6 border border-white/10" >
               <h2 className="text-2xl font-semibold mb-6 text-white">
                 Send a Message
               </h2>
@@ -232,21 +232,20 @@ const ContactPage = () => {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className={`w-full py-3 px-4 rounded-md font-medium text-white transition-all ${
-                      isSubmitting
+                    className={`w-full py-3 px-4 rounded-md font-medium text-white transition-all ${isSubmitting
                         ? 'bg-gray-600 cursor-not-allowed'
                         : 'bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500'
-                    }`}
+                      }`}
                   >
                     {isSubmitting ? 'Sending...' : 'Send Message'}
                   </button>
                 </div>
               </form>
-            </div>
-          </div>
-        </div>
-      </main>
-    </div>
+            </div >
+          </div >
+        </div >
+      </main >
+    </div >
   );
 };
 

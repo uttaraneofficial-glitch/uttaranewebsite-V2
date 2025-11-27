@@ -10,7 +10,7 @@ const Navbar = () => {
     // Fetch logo URL from the hero content API
     const fetchLogo = async () => {
       try {
-        const response = await fetch('/api/public/hero');
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/public/hero`);
         if (response.ok) {
           const data = await response.json();
           setLogoUrl(data.logoUrl || '');
@@ -68,9 +68,8 @@ const Navbar = () => {
               <Link
                 key={link.path}
                 to={link.path}
-                className={`text-white hover:text-red-400 transition-colors relative ${
-                  isActive(link.path) ? 'text-red-500' : ''
-                }`}
+                className={`text-white hover:text-red-400 transition-colors relative ${isActive(link.path) ? 'text-red-500' : ''
+                  }`}
               >
                 {link.label}
                 {isActive(link.path) && (
@@ -114,18 +113,16 @@ const Navbar = () => {
 
         {/* Mobile Menu */}
         <div
-          className={`md:hidden overflow-hidden transition-all duration-300 bg-black ${
-            isMenuOpen ? 'max-h-96 pb-4 border-b border-gray-800' : 'max-h-0'
-          }`}
+          className={`md:hidden overflow-hidden transition-all duration-300 bg-black ${isMenuOpen ? 'max-h-96 pb-4 border-b border-gray-800' : 'max-h-0'
+            }`}
         >
           <div className="flex flex-col space-y-3">
             {navLinks.map(link => (
               <Link
                 key={link.path}
                 to={link.path}
-                className={`text-white hover:text-red-400 transition-colors py-2 ${
-                  isActive(link.path) ? 'text-red-500 font-semibold' : ''
-                }`}
+                className={`text-white hover:text-red-400 transition-colors py-2 ${isActive(link.path) ? 'text-red-500 font-semibold' : ''
+                  }`}
                 onClick={() => setIsMenuOpen(false)}
               >
                 {link.label}

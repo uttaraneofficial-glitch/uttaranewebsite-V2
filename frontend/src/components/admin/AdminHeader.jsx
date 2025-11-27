@@ -16,7 +16,7 @@ const AdminHeader = ({ onMenuClick }) => {
     // Fetch notifications
     const fetchNotifications = async () => {
       try {
-        const response = await fetch('/api/admin/dashboard/notifications', {
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/admin/dashboard/notifications`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
           },

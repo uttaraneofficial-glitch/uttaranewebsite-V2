@@ -9,7 +9,7 @@ const LogoBar = () => {
     const fetchData = async () => {
       try {
         // Fetch companies
-        const companiesResponse = await fetch('/api/public/companies');
+        const companiesResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/public/companies`);
         if (!companiesResponse.ok) {
           throw new Error(`HTTP error! status: ${companiesResponse.status}`);
         }
@@ -23,7 +23,7 @@ const LogoBar = () => {
           try {
             // Fetch videos for this company which include candidate information
             const videosResponse = await fetch(
-              `/api/public/companies/${company.slug}/videos`
+              `${import.meta.env.VITE_API_BASE_URL}/api/public/companies/${company.slug}/videos`
             );
             if (videosResponse.ok) {
               const videosData = await videosResponse.json();

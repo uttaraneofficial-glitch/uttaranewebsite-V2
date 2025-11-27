@@ -19,7 +19,7 @@ const NgoPostsPage = () => {
 
   const fetchPosts = async () => {
     try {
-      const response = await fetch('/api/public/ngo-posts');
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/public/ngo-posts`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -68,8 +68,8 @@ const NgoPostsPage = () => {
 
     try {
       const url = editingPost
-        ? `/api/admin/ngo-posts/${editingPost.id}`
-        : '/api/admin/ngo-posts';
+        ? `${import.meta.env.VITE_API_BASE_URL}/api/admin/ngo-posts/${editingPost.id}`
+        : `${import.meta.env.VITE_API_BASE_URL}/api/admin/ngo-posts`;
 
       const method = editingPost ? 'PUT' : 'POST';
 
@@ -125,7 +125,7 @@ const NgoPostsPage = () => {
     }
 
     try {
-      const response = await fetch(`/api/admin/ngo-posts/${id}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/admin/ngo-posts/${id}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`,

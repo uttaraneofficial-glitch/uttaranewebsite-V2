@@ -36,7 +36,7 @@ const Homepage = () => {
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
-        const response = await fetch('/api/public/companies');
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/public/companies`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -50,7 +50,7 @@ const Homepage = () => {
 
     const fetchHeroContent = async () => {
       try {
-        const response = await fetch('/api/public/hero');
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/public/hero`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -304,7 +304,7 @@ const Homepage = () => {
                 key={company.id}
                 className="glass-card rounded-2xl p-6 hover:-translate-y-2 transition-all duration-300 group"
               >
-                <Link to={`/company/${company.slug}`}>
+                <Link to={`/ company / ${company.slug}`}>
                   <div className="flex items-center gap-4 mb-6">
                     <div className="w-16 h-16 rounded-xl overflow-hidden border border-white/10 shadow-lg group-hover:border-red-500/50 transition-colors">
                       {company.thumbnail || company.logoUrl ? (

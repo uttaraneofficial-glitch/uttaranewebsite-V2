@@ -7,7 +7,7 @@ const InstructorSection = () => {
   useEffect(() => {
     const fetchContent = async () => {
       try {
-        const response = await fetch('/api/public/instructor');
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/public/instructor`);
         if (response.ok) {
           const data = await response.json();
           setContent(data);

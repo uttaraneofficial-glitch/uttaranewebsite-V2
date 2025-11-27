@@ -8,7 +8,7 @@ const NgoPostsGrid = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch('/api/public/ngo-posts');
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/public/ngo-posts`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }

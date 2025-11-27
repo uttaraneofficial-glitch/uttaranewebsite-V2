@@ -26,7 +26,7 @@ const CompaniesPage = () => {
 
   const fetchCompanies = async () => {
     try {
-      const response = await fetch('/api/public/companies');
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/public/companies`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -52,8 +52,8 @@ const CompaniesPage = () => {
 
     try {
       const url = editingCompany
-        ? `/api/admin/companies/${editingCompany.id}`
-        : '/api/admin/companies';
+        ? `${import.meta.env.VITE_API_BASE_URL}/api/admin/companies/${editingCompany.id}`
+        : `${import.meta.env.VITE_API_BASE_URL}/api/admin/companies`;
 
       const method = editingCompany ? 'PUT' : 'POST';
 
@@ -112,7 +112,7 @@ const CompaniesPage = () => {
     }
 
     try {
-      const response = await fetch(`/api/admin/companies/${company.id}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/admin/companies/${company.id}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`,

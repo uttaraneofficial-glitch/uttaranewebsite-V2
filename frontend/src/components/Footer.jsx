@@ -13,7 +13,7 @@ const Footer = () => {
     // Fetch social links from hero content
     const fetchSocialLinks = async () => {
       try {
-        const response = await fetch('/api/public/hero');
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/public/hero`);
         if (response.ok) {
           const data = await response.json();
           if (data.socialLinks) {

@@ -16,7 +16,7 @@ const CompanyDetailPage = () => {
     const fetchCompanyAndVideos = async () => {
       try {
         // Fetch company details
-        const companyResponse = await fetch(`/api/public/companies/${slug}`);
+        const companyResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/public/companies/${slug}`);
         if (!companyResponse.ok) {
           throw new Error(`HTTP error! status: ${companyResponse.status}`);
         }
@@ -25,7 +25,7 @@ const CompanyDetailPage = () => {
 
         // Fetch videos for this company
         const videosResponse = await fetch(
-          `/api/public/companies/${slug}/videos`
+          `${import.meta.env.VITE_API_BASE_URL}/api/public/companies/${slug}/videos`
         );
         if (!videosResponse.ok) {
           throw new Error(`HTTP error! status: ${videosResponse.status}`);
@@ -121,11 +121,10 @@ const CompanyDetailPage = () => {
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`pb-3 text-sm font-medium uppercase tracking-wide border-b-2 transition-colors whitespace-nowrap ${
-                  activeTab === tab
-                    ? 'border-white text-white'
-                    : 'border-transparent text-gray-400 hover:text-gray-200'
-                }`}
+                className={`pb-3 text-sm font-medium uppercase tracking-wide border-b-2 transition-colors whitespace-nowrap ${activeTab === tab
+                  ? 'border-white text-white'
+                  : 'border-transparent text-gray-400 hover:text-gray-200'
+                  }`}
               >
                 {tab}
               </button>

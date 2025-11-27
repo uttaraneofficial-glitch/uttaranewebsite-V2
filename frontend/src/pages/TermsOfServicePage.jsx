@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 
 const TermsOfServicePage = () => {
-  const [content, setContent] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [content, setContent] = useState(''); // Added this line to define 'content' state
 
   useEffect(() => {
     const fetchTermsOfService = async () => {
       try {
-        const response = await fetch('/api/public/terms-of-service');
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/public/terms-of-service`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
