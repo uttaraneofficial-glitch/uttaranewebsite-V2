@@ -16,7 +16,7 @@ export const generateToken = (user: MinimalUser): string => {
 
   return jwt.sign(payload, process.env.JWT_SECRET!, {
     expiresIn: process.env.JWT_EXPIRES_IN || '1d',
-  } as jwt.SignOptions);
+  } as any);
 };
 
 export const verifyToken = (token: string): TokenPayload => {
@@ -35,5 +35,5 @@ export const generateRefreshToken = (user: MinimalUser): string => {
 
   return jwt.sign(payload, process.env.JWT_SECRET!, {
     expiresIn: '7d', // Refresh token lives longer
-  } as jwt.SignOptions);
+  } as any);
 };
