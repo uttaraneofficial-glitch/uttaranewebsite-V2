@@ -67,10 +67,6 @@ import compression from 'compression';
 // Enable Gzip compression
 app.use(compression());
 
-// Serve static files from the frontend build directory
-const frontendDist = path.join(__dirname, '../../../frontend/dist');
-app.use(express.static(frontendDist));
-
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/public', publicRoutes);
@@ -79,11 +75,6 @@ app.use('/api/admin', adminRoutes);
 // Health check endpoint
 app.get('/health', (req, res) => {
     res.json({ status: 'ok' });
-});
-
-// Catch-all route to serve the frontend index.html for SPA routing
-app.get('*', (req, res) => {
-    res.sendFile(path.join(frontendDist, 'index.html'));
 });
 
 export default app;
