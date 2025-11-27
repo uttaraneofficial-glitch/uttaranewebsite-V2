@@ -5,58 +5,14 @@ const LogoBar = () => {
   const [candidates, setCandidates] = useState([]);
 
   useEffect(() => {
-    // Fetch companies and their candidates from API
+    // Fetch candidates from API
     const fetchData = async () => {
       try {
-        // Fetch companies
-        const companiesResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/public/companies`);
-        if (!companiesResponse.ok) {
-          throw new Error(`HTTP error! status: ${companiesResponse.status}`);
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/public/candidates`);
+        if (response.ok) {
+          const data = await response.json();
+          setCandidates(data.data);
         }
-        const companiesData = await companiesResponse.json();
-
-        // Collect all candidates from all companies
-        const allCandidates = [];
-        const seenCandidates = new Set();
-
-        for (const company of companiesData.data) {
-          try {
-            // Fetch videos for this company which include candidate information
-            const videosResponse = await fetch(
-              `${import.meta.env.VITE_API_BASE_URL}/api/public/companies/${company.slug}/videos`
-            );
-            if (videosResponse.ok) {
-              const videosData = await videosResponse.json();
-              // Extract candidates from videos (filter out null candidates)
-              const companyCandidates = videosData.data
-                .map(video => video.candidate)
-                .filter(candidate => candidate !== null)
-                .filter(candidate => {
-                  // Deduplicate based on name
-                  if (seenCandidates.has(candidate.name)) return false;
-                  seenCandidates.add(candidate.name);
-                  return true;
-                })
-                .map(candidate => ({
-                  ...candidate,
-                  company: {
-                    name: company.name,
-                    logoUrl: company.logoUrl,
-                    thumbnail: company.thumbnail,
-                  },
-                }));
-              allCandidates.push(...companyCandidates);
-            }
-          } catch (err) {
-            console.error(
-              'Error fetching videos for company:',
-              company.name,
-              err
-            );
-          }
-        }
-
-        setCandidates(allCandidates);
       } catch (err) {
         console.error('Fetch error:', err);
       }

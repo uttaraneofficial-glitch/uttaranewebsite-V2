@@ -102,3 +102,31 @@ export const getCompanyVideosBySlug = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Error retrieving videos' });
   }
 };
+
+// Get all candidates with company info
+export const getPublicCandidates = async (req: Request, res: Response) => {
+  try {
+    const candidates = await prisma.candidate.findMany({
+      include: {
+        company: {
+          select: {
+            name: true,
+            logoUrl: true,
+            thumbnail: true,
+            slug: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    res.json({
+      data: candidates,
+    });
+  } catch (error) {
+    console.error('Get public candidates error:', error);
+    res.status(500).json({ message: 'Error retrieving candidates' });
+  }
+};

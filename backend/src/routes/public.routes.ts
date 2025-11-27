@@ -3,6 +3,7 @@ import {
   getPublicCompanies,
   getPublicCompanyBySlug,
   getCompanyVideosBySlug,
+  getPublicCandidates,
 } from '../controllers/public/companies.controller';
 import {
   getAboutContent,
@@ -22,6 +23,7 @@ const router = Router();
 router.get('/companies', getPublicCompanies);
 router.get('/companies/:slug', getPublicCompanyBySlug);
 router.get('/companies/:slug/videos', getCompanyVideosBySlug);
+router.get('/candidates', getPublicCandidates);
 
 // Content routes
 router.get('/about', getAboutContent);
