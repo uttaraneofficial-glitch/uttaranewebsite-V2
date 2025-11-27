@@ -5,7 +5,15 @@
     ],
     "compilerOptions": {
         "types": [
-            "node"
+            "node",
+            "express",
+            "multer",
+            "cors",
+            "cookie-parser",
+            "jsonwebtoken",
+            "bcryptjs",
+            "nodemailer",
+            "sanitize-html"
         ]
     }
 }
