@@ -27,7 +27,12 @@ app.use(additionalSecurityHeaders); // Custom security headers
 // Basic Middleware
 app.use(
     cors({
-        origin: process.env.CORS_ORIGIN || '*',
+        origin: [
+            'http://localhost:3003',
+            'http://localhost:5173',
+            'https://uttaranewebsite-v2-3.onrender.com',
+            'https://uttaranewebsite-v2-4.onrender.com',
+        ],
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
         allowedHeaders: ['Content-Type', 'Authorization'],
         credentials: true,
