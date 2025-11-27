@@ -5,13 +5,40 @@ const LogoBar = () => {
   const [candidates, setCandidates] = useState([]);
 
   useEffect(() => {
-    // Fetch candidates from API
     const fetchData = async () => {
       try {
+        // Try the new optimized endpoint first
         const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/public/candidates`);
+
         if (response.ok) {
           const data = await response.json();
-          setCandidates(data.data);
+          if (Array.isArray(data.data)) {
+            setCandidates(data.data);
+            return;
+          }
+        }
+
+        // Fallback: If the new endpoint fails (e.g., backend mismatch), fetch companies and extract candidates
+        console.warn('Primary candidates endpoint failed, falling back to companies endpoint.');
+        const fallbackResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/public/companies`);
+
+        if (fallbackResponse.ok) {
+          const data = await fallbackResponse.json();
+          if (Array.isArray(data.data)) {
+            // Extract candidates from companies and flatten the array
+            const allCandidates = data.data.flatMap(company =>
+              (company.candidates || []).map(candidate => ({
+                ...candidate,
+                company: {
+                  name: company.name,
+                  logoUrl: company.logoUrl,
+                  thumbnail: company.thumbnail,
+                  slug: company.slug
+                }
+              }))
+            );
+            setCandidates(allCandidates);
+          }
         }
       } catch (err) {
         console.error('Fetch error:', err);
