@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { authenticate, requireRole } from '../middleware/auth';
 import { Role } from '../types/prisma';
+import { upload } from '../middleware/upload';
 import {
   getAdminCompanies,
   getAdminCompanyById,
@@ -70,41 +71,41 @@ router.get('/dashboard/notifications', getNotifications);
 // Company management routes
 router.get('/companies', getAdminCompanies);
 router.get('/companies/:id', getAdminCompanyById);
-router.post('/companies', createCompany);
-router.put('/companies/:id', updateCompany);
+router.post('/companies', upload.single('image'), createCompany);
+router.put('/companies/:id', upload.single('image'), updateCompany);
 router.delete('/companies/:id', deleteCompany);
 
 // Video management routes
 router.get('/videos', getAdminVideos);
 router.get('/videos/:id', getAdminVideoById);
-router.post('/videos', createVideo);
-router.put('/videos/:id', updateVideo);
+router.post('/videos', upload.single('image'), createVideo);
+router.put('/videos/:id', upload.single('image'), updateVideo);
 router.delete('/videos/:id', deleteVideo);
 
 // Candidate management routes
 router.get('/candidates', getAdminCandidates);
 router.get('/candidates/:id', getAdminCandidateById);
-router.post('/candidates', createCandidate);
-router.put('/candidates/:id', updateCandidate);
+router.post('/candidates', upload.single('image'), createCandidate);
+router.put('/candidates/:id', upload.single('image'), updateCandidate);
 router.delete('/candidates/:id', deleteCandidate);
 
 // NGO Post management routes
 router.get('/ngo-posts', getAdminNgoPosts);
 router.get('/ngo-posts/:id', getAdminNgoPostById);
-router.post('/ngo-posts', createNgoPost);
-router.put('/ngo-posts/:id', updateNgoPost);
+router.post('/ngo-posts', upload.single('image'), createNgoPost);
+router.put('/ngo-posts/:id', upload.single('image'), updateNgoPost);
 router.delete('/ngo-posts/:id', deleteNgoPost);
 
 // MK Studio Post management routes
 router.get('/mkstudio-posts', getAdminMkStudioPosts);
 router.get('/mkstudio-posts/:id', getAdminMkStudioPostById);
-router.post('/mkstudio-posts', createMkStudioPost);
-router.put('/mkstudio-posts/:id', updateMkStudioPost);
+router.post('/mkstudio-posts', upload.single('image'), createMkStudioPost);
+router.put('/mkstudio-posts/:id', upload.single('image'), updateMkStudioPost);
 router.delete('/mkstudio-posts/:id', deleteMkStudioPost);
 
 // Site Content management routes
 router.get('/site-content/:key', getSiteContent);
-router.put('/site-content/:key', updateSiteContent);
+router.put('/site-content/:key', upload.single('image'), updateSiteContent);
 
 // User management routes
 router.get('/users', getUsers);

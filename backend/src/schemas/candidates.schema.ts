@@ -4,7 +4,7 @@ export const candidateSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   college: z.string().optional(),
   branch: z.string().optional(),
-  graduationYear: z.number().optional(),
+  graduationYear: z.coerce.number().optional(),
   roleOffered: z.string().optional(),
   packageOffered: z.string().optional(),
   profileImageUrl: z.string().optional(),

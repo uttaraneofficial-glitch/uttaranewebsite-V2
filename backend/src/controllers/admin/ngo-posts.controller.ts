@@ -49,7 +49,8 @@ export const getAdminNgoPostById = async (req: Request, res: Response) => {
 // Create NGO post (admin)
 export const createNgoPost = async (req: Request, res: Response) => {
   try {
-    const postData = ngoPostSchema.parse(req.body);
+    const imageUrl = req.file?.path || req.body.imageUrl;
+    const postData = ngoPostSchema.parse({ ...req.body, imageUrl });
 
     const post = await prisma.ngoPost.create({
       data: {
@@ -79,7 +80,8 @@ export const createNgoPost = async (req: Request, res: Response) => {
 export const updateNgoPost = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const postData = ngoPostSchema.parse(req.body);
+    const imageUrl = req.file?.path || req.body.imageUrl;
+    const postData = ngoPostSchema.parse({ ...req.body, imageUrl });
 
     // Check if post exists
     const existingPost = await prisma.ngoPost.findUnique({

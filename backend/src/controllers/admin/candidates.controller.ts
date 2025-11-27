@@ -53,7 +53,11 @@ export const getAdminCandidateById = async (req: Request, res: Response) => {
 // Create candidate (admin)
 export const createCandidate = async (req: Request, res: Response) => {
   try {
-    const candidateData = candidateSchema.parse(req.body);
+    const profileImageUrl = req.file?.path || req.body.profileImageUrl;
+    const candidateData = candidateSchema.parse({
+      ...req.body,
+      profileImageUrl,
+    });
 
     // Check if company exists
     const company = await prisma.company.findUnique({
@@ -102,7 +106,11 @@ export const createCandidate = async (req: Request, res: Response) => {
 export const updateCandidate = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const candidateData = candidateUpdateSchema.parse(req.body);
+    const profileImageUrl = req.file?.path || req.body.profileImageUrl;
+    const candidateData = candidateUpdateSchema.parse({
+      ...req.body,
+      profileImageUrl,
+    });
 
     // Check if candidate exists
     const existingCandidate = await prisma.candidate.findUnique({
