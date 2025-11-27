@@ -13,7 +13,8 @@
             "jsonwebtoken",
             "bcryptjs",
             "nodemailer",
-            "sanitize-html"
+            "sanitize-html",
+            "compression"
         ]
     }
 }
