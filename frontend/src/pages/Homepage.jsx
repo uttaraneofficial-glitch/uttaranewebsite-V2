@@ -160,11 +160,11 @@ const Homepage = () => {
           </div>
 
           {/* Content */}
-          <div className="relative z-10 container mx-auto px-4 py-2 md:absolute md:inset-0 md:flex md:items-center md:justify-center md:pt-0 text-center">
-            <div className="animate-fadeInUp">
+          <div className="relative z-10 container mx-auto px-2 py-2 md:px-4 md:absolute md:inset-0 md:flex md:items-center md:justify-center md:pt-0 text-center">
+            <div className="animate-fadeInUp w-full">
               {/* Tagline removed as per user request */}
 
-              <h1 className="text-xl md:text-7xl font-extrabold mb-1 md:mb-2 tracking-tight leading-tight text-white">
+              <h1 className="text-lg md:text-7xl font-extrabold mb-1 md:mb-2 tracking-tight leading-tight text-white">
                 {heroContent.headline || 'Find Your Dream Job'}
                 <span className="text-red-500 block mt-0.5">
                   In Tech & Beyond
@@ -172,7 +172,7 @@ const Homepage = () => {
               </h1>
 
               {heroContent.description && (
-                <p className="text-[10px] md:text-xl text-gray-300 mb-3 md:mb-4 max-w-2xl mx-auto leading-relaxed">
+                <p className="text-[10px] md:text-xl text-gray-300 mb-3 md:mb-4 w-full md:max-w-2xl mx-auto leading-relaxed px-1 md:px-0">
                   {heroContent.description
                     .split(/(#MakeInINDIA)/g)
                     .map((part, index) =>
