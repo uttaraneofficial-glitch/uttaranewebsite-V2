@@ -138,7 +138,7 @@ const Homepage = () => {
       {heroLoading ? (
         <SkeletonHero />
       ) : (
-        <section className="hero-section relative pt-20 pb-24 md:pt-0 md:pb-0 md:min-h-screen flex flex-col md:block overflow-hidden">
+        <section className="hero-section relative pt-20 md:pt-0 md:min-h-screen flex flex-col md:block overflow-hidden">
           {/* Background / Image Container */}
           <div className="relative w-full h-auto md:absolute md:inset-0 md:h-full z-0 bg-black">
             {heroContent.imageUrl ? (
