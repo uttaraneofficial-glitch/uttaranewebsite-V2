@@ -16,6 +16,13 @@ dotenv.config();
 
 const app = express();
 
+const allowedOrigins = [
+    "https://uttarane.com",
+    "https://www.uttarane.com",
+    "https://uttaranewebsite-v2-4.onrender.com", // backend render URL (for testing)
+    "https://uttaranewebsite-v2-3.onrender.com"  // old frontend (optional, can remove later)
+];
+
 // Trust proxy for proper request handling
 app.set('trust proxy', 1);
 
@@ -27,16 +34,15 @@ app.use(additionalSecurityHeaders); // Custom security headers
 // Basic Middleware
 app.use(
     cors({
-        origin: [
-            'http://localhost:3003',
-            'http://localhost:5173',
-            'https://uttaranewebsite-v2-3.onrender.com',
-            'https://uttaranewebsite-v2-4.onrender.com',
-        ],
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-        allowedHeaders: ['Content-Type', 'Authorization'],
+        origin: function (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) {
+            // allow REST tools and server-to-server (no origin)
+            if (!origin || allowedOrigins.includes(origin)) {
+                callback(null, true);
+            } else {
+                callback(new Error("Not allowed by CORS"));
+            }
+        },
         credentials: true,
-        maxAge: 86400, // 24 hours
     })
 );
 app.use(express.json({ limit: '50mb' })); // Increase limit for larger payloads
