@@ -138,7 +138,7 @@ const Homepage = () => {
       {heroLoading ? (
         <SkeletonHero />
       ) : (
-        <section className="hero-section relative pt-20 md:pt-0 md:min-h-screen flex flex-col md:block overflow-hidden">
+        <section className="hero-section relative pt-14 md:pt-0 md:min-h-screen flex flex-col md:block overflow-hidden">
           {/* Background / Image Container */}
           <div className="relative w-full h-auto md:absolute md:inset-0 md:h-full z-0 bg-black">
             {heroContent.imageUrl ? (
@@ -160,7 +160,7 @@ const Homepage = () => {
           </div>
 
           {/* Content */}
-          <div className="absolute inset-0 pt-20 md:pt-0 z-10 container mx-auto px-4 flex items-end md:items-center justify-center text-center pb-8 md:pb-0">
+          <div className="absolute inset-0 pt-14 md:pt-0 z-10 container mx-auto px-4 flex items-end md:items-center justify-center text-center pb-8 md:pb-0">
             <div className="animate-fadeInUp w-full">
               {/* Tagline removed as per user request */}
 
