@@ -70,7 +70,7 @@ const MkStudioVideo = () => {
   return (
     <div className="w-full max-w-6xl mx-auto">
       {/* YouTube Channel Header Style */}
-      <div className="flex items-center justify-between mb-8 px-4">
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 px-4 gap-4 md:gap-0">
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 rounded-full bg-gradient-to-br from-red-600 to-black p-[2px]">
             {channel?.imageUrl ? (
@@ -100,7 +100,7 @@ const MkStudioVideo = () => {
           href={channel?.subscribeUrl || 'https://www.youtube.com/@MKStudio'}
           target="_blank"
           rel="noopener noreferrer"
-          className="bg-[#cc0000] hover:bg-[#ff0000] text-white text-sm font-semibold px-6 py-2 rounded-full transition-colors uppercase tracking-wide"
+          className="bg-[#cc0000] hover:bg-[#ff0000] text-white text-sm font-semibold px-4 py-1.5 md:px-6 md:py-2 rounded-full transition-colors uppercase tracking-wide w-full md:w-auto text-center"
         >
           Subscribe
         </a>
@@ -110,7 +110,7 @@ const MkStudioVideo = () => {
       <div className="group relative bg-[#0f0f0f] rounded-2xl overflow-hidden border border-gray-800 hover:border-red-900/50 transition-all duration-300 shadow-2xl">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
           {/* Thumbnail Section */}
-          <div className="relative aspect-video overflow-hidden">
+          <div className="relative h-48 md:h-auto md:aspect-video overflow-hidden">
             <img
               src={getThumbnail(video)}
               alt={video.title}
@@ -121,10 +121,10 @@ const MkStudioVideo = () => {
                 href={getYouTubeUrl(video.youtubeId)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-16 h-16 bg-red-600/90 rounded-full flex items-center justify-center backdrop-blur-sm group-hover:scale-110 transition-transform duration-300 shadow-lg"
+                className="w-12 h-12 md:w-16 md:h-16 bg-red-600/90 rounded-full flex items-center justify-center backdrop-blur-sm group-hover:scale-110 transition-transform duration-300 shadow-lg"
               >
                 <svg
-                  className="w-8 h-8 text-white ml-1"
+                  className="w-6 h-6 md:w-8 md:h-8 text-white ml-1"
                   fill="currentColor"
                   viewBox="0 0 24 24"
                 >
@@ -132,19 +132,19 @@ const MkStudioVideo = () => {
                 </svg>
               </a>
             </div>
-            <div className="absolute bottom-4 right-4 bg-black/80 text-white text-xs font-bold px-2 py-1 rounded">
+            <div className="absolute bottom-4 right-4 bg-black/80 text-white text-[10px] md:text-xs font-bold px-2 py-1 rounded">
               LATEST UPLOAD
             </div>
           </div>
 
           {/* Content Section */}
-          <div className="p-8 flex flex-col justify-center bg-gradient-to-br from-[#1a1a1a] to-[#0f0f0f]">
+          <div className="p-6 md:p-8 flex flex-col justify-center bg-gradient-to-br from-[#1a1a1a] to-[#0f0f0f]">
             <div className="flex items-center gap-2 text-red-500 text-xs font-bold uppercase tracking-wider mb-3">
               <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
               New Video
             </div>
 
-            <h3 className="text-2xl md:text-3xl font-bold text-white mb-4 leading-tight line-clamp-2 group-hover:text-red-500 transition-colors">
+            <h3 className="text-xl md:text-3xl font-bold text-white mb-4 leading-tight line-clamp-2 group-hover:text-red-500 transition-colors">
               {video.title}
             </h3>
 
@@ -153,8 +153,8 @@ const MkStudioVideo = () => {
                 'Watch the latest interview experience and learn from the best. Click to watch full video on YouTube.'}
             </p>
 
-            <div className="mt-auto pt-6 border-t border-gray-800 flex items-center justify-between">
-              <div className="flex items-center gap-2 text-gray-500 text-xs">
+            <div className="mt-auto pt-6 border-t border-gray-800 flex items-center justify-between px-1">
+              <div className="flex items-center gap-2 text-gray-500 text-[10px] md:text-xs">
                 <svg
                   className="w-4 h-4"
                   fill="none"
@@ -179,7 +179,7 @@ const MkStudioVideo = () => {
                 href={getYouTubeUrl(video.youtubeId)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-white text-sm font-semibold hover:text-red-500 transition-colors flex items-center gap-2"
+                className="text-white text-xs md:text-sm font-semibold hover:text-red-500 transition-colors flex items-center gap-2"
               >
                 Watch Now
                 <svg
