@@ -266,7 +266,7 @@ const Homepage = () => {
       {/* Featured Companies */}
       {/* Featured Companies */}
       <section className="companies-section py-2 md:py-16 relative">
-        <div className="container">
+        <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-end mb-8 md:mb-16 gap-4">
             <div>
               <h2 className="text-3xl md:text-4xl font-bold mb-2 text-white">
@@ -288,51 +288,73 @@ const Homepage = () => {
           </div>
 
           {companiesLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {[...Array(6)].map((_, i) => (
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-2 gap-y-4 md:gap-x-4 md:gap-y-8">
+              {[...Array(8)].map((_, i) => (
                 <SkeletonCard key={i} />
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 stagger-animation">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-2 gap-y-4 md:gap-x-4 md:gap-y-8">
               {companies.map(company => (
-                <div
+                <Link
+                  to={`/company/${company.slug}`}
                   key={company.id}
-                  className="glass-card rounded-2xl p-6 hover:-translate-y-2 transition-all duration-300 group"
+                  className="group flex flex-col gap-1.5 md:gap-3 cursor-pointer"
                 >
-                  <Link to={`/company/${company.slug}`}>
-                    <div className="flex items-center gap-4 mb-6">
-                      <div className="w-16 h-16 rounded-xl overflow-hidden border border-white/10 shadow-lg group-hover:border-red-500/50 transition-colors flex-shrink-0">
-                        {company.thumbnail || company.logoUrl ? (
+                  {/* Thumbnail Container */}
+                  <div className="relative aspect-video rounded-lg md:rounded-xl overflow-hidden bg-gray-900 border border-white/5 group-hover:rounded-none transition-all duration-200">
+                    {getCompanyThumbnail(company) ? (
+                      <img
+                        src={getCompanyThumbnail(company)}
+                        alt={company.name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-800 to-black">
+                        <span className="text-2xl md:text-4xl font-bold text-white/20">
+                          {company.name.charAt(0)}
+                        </span>
+                      </div>
+                    )}
+                    {/* Hover Overlay */}
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
+                  </div>
+
+                  {/* Info Section */}
+                  <div className="flex gap-2 md:gap-3 items-start">
+                    {/* Avatar */}
+                    <div className="flex-shrink-0">
+                      <div className="w-7 h-7 md:w-9 md:h-9 rounded-full bg-gray-800 overflow-hidden border border-white/10">
+                        {company.logoUrl ? (
                           <img
-                            src={company.thumbnail || company.logoUrl}
-                            alt={company.name}
+                            src={company.logoUrl}
+                            alt=""
                             className="w-full h-full object-cover"
                           />
                         ) : (
-                          <div className="w-full h-full bg-gray-800 flex items-center justify-center text-2xl font-bold">
+                          <div className="w-full h-full flex items-center justify-center text-white text-[10px] md:text-xs font-bold">
                             {company.name.charAt(0)}
                           </div>
                         )}
                       </div>
-                      <div>
-                        <h3 className="text-xl font-bold text-white group-hover:text-red-500 transition-colors">
-                          {company.name}
-                        </h3>
-                        <span className="text-xs text-gray-500 uppercase tracking-wider">
-                          Tech Giant
+                    </div>
+
+                    {/* Text Info */}
+                    <div className="flex flex-col min-w-0">
+                      <h3 className="text-white font-semibold text-sm md:text-base line-clamp-2 leading-tight group-hover:text-white/90 truncate">
+                        {company.name}
+                      </h3>
+                      <div className="text-gray-400 text-xs md:text-sm mt-0 md:mt-1 flex flex-col">
+                        <span className="hover:text-white transition-colors truncate">
+                          {company.industry || 'Technology'}
+                        </span>
+                        <span className="text-[10px] md:text-xs mt-0.5 hidden md:block">
+                          View Interview Experiences
                         </span>
                       </div>
                     </div>
-                    <p className="text-gray-400 text-sm leading-relaxed line-clamp-2 min-h-[2.5rem] mb-4">
-                      {company.shortBio ||
-                        'Explore interview experiences and preparation guides for this company.'}
-                    </p>
-                    <div className="flex items-center text-sm text-red-500 font-medium opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-2 group-hover:translate-y-0">
-                      Read Experiences →
-                    </div>
-                  </Link>
-                </div>
+                  </div>
+                </Link>
               ))}
             </div>
           )}
@@ -348,7 +370,7 @@ const Homepage = () => {
       {/* NGO Section */}
       <section className="ngo-posts-section py-2 md:py-16 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-black via-red-900/10 to-black pointer-events-none"></div>
-        <div className="container relative z-10">
+        <div className="container mx-auto px-4 relative z-10">
           <div className="flex flex-col md:flex-row justify-between items-end mb-6 md:mb-16 gap-4">
             <div>
               <h2 className="text-3xl md:text-4xl font-bold mb-2 text-white">
@@ -376,7 +398,7 @@ const Homepage = () => {
 
       {/* Video Section */}
       <section className="video-section py-6 md:py-16 bg-black">
-        <div className="container">
+        <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-4">
             <div>
               <h2 className="text-4xl font-bold mb-2 text-white">
