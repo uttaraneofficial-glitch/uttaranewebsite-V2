@@ -164,9 +164,9 @@ const Homepage = () => {
             <div className="animate-fadeInUp w-full">
               {/* Tagline removed as per user request */}
 
-              <h1 className="text-lg md:text-7xl font-extrabold mb-1 md:mb-2 tracking-tight leading-tight text-white">
+              <h1 className="text-xs md:text-7xl font-extrabold mb-1 md:mb-2 tracking-tight leading-tight text-white whitespace-nowrap md:whitespace-normal">
                 {heroContent.headline || 'Find Your Dream Job'}
-                <span className="text-red-500 block mt-0.5">
+                <span className="text-red-500 inline md:block ml-1 md:ml-0 md:mt-0.5">
                   In Tech & Beyond
                 </span>
               </h1>
@@ -177,7 +177,7 @@ const Homepage = () => {
                     .split(/(#MakeInINDIA)/g)
                     .map((part, index) =>
                       part === '#MakeInINDIA' ? (
-                        <span key={index} className="text-red-500 font-bold">
+                        <span key={index} className="text-red-500 font-bold block md:inline mt-1 md:mt-0">
                           {part}
                         </span>
                       ) : (
