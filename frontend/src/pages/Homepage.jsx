@@ -164,7 +164,7 @@ const Homepage = () => {
             <div className="animate-fadeInUp">
               {/* Tagline removed as per user request */}
 
-              <h1 className="text-2xl md:text-7xl font-extrabold mb-1 md:mb-2 tracking-tight leading-tight text-white">
+              <h1 className="text-xl md:text-7xl font-extrabold mb-1 md:mb-2 tracking-tight leading-tight text-white">
                 {heroContent.headline || 'Find Your Dream Job'}
                 <span className="text-red-500 block mt-0.5">
                   In Tech & Beyond
@@ -172,7 +172,7 @@ const Homepage = () => {
               </h1>
 
               {heroContent.description && (
-                <p className="text-xs md:text-xl text-gray-300 mb-3 md:mb-4 max-w-2xl mx-auto leading-relaxed">
+                <p className="text-[10px] md:text-xl text-gray-300 mb-3 md:mb-4 max-w-2xl mx-auto leading-relaxed">
                   {heroContent.description
                     .split(/(#MakeInINDIA)/g)
                     .map((part, index) =>
@@ -191,13 +191,13 @@ const Homepage = () => {
               <div className="flex flex-row items-center justify-center gap-2 md:gap-3 mb-4 md:mb-6">
                 <Link
                   to="/company"
-                  className="px-4 py-2 md:px-6 md:py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-full font-bold transition-all transform hover:scale-105 hover:shadow-[0_0_20px_rgba(220,38,38,0.5)] text-xs md:text-sm"
+                  className="px-3 py-1.5 md:px-6 md:py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-full font-bold transition-all transform hover:scale-105 hover:shadow-[0_0_20px_rgba(220,38,38,0.5)] text-[10px] md:text-sm"
                 >
                   Explore Companies
                 </Link>
                 <Link
                   to="/about"
-                  className="px-4 py-2 md:px-6 md:py-2.5 bg-white/5 hover:bg-white/10 text-white border border-white/10 rounded-full font-bold backdrop-blur-sm transition-all hover:border-white/30 text-xs md:text-sm"
+                  className="px-3 py-1.5 md:px-6 md:py-2.5 bg-white/5 hover:bg-white/10 text-white border border-white/10 rounded-full font-bold backdrop-blur-sm transition-all hover:border-white/30 text-[10px] md:text-sm"
                 >
                   Learn More
                 </Link>
