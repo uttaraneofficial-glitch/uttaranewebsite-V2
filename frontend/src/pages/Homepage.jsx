@@ -160,7 +160,7 @@ const Homepage = () => {
           </div>
 
           {/* Content */}
-          <div className="absolute inset-0 pt-20 md:pt-0 z-10 container mx-auto px-4 flex items-center justify-center text-center">
+          <div className="absolute inset-0 pt-20 md:pt-0 z-10 container mx-auto px-4 flex items-end md:items-center justify-center text-center pb-8 md:pb-0">
             <div className="animate-fadeInUp w-full">
               {/* Tagline removed as per user request */}
 
