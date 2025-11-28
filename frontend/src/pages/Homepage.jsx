@@ -346,21 +346,21 @@ const Homepage = () => {
       <div className="h-px bg-gradient-to-r from-transparent via-red-500/50 to-transparent my-2"></div>
 
       {/* NGO Section */}
-      <section className="ngo-posts-section py-6 md:py-16 relative overflow-hidden">
+      <section className="ngo-posts-section py-2 md:py-16 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-black via-red-900/10 to-black pointer-events-none"></div>
         <div className="container relative z-10">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-4">
+          <div className="flex flex-col md:flex-row justify-between items-end mb-6 md:mb-16 gap-4">
             <div>
-              <h2 className="text-4xl font-bold mb-2 text-white">
+              <h2 className="text-3xl md:text-4xl font-bold mb-2 text-white">
                 NGO Community Feed
               </h2>
-              <p className="text-gray-400">
+              <p className="text-gray-400 text-sm md:text-base">
                 Latest updates and stories from the community
               </p>
             </div>
             <Link
               to="/ngo"
-              className="group flex items-center gap-2 text-red-500 hover:text-red-400 font-semibold transition-colors"
+              className="group flex items-center gap-2 text-white bg-white/10 px-4 py-2 rounded-lg hover:bg-white/20 font-semibold transition-all md:bg-transparent md:px-0 md:py-0 md:text-red-500 md:hover:text-red-400"
             >
               View All Posts
               <span className="transform group-hover:translate-x-1 transition-transform">

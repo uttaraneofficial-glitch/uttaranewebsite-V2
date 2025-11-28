@@ -31,7 +31,7 @@ const NgoPostsGrid = () => {
     return <div className="text-center py-8 text-red-500">Error: {error}</div>;
 
   return (
-    <div className="ngo-posts-grid">
+    <div className="ngo-posts-grid pb-24 md:pb-0">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {posts.map(post => (
           <div
@@ -41,7 +41,7 @@ const NgoPostsGrid = () => {
             <img
               src={post.imageUrl}
               alt={post.caption || 'NGO post'}
-              className="w-full h-48 object-cover"
+              className="w-full h-40 md:h-48 object-cover"
             />
             {post.caption && (
               <div className="p-4">
