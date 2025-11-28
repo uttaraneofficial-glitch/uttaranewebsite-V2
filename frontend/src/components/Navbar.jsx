@@ -38,14 +38,14 @@ const Navbar = () => {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-black border-b border-gray-800">
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center py-4">
+        <div className="flex justify-between items-center py-2 md:py-4">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group">
             {logoUrl ? (
               <img
                 src={logoUrl}
                 alt="Logo"
-                className="h-12 w-auto object-contain"
+                className="h-8 md:h-12 w-auto object-contain"
               />
             ) : (
               <div className="h-10 w-10 bg-red-600 rounded-full flex items-center justify-center text-white font-bold">

@@ -264,20 +264,21 @@ const Homepage = () => {
       <div className="h-px bg-gradient-to-r from-transparent via-red-500/50 to-transparent my-2"></div>
 
       {/* Featured Companies */}
-      <section className="companies-section py-6 md:py-16 relative">
+      {/* Featured Companies */}
+      <section className="companies-section py-2 md:py-16 relative">
         <div className="container">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-4">
+          <div className="flex flex-col md:flex-row justify-between items-end mb-8 md:mb-16 gap-4">
             <div>
-              <h2 className="text-4xl font-bold mb-2 text-white">
+              <h2 className="text-3xl md:text-4xl font-bold mb-2 text-white">
                 Reviewed Companies
               </h2>
-              <p className="text-gray-400">
+              <p className="text-gray-400 text-sm md:text-base">
                 Discover opportunities at top-tier tech giants
               </p>
             </div>
             <Link
               to="/company"
-              className="group flex items-center gap-2 text-red-500 hover:text-red-400 font-semibold transition-colors"
+              className="group flex items-center gap-2 text-white bg-white/10 px-4 py-2 rounded-lg hover:bg-white/20 font-semibold transition-all md:bg-transparent md:px-0 md:py-0 md:text-red-500 md:hover:text-red-400"
             >
               View All Companies
               <span className="transform group-hover:translate-x-1 transition-transform">
@@ -301,7 +302,7 @@ const Homepage = () => {
                 >
                   <Link to={`/company/${company.slug}`}>
                     <div className="flex items-center gap-4 mb-6">
-                      <div className="w-16 h-16 rounded-xl overflow-hidden border border-white/10 shadow-lg group-hover:border-red-500/50 transition-colors">
+                      <div className="w-16 h-16 rounded-xl overflow-hidden border border-white/10 shadow-lg group-hover:border-red-500/50 transition-colors flex-shrink-0">
                         {company.thumbnail || company.logoUrl ? (
                           <img
                             src={company.thumbnail || company.logoUrl}
@@ -323,7 +324,7 @@ const Homepage = () => {
                         </span>
                       </div>
                     </div>
-                    <p className="text-gray-400 text-sm leading-relaxed line-clamp-3 mb-4">
+                    <p className="text-gray-400 text-sm leading-relaxed line-clamp-2 min-h-[2.5rem] mb-4">
                       {company.shortBio ||
                         'Explore interview experiences and preparation guides for this company.'}
                     </p>

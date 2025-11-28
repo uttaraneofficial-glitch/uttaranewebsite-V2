@@ -33,7 +33,7 @@ const BackToTop = () => {
       {isVisible && (
         <button
           onClick={scrollToTop}
-          className="fixed bottom-8 right-8 z-50 p-4 rounded-full shadow-lg transition-all duration-300 hover:scale-110 btn-hover-effect"
+          className="fixed bottom-20 right-4 md:bottom-8 md:right-8 z-50 p-3 md:p-4 rounded-full shadow-lg transition-all duration-300 hover:scale-110 btn-hover-effect"
           style={{
             background: 'linear-gradient(135deg, #e53935 0%, #c62828 100%)',
             animation: 'fadeIn 0.3s ease-in-out',
