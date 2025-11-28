@@ -138,9 +138,9 @@ const Homepage = () => {
       {heroLoading ? (
         <SkeletonHero />
       ) : (
-        <section className="hero-section relative h-[55vh] md:min-h-screen flex items-center justify-center overflow-hidden">
+        <section className="hero-section relative h-[60vh] md:min-h-screen flex items-center justify-center overflow-hidden pt-20 md:pt-0">
           {/* Background / Image Container */}
-          <div className="absolute inset-0 z-0 bg-black">
+          <div className="absolute inset-0 top-20 md:top-0 z-0 bg-black">
             {heroContent.imageUrl ? (
               <>
                 <img
@@ -149,7 +149,7 @@ const Homepage = () => {
                   className="w-full h-full object-cover object-top animate-scaleIn"
                   style={{ animationDuration: '1.5s' }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black"></div>
+                <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-black"></div>
               </>
             ) : (
               <div className="w-full h-full bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-gray-900 via-black to-black"></div>
