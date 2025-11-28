@@ -51,7 +51,7 @@ const SearchBar = ({
           value={searchTerm}
           onChange={e => setSearchTerm(e.target.value)}
           placeholder={placeholder}
-          className="w-full pl-10 pr-10 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-red-500 transition-colors"
+          className="w-full pl-10 pr-10 py-2 md:py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-red-500 transition-colors"
         />
 
         {/* Clear Button */}

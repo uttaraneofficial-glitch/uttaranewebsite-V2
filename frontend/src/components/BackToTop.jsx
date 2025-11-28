@@ -3,10 +3,15 @@ import React, { useState, useEffect } from 'react';
 const BackToTop = () => {
   const [isVisible, setIsVisible] = useState(false);
 
-  // Show button when page is scrolled down 300px
+  // Show button when page is scrolled down 500px and not at the bottom
   useEffect(() => {
     const toggleVisibility = () => {
-      if (window.pageYOffset > 300) {
+      const scrolled = window.pageYOffset;
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.body.offsetHeight;
+
+      // Show if scrolled > 500px AND not near bottom (footer area)
+      if (scrolled > 500 && windowHeight + scrolled < documentHeight - 100) {
         setIsVisible(true);
       } else {
         setIsVisible(false);

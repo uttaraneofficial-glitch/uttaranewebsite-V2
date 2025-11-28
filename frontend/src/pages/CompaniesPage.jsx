@@ -102,7 +102,7 @@ const CompaniesPage = () => {
           </div>
 
           {loading ? (
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-3 gap-y-6 md:gap-x-4 md:gap-y-8">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-2 gap-y-4 md:gap-x-4 md:gap-y-8">
               {[...Array(8)].map((_, i) => (
                 <SkeletonCard key={i} />
               ))}
@@ -110,12 +110,12 @@ const CompaniesPage = () => {
           ) : error ? (
             <div className="text-red-500">{error}</div>
           ) : filteredCompanies.length > 0 ? (
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-3 gap-y-6 md:gap-x-4 md:gap-y-8">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-2 gap-y-4 md:gap-x-4 md:gap-y-8">
               {filteredCompanies.map(company => (
                 <Link
                   to={`/company/${company.slug}`}
                   key={company.id}
-                  className="group flex flex-col gap-2 md:gap-3 cursor-pointer"
+                  className="group flex flex-col gap-1.5 md:gap-3 cursor-pointer"
                 >
                   {/* Thumbnail Container */}
                   <div className="relative aspect-video rounded-lg md:rounded-xl overflow-hidden bg-gray-900 border border-white/5 group-hover:rounded-none transition-all duration-200">
@@ -160,7 +160,7 @@ const CompaniesPage = () => {
                       <h3 className="text-white font-semibold text-sm md:text-base line-clamp-2 leading-tight group-hover:text-white/90 truncate">
                         {company.name}
                       </h3>
-                      <div className="text-gray-400 text-xs md:text-sm mt-0.5 md:mt-1 flex flex-col">
+                      <div className="text-gray-400 text-xs md:text-sm mt-0 md:mt-1 flex flex-col">
                         <span className="hover:text-white transition-colors truncate">
                           {company.industry || 'Technology'}
                         </span>
