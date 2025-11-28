@@ -138,21 +138,21 @@ const Homepage = () => {
       {heroLoading ? (
         <SkeletonHero />
       ) : (
-        <section className="hero-section relative h-[60vh] md:min-h-screen flex items-center justify-center overflow-hidden pt-20 md:pt-0">
+        <section className="hero-section relative pt-20 md:pt-0 md:min-h-screen flex flex-col md:block overflow-hidden">
           {/* Background / Image Container */}
-          <div className="absolute inset-0 top-20 md:top-0 z-0 bg-black">
+          <div className="relative w-full h-auto md:absolute md:inset-0 md:h-full z-0 bg-black">
             {heroContent.imageUrl ? (
               <>
                 <img
                   src={heroContent.imageUrl}
                   alt="Hero Background"
-                  className="w-full h-full object-cover object-top animate-scaleIn"
+                  className="w-full h-auto md:h-full object-contain md:object-cover animate-scaleIn"
                   style={{ animationDuration: '1.5s' }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-black"></div>
               </>
             ) : (
-              <div className="w-full h-full bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-gray-900 via-black to-black"></div>
+              <div className="w-full h-64 md:h-full bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-gray-900 via-black to-black"></div>
             )}
             {/* Animated Particles/Glow - Hidden on mobile to reduce clutter, visible on desktop */}
             <div className="hidden md:block absolute top-1/4 left-1/4 w-96 h-96 bg-red-600/20 rounded-full blur-3xl animate-pulse"></div>
@@ -160,7 +160,7 @@ const Homepage = () => {
           </div>
 
           {/* Content */}
-          <div className="relative z-10 container mx-auto px-4 text-center">
+          <div className="absolute inset-0 pt-20 md:pt-0 z-10 container mx-auto px-4 flex items-center justify-center text-center">
             <div className="animate-fadeInUp w-full">
               {/* Tagline removed as per user request */}
 
