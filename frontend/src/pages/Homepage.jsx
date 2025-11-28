@@ -125,6 +125,10 @@ const Homepage = () => {
     fetchHeroContent();
   }, []);
 
+  const getCompanyThumbnail = company => {
+    return company.thumbnail || null;
+  };
+
   if (error)
     return (
       <div className="container py-8 text-red-500 text-center">
