@@ -138,21 +138,21 @@ const Homepage = () => {
       {heroLoading ? (
         <SkeletonHero />
       ) : (
-        <section className="hero-section relative min-h-screen flex flex-col md:block overflow-hidden">
+        <section className="hero-section relative pt-20 md:pt-0 min-h-0 md:min-h-screen flex flex-col md:block overflow-hidden">
           {/* Background / Image Container */}
-          <div className="relative w-full h-[45vh] md:absolute md:inset-0 md:h-full z-0 bg-black">
+          <div className="relative w-full md:absolute md:inset-0 md:h-full z-0 bg-black">
             {heroContent.imageUrl ? (
               <>
                 <img
                   src={heroContent.imageUrl}
                   alt="Hero Background"
-                  className="w-full h-full object-contain object-top md:object-cover animate-scaleIn"
+                  className="w-full h-auto max-h-[50vh] md:max-h-full object-contain object-top md:object-cover animate-scaleIn"
                   style={{ animationDuration: '1.5s' }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black md:from-black/70 md:via-black/50 md:to-black"></div>
               </>
             ) : (
-              <div className="w-full h-full bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-gray-900 via-black to-black"></div>
+              <div className="w-full h-64 md:h-full bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-gray-900 via-black to-black"></div>
             )}
             {/* Animated Particles/Glow - Hidden on mobile to reduce clutter, visible on desktop */}
             <div className="hidden md:block absolute top-1/4 left-1/4 w-96 h-96 bg-red-600/20 rounded-full blur-3xl animate-pulse"></div>
@@ -160,11 +160,11 @@ const Homepage = () => {
           </div>
 
           {/* Content */}
-          <div className="relative z-10 container mx-auto px-4 py-4 md:absolute md:inset-0 md:flex md:items-center md:justify-center md:pt-0 text-center">
+          <div className="relative z-10 container mx-auto px-4 py-2 md:absolute md:inset-0 md:flex md:items-center md:justify-center md:pt-0 text-center">
             <div className="animate-fadeInUp">
               {/* Tagline removed as per user request */}
 
-              <h1 className="text-3xl md:text-7xl font-extrabold mb-2 tracking-tight leading-tight text-white">
+              <h1 className="text-2xl md:text-7xl font-extrabold mb-1 md:mb-2 tracking-tight leading-tight text-white">
                 {heroContent.headline || 'Find Your Dream Job'}
                 <span className="text-red-500 block mt-0.5">
                   In Tech & Beyond
@@ -172,7 +172,7 @@ const Homepage = () => {
               </h1>
 
               {heroContent.description && (
-                <p className="text-sm md:text-xl text-gray-300 mb-4 max-w-2xl mx-auto leading-relaxed">
+                <p className="text-xs md:text-xl text-gray-300 mb-3 md:mb-4 max-w-2xl mx-auto leading-relaxed">
                   {heroContent.description
                     .split(/(#MakeInINDIA)/g)
                     .map((part, index) =>
@@ -188,23 +188,23 @@ const Homepage = () => {
               )}
 
               {/* CTA Buttons */}
-              <div className="flex flex-row items-center justify-center gap-3 mb-6">
+              <div className="flex flex-row items-center justify-center gap-2 md:gap-3 mb-4 md:mb-6">
                 <Link
                   to="/company"
-                  className="px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-full font-bold transition-all transform hover:scale-105 hover:shadow-[0_0_20px_rgba(220,38,38,0.5)] text-sm"
+                  className="px-4 py-2 md:px-6 md:py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-full font-bold transition-all transform hover:scale-105 hover:shadow-[0_0_20px_rgba(220,38,38,0.5)] text-xs md:text-sm"
                 >
                   Explore Companies
                 </Link>
                 <Link
                   to="/about"
-                  className="px-6 py-2.5 bg-white/5 hover:bg-white/10 text-white border border-white/10 rounded-full font-bold backdrop-blur-sm transition-all hover:border-white/30 text-sm"
+                  className="px-4 py-2 md:px-6 md:py-2.5 bg-white/5 hover:bg-white/10 text-white border border-white/10 rounded-full font-bold backdrop-blur-sm transition-all hover:border-white/30 text-xs md:text-sm"
                 >
                   Learn More
                 </Link>
               </div>
 
               {/* Social Links */}
-              <div className="flex justify-center gap-6">
+              <div className="flex justify-center gap-4 md:gap-6">
                 {Object.entries(heroContent.socialLinks).map(
                   ([platform, url]) =>
                     url && (
@@ -218,7 +218,7 @@ const Homepage = () => {
                       >
                         {platform === 'youtube' && (
                           <svg
-                            className="w-6 h-6"
+                            className="w-5 h-5 md:w-6 md:h-6"
                             fill="currentColor"
                             viewBox="0 0 24 24"
                           >
@@ -227,7 +227,7 @@ const Homepage = () => {
                         )}
                         {platform === 'instagram' && (
                           <svg
-                            className="w-6 h-6"
+                            className="w-5 h-5 md:w-6 md:h-6"
                             fill="currentColor"
                             viewBox="0 0 24 24"
                           >
@@ -236,7 +236,7 @@ const Homepage = () => {
                         )}
                         {platform === 'twitter' && (
                           <svg
-                            className="w-6 h-6"
+                            className="w-5 h-5 md:w-6 md:h-6"
                             fill="currentColor"
                             viewBox="0 0 24 24"
                           >
@@ -245,7 +245,7 @@ const Homepage = () => {
                         )}
                         {platform === 'linkedin' && (
                           <svg
-                            className="w-6 h-6"
+                            className="w-5 h-5 md:w-6 md:h-6"
                             fill="currentColor"
                             viewBox="0 0 24 24"
                           >
