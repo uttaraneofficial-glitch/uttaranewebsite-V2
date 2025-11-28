@@ -188,23 +188,23 @@ const Homepage = () => {
               )}
 
               {/* CTA Buttons */}
-              <div className="flex flex-row items-center justify-center gap-2 md:gap-3 mb-4 md:mb-6">
+              <div className="flex flex-row items-center justify-center gap-2 md:gap-3 mb-3 md:mb-6">
                 <Link
                   to="/company"
-                  className="px-3 py-1.5 md:px-6 md:py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-full font-bold transition-all transform hover:scale-105 hover:shadow-[0_0_20px_rgba(220,38,38,0.5)] text-[10px] md:text-sm"
+                  className="px-2.5 py-1 md:px-6 md:py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-full font-bold transition-all transform hover:scale-105 hover:shadow-[0_0_20px_rgba(220,38,38,0.5)] text-[9px] md:text-sm"
                 >
                   Explore Companies
                 </Link>
                 <Link
                   to="/about"
-                  className="px-3 py-1.5 md:px-6 md:py-2.5 bg-white/5 hover:bg-white/10 text-white border border-white/10 rounded-full font-bold backdrop-blur-sm transition-all hover:border-white/30 text-[10px] md:text-sm"
+                  className="px-2.5 py-1 md:px-6 md:py-2.5 bg-white/5 hover:bg-white/10 text-white border border-white/10 rounded-full font-bold backdrop-blur-sm transition-all hover:border-white/30 text-[9px] md:text-sm"
                 >
                   Learn More
                 </Link>
               </div>
 
               {/* Social Links */}
-              <div className="flex justify-center gap-4 md:gap-6">
+              <div className="flex justify-center gap-3 md:gap-6">
                 {Object.entries(heroContent.socialLinks).map(
                   ([platform, url]) =>
                     url && (
@@ -218,7 +218,7 @@ const Homepage = () => {
                       >
                         {platform === 'youtube' && (
                           <svg
-                            className="w-5 h-5 md:w-6 md:h-6"
+                            className="w-4 h-4 md:w-6 md:h-6"
                             fill="currentColor"
                             viewBox="0 0 24 24"
                           >
@@ -227,7 +227,7 @@ const Homepage = () => {
                         )}
                         {platform === 'instagram' && (
                           <svg
-                            className="w-5 h-5 md:w-6 md:h-6"
+                            className="w-4 h-4 md:w-6 md:h-6"
                             fill="currentColor"
                             viewBox="0 0 24 24"
                           >
@@ -236,7 +236,7 @@ const Homepage = () => {
                         )}
                         {platform === 'twitter' && (
                           <svg
-                            className="w-5 h-5 md:w-6 md:h-6"
+                            className="w-4 h-4 md:w-6 md:h-6"
                             fill="currentColor"
                             viewBox="0 0 24 24"
                           >
@@ -245,7 +245,7 @@ const Homepage = () => {
                         )}
                         {platform === 'linkedin' && (
                           <svg
-                            className="w-5 h-5 md:w-6 md:h-6"
+                            className="w-4 h-4 md:w-6 md:h-6"
                             fill="currentColor"
                             viewBox="0 0 24 24"
                           >
