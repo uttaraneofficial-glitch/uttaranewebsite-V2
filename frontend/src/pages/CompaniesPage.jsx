@@ -83,9 +83,9 @@ const CompaniesPage = () => {
               <button
                 key={category}
                 onClick={() => setSelectedCategory(category)}
-                className={`px - 4 py - 1.5 rounded - lg text - sm font - medium whitespace - nowrap transition - colors ${selectedCategory === category
-                  ? 'bg-white text-black'
-                  : 'bg-white/10 text-white hover:bg-white/20'
+                className={`px-4 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${selectedCategory === category
+                    ? 'bg-white text-black'
+                    : 'bg-white/10 text-white hover:bg-white/20'
                   }`}
               >
                 {category}
