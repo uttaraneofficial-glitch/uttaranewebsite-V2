@@ -56,13 +56,13 @@ const NgoPostsPage = () => {
 
       <main className="w-full relative z-10 pt-20">
         <div className="p-6 md:p-8 max-w-7xl mx-auto">
-          <h1 className="text-4xl font-bold mb-8 text-white animate-fadeInUp">
+          <h1 className="text-3xl md:text-4xl font-bold mb-4 md:mb-8 text-white animate-fadeInUp">
             NGO Community Feed
           </h1>
 
           {/* Search Bar */}
           <div
-            className="mb-12 animate-fadeInUp"
+            className="mb-6 md:mb-12 animate-fadeInUp"
             style={{ animationDelay: '0.1s' }}
           >
             <SearchBar
@@ -79,13 +79,13 @@ const NgoPostsPage = () => {
               ))}
             </div>
           ) : filteredPosts.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 stagger-animation">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 stagger-animation pb-24 md:pb-0">
               {filteredPosts.map(post => (
                 <div
                   key={post.id}
                   className="glass-card rounded-2xl overflow-hidden border border-white/10 hover:-translate-y-2 transition-all duration-300"
                 >
-                  <div className="relative h-48 overflow-hidden">
+                  <div className="relative h-40 md:h-48 overflow-hidden">
                     <img
                       src={post.imageUrl}
                       alt="NGO post"
