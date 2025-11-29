@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { uploadImage } from '../../utils/uploadImage';
 import DataTable from '../../components/admin/DataTable';
 import { PlusIcon } from '@heroicons/react/24/outline';
 
@@ -47,10 +48,36 @@ const CompaniesPage = () => {
     }));
   };
 
+  // State for file objects
+  const [files, setFiles] = useState({});
+
   const handleSubmit = async e => {
     e.preventDefault();
 
     try {
+      let logoUrl = formData.logoUrl;
+      let thumbnail = formData.thumbnail;
+      let bannerUrl = formData.bannerUrl;
+
+      // Upload images if new files selected
+      if (files.thumbnail) {
+        thumbnail = await uploadImage(files.thumbnail);
+      }
+      if (files.bannerUrl) {
+        bannerUrl = await uploadImage(files.bannerUrl);
+      }
+      // Note: Current form doesn't have a specific logo file input separate from others effectively, 
+      // but if it did, we'd handle it here. 
+      // The current code seemed to imply logoUrl was text input, but let's check if we missed a file input for it.
+      // Looking at the form, there is no file input for logoUrl, only text. 
+      // But wait, the table renders logoUrl. 
+      // Let's assume for now logoUrl is text only as per previous code, or if I missed it.
+      // Actually, let's check if I should add file input for logoUrl? 
+      // The user said "Example: Companies Page... const logoUrl = logoFile ? ...".
+      // I should probably add file input for logoUrl if it's missing or just handle what's there.
+      // The previous code had `logoUrl` as text input. 
+      // I will stick to what's there for now but ensure thumbnail/banner use uploadImage.
+
       const url = editingCompany
         ? `${import.meta.env.VITE_API_BASE_URL}/api/admin/companies/${editingCompany.id}`
         : `${import.meta.env.VITE_API_BASE_URL}/api/admin/companies`;
@@ -63,7 +90,12 @@ const CompaniesPage = () => {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          logoUrl,
+          thumbnail,
+          bannerUrl,
+        }),
       });
 
       if (!response.ok) {
@@ -80,6 +112,7 @@ const CompaniesPage = () => {
         thumbnail: '',
         bannerUrl: '',
       });
+      setFiles({});
       setThumbnailPreview(null);
       setBannerPreview(null);
       setEditingCompany(null);
@@ -104,6 +137,7 @@ const CompaniesPage = () => {
     setBannerPreview(company.bannerUrl);
     setEditingCompany(company);
     setShowForm(true);
+    setFiles({});
   };
 
   const handleDelete = async company => {
@@ -139,6 +173,7 @@ const CompaniesPage = () => {
       thumbnail: '',
       bannerUrl: '',
     });
+    setFiles({});
     setThumbnailPreview(null);
     setBannerPreview(null);
     setEditingCompany(null);
@@ -148,6 +183,12 @@ const CompaniesPage = () => {
   const handleFileChange = (e, field) => {
     const file = e.target.files[0];
     if (file) {
+      // Store file for upload
+      setFiles(prev => ({
+        ...prev,
+        [field]: file
+      }));
+
       const reader = new FileReader();
       reader.onloadend = () => {
         if (field === 'thumbnail') {
@@ -155,10 +196,7 @@ const CompaniesPage = () => {
         } else if (field === 'bannerUrl') {
           setBannerPreview(reader.result);
         }
-        setFormData(prev => ({
-          ...prev,
-          [field]: reader.result,
-        }));
+        // We don't update formData with base64 anymore
       };
       reader.readAsDataURL(file);
     }

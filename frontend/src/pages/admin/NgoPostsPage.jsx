@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { uploadImage } from '../../utils/uploadImage';
 
 const NgoPostsPage = () => {
   const [posts, setPosts] = useState([]);
@@ -64,33 +65,35 @@ const NgoPostsPage = () => {
     e.preventDefault();
 
     try {
+      let imageUrl = formData.imageUrl;
+
+      if (selectedFile) {
+        imageUrl = await uploadImage(selectedFile);
+      }
+
       const url = editingPost
         ? `${import.meta.env.VITE_API_BASE_URL}/api/admin/ngo-posts/${editingPost.id}`
         : `${import.meta.env.VITE_API_BASE_URL}/api/admin/ngo-posts`;
 
       const method = editingPost ? 'PUT' : 'POST';
 
-      const formDataToSend = new FormData();
-      formDataToSend.append('caption', formData.caption);
-
-      if (selectedFile) {
-        formDataToSend.append('image', selectedFile);
-      } else if (formData.imageUrl) {
-        formDataToSend.append('imageUrl', formData.imageUrl);
-      }
+      const requestData = {
+        caption: formData.caption,
+        imageUrl,
+      };
 
       // Only include postedAt for new posts, not updates
       if (!editingPost) {
-        formDataToSend.append('postedAt', new Date().toISOString());
+        requestData.postedAt = new Date().toISOString();
       }
 
       const response = await fetch(url, {
         method,
         headers: {
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-          // Content-Type is automatically set for FormData
         },
-        body: formDataToSend,
+        body: JSON.stringify(requestData),
       });
 
       if (!response.ok) {

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { uploadImage } from '../../utils/uploadImage';
 import DataTable from '../../components/admin/DataTable';
 import { VideoCameraIcon } from '@heroicons/react/24/outline';
 
@@ -100,40 +101,33 @@ const VideosPage = () => {
     e.preventDefault();
 
     try {
+      let thumbnail = formData.thumbnail;
+
+      if (selectedFile) {
+        thumbnail = await uploadImage(selectedFile);
+      }
+
       const url = editingVideo
         ? `${import.meta.env.VITE_API_BASE_URL}/api/admin/videos/${editingVideo.id}`
         : `${import.meta.env.VITE_API_BASE_URL}/api/admin/videos`;
 
       const method = editingVideo ? 'PUT' : 'POST';
 
-      const formDataToSend = new FormData();
-      formDataToSend.append('companyId', formData.companyId);
-      formDataToSend.append('youtubeId', formData.youtubeId);
-      formDataToSend.append('title', formData.title);
-      formDataToSend.append('roundType', formData.roundType);
-      formDataToSend.append('publishedAt', formData.publishedAt ? new Date(formData.publishedAt).toISOString() : '');
-      if (formData.candidateId) formDataToSend.append('candidateId', formData.candidateId);
-
-      // Check if we have a file in the file input
-      const fileInput = document.querySelector('input[type="file"]');
-      if (fileInput && fileInput.files[0]) {
-        formDataToSend.append('image', fileInput.files[0]);
-      } else if (formData.thumbnail) {
-        // If no new file, we might want to send the existing URL or nothing
-        // Backend handles req.file, so if we don't send 'image', it won't update the thumbnail
-        // But we still need to send other fields.
-        // If we want to keep existing thumbnail, we don't need to send 'image'.
-        // However, if we want to update other fields, FormData is fine.
-        formDataToSend.append('thumbnail', formData.thumbnail);
-      }
+      const requestData = {
+        ...formData,
+        thumbnail,
+        publishedAt: formData.publishedAt
+          ? new Date(formData.publishedAt).toISOString()
+          : null,
+      };
 
       const response = await fetch(url, {
         method,
         headers: {
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-          // Content-Type is automatically set for FormData
         },
-        body: formDataToSend,
+        body: JSON.stringify(requestData),
       });
 
       if (!response.ok) {
@@ -152,6 +146,7 @@ const VideosPage = () => {
         candidateId: '',
         thumbnail: '',
       });
+      setSelectedFile(null);
       setThumbnailPreview(null);
       setEditingVideo(null);
       setShowForm(false);
@@ -171,7 +166,10 @@ const VideosPage = () => {
         ? new Date(video.publishedAt).toISOString().split('T')[0]
         : new Date().toISOString().split('T')[0],
       candidateId: video.candidateId || '',
+      thumbnail: video.thumbnail || '',
     });
+    setThumbnailPreview(video.thumbnail);
+    setSelectedFile(null);
     setEditingVideo(video);
     setShowForm(true);
   };
@@ -209,6 +207,7 @@ const VideosPage = () => {
       thumbnail: '',
       candidateId: '',
     });
+    setSelectedFile(null);
     setThumbnailPreview(null);
     setEditingVideo(null);
     setShowForm(false);
@@ -217,13 +216,11 @@ const VideosPage = () => {
   const handleFileChange = e => {
     const file = e.target.files[0];
     if (file) {
+      setSelectedFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
         setThumbnailPreview(reader.result);
-        setFormData(prev => ({
-          ...prev,
-          thumbnail: reader.result,
-        }));
+        // We don't update formData.thumbnail with base64 anymore
       };
       reader.readAsDataURL(file);
     }

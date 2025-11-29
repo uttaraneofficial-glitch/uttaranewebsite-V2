@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { uploadImage } from '../../utils/uploadImage';
 
 const MkStudioPostsPage = () => {
   const [posts, setPosts] = useState([]);
@@ -82,6 +83,9 @@ const MkStudioPostsPage = () => {
     }));
   };
 
+  // State for file object
+  const [selectedFile, setSelectedFile] = useState(null);
+
   const handleSubmit = async e => {
     e.preventDefault();
 
@@ -92,33 +96,30 @@ const MkStudioPostsPage = () => {
     }
 
     try {
+      let thumbnail = formData.thumbnail;
+
+      if (selectedFile) {
+        thumbnail = await uploadImage(selectedFile);
+      }
+
       const url = editingPost
         ? `${import.meta.env.VITE_API_BASE_URL}/api/admin/mkstudio-posts/${editingPost.id}`
         : `${import.meta.env.VITE_API_BASE_URL}/api/admin/mkstudio-posts`;
 
       const method = editingPost ? 'PUT' : 'POST';
 
-      const formDataToSend = new FormData();
-      formDataToSend.append('youtubeId', formData.youtubeId);
-      formDataToSend.append('title', formData.title);
-      formDataToSend.append('description', formData.description || '');
-      formDataToSend.append('publishedAt', formData.publishedAt);
-
-      // Check if we have a file in the file input
-      const fileInput = document.querySelector('input[type="file"]');
-      if (fileInput && fileInput.files[0]) {
-        formDataToSend.append('image', fileInput.files[0]);
-      } else if (formData.thumbnail) {
-        formDataToSend.append('thumbnail', formData.thumbnail);
-      }
-
       const response = await fetch(url, {
         method,
         headers: {
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-          // Content-Type is automatically set for FormData
         },
-        body: formDataToSend,
+        body: JSON.stringify({
+          ...formData,
+          thumbnail,
+          // Keep the date format consistent - send as is since it's already in YYYY-MM-DD format
+          publishedAt: formData.publishedAt, // Don't convert to ISO string here
+        }),
       });
 
       if (!response.ok) {
@@ -133,6 +134,7 @@ const MkStudioPostsPage = () => {
         publishedAt: new Date().toISOString().split('T')[0],
         thumbnail: '', // Reset thumbnail
       });
+      setSelectedFile(null);
       setThumbnailPreview(null); // Reset thumbnail preview
       setEditingPost(null);
       setShowForm(false);
@@ -153,6 +155,8 @@ const MkStudioPostsPage = () => {
         : new Date().toISOString().split('T')[0],
       thumbnail: post.thumbnail || '', // Add thumbnail
     });
+    setThumbnailPreview(post.thumbnail);
+    setSelectedFile(null);
     setEditingPost(post);
     setShowForm(true);
   };
@@ -190,6 +194,7 @@ const MkStudioPostsPage = () => {
       publishedAt: new Date().toISOString().split('T')[0],
       thumbnail: '', // Reset thumbnail
     });
+    setSelectedFile(null);
     setThumbnailPreview(null); // Reset thumbnail preview
     setEditingPost(null);
     setShowForm(false);
@@ -199,15 +204,11 @@ const MkStudioPostsPage = () => {
   const handleImageUpload = async file => {
     if (!file) return;
 
-    // In a real implementation, we would upload to Cloudinary here
-    // For now, we'll just create a preview
+    setSelectedFile(file);
     const reader = new FileReader();
     reader.onloadend = () => {
       setThumbnailPreview(reader.result);
-      setFormData(prev => ({
-        ...prev,
-        thumbnail: reader.result, // In real implementation, this would be the Cloudinary URL
-      }));
+      // We don't update formData.thumbnail with base64 anymore
     };
     reader.readAsDataURL(file);
   };

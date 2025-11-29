@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { uploadImage } from '../../utils/uploadImage';
 
 const SettingsPage = () => {
   const [settings, setSettings] = useState({
@@ -134,51 +135,48 @@ const SettingsPage = () => {
     setError(null);
 
     try {
-      const keys = Object.keys(settings);
+      // First, upload any pending images
+      const updatedSettings = { ...settings };
+      const fileKeys = Object.keys(files);
+
+      for (const key of fileKeys) {
+        if (files[key]) {
+          try {
+            const imageUrl = await uploadImage(files[key]);
+            updatedSettings[key] = imageUrl;
+          } catch (uploadErr) {
+            throw new Error(`Failed to upload image for ${key}: ${uploadErr.message}`);
+          }
+        }
+      }
+
+      // Now save all settings with updated URLs
+      const keys = Object.keys(updatedSettings);
 
       for (const key of keys) {
         // Skip primary_color as it's not in DB yet or handled differently
         if (key === 'primary_color') continue;
 
-        let response;
-
-        // Check if we have a new file for this key
-        if (files[key]) {
-          const formData = new FormData();
-          formData.append('image', files[key]);
-
-          response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/admin/site-content/${key}`, {
-            method: 'PUT',
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-              // Content-Type is automatically set for FormData
-            },
-            body: formData,
-          });
-        } else {
-          // Regular JSON update for text fields or if no new image
-          response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/admin/site-content/${key}`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-            },
-            body: JSON.stringify({ value: settings[key] }),
-          });
-        }
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/admin/site-content/${key}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+          },
+          body: JSON.stringify({ value: updatedSettings[key] }),
+        });
 
         if (!response.ok) {
           throw new Error(`Failed to save ${key}`);
         }
       }
 
-      // Clear files after successful save
+      // Update local state with new URLs and clear files
+      setSettings(updatedSettings);
       setFiles({});
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
 
-      // Refresh settings to get the new URLs
-      fetchSettings();
     } catch (err) {
       setError('Failed to save settings: ' + err.message);
     } finally {

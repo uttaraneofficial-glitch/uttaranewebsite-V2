@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { uploadImage } from '../../utils/uploadImage';
 import DataTable from '../../components/admin/DataTable';
 import { UserPlusIcon } from '@heroicons/react/24/outline';
 
@@ -100,33 +101,28 @@ const CandidatesPage = () => {
     e.preventDefault();
 
     try {
+      let profileImageUrl = formData.profileImageUrl;
+
+      if (selectedFile) {
+        profileImageUrl = await uploadImage(selectedFile);
+      }
+
       const url = editingCandidate
         ? `${import.meta.env.VITE_API_BASE_URL}/api/admin/candidates/${editingCandidate.id}`
         : `${import.meta.env.VITE_API_BASE_URL}/api/admin/candidates`;
 
       const method = editingCandidate ? 'PUT' : 'POST';
 
-      const formDataToSend = new FormData();
-      formDataToSend.append('name', formData.name);
-      formDataToSend.append('companyId', formData.companyId);
-      if (formData.linkedinUrl) formDataToSend.append('linkedinUrl', formData.linkedinUrl);
-
-      // Append other optional fields if they exist in formData (though current form doesn't seem to have them)
-      // If you add inputs for them later, make sure to append them here.
-
-      if (selectedFile) {
-        formDataToSend.append('image', selectedFile);
-      } else if (formData.profileImageUrl) {
-        formDataToSend.append('profileImageUrl', formData.profileImageUrl);
-      }
-
       const response = await fetch(url, {
         method,
         headers: {
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-          // Content-Type is automatically set for FormData
         },
-        body: formDataToSend,
+        body: JSON.stringify({
+          ...formData,
+          profileImageUrl,
+        }),
       });
 
       if (!response.ok) {
