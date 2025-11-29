@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { z } from 'zod';
+import cloudinary from '../../config/cloudinary';
 
 const prisma = new PrismaClient();
 
@@ -54,6 +55,13 @@ export const createMkStudioPost = async (req: Request, res: Response) => {
   try {
     const postData = mkStudioPostSchema.parse(req.body);
 
+    if (req.file) {
+      const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+        folder: 'uttarane/mkstudio-posts',
+      });
+      postData.thumbnail = uploadResult.secure_url;
+    }
+
     const post = await prisma.mkStudioPost.create({
       data: {
         youtubeId: postData.youtubeId,
@@ -87,6 +95,13 @@ export const updateMkStudioPost = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const postData = mkStudioPostSchema.parse(req.body);
+
+    if (req.file) {
+      const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+        folder: 'uttarane/mkstudio-posts',
+      });
+      postData.thumbnail = uploadResult.secure_url;
+    }
 
     // Check if post exists
     const existingPost = await prisma.mkStudioPost.findUnique({

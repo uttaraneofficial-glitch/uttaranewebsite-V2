@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { z } from 'zod';
+import cloudinary from '../../config/cloudinary';
 
 const prisma = new PrismaClient();
 
@@ -62,6 +63,13 @@ export const createCompany = async (req: Request, res: Response) => {
   try {
     const companyData = companySchema.parse(req.body);
 
+    if (req.file) {
+      const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+        folder: 'uttarane/companies',
+      });
+      companyData.logoUrl = uploadResult.secure_url;
+    }
+
     // Check if company with same name or slug already exists
     const existingCompany = await prisma.company.findFirst({
       where: {
@@ -108,6 +116,13 @@ export const updateCompany = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const companyData = companySchema.parse(req.body);
+
+    if (req.file) {
+      const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+        folder: 'uttarane/companies',
+      });
+      companyData.logoUrl = uploadResult.secure_url;
+    }
 
     // Check if company exists
     const existingCompany = await prisma.company.findUnique({

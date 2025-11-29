@@ -9,8 +9,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
-    return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    var _ = { label: 0, sent: function () { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
+    return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function () { return this; }), g;
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
@@ -38,6 +38,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteMkStudioPost = exports.updateMkStudioPost = exports.createMkStudioPost = exports.getAdminMkStudioPostById = exports.getAdminMkStudioPosts = void 0;
 var client_1 = require("@prisma/client");
+var cloudinary = require("../../config/cloudinary");
 var zod_1 = require("zod");
 var prisma = new client_1.PrismaClient();
 // Validation schemas
@@ -49,68 +50,79 @@ var mkStudioPostSchema = zod_1.z.object({
     thumbnail: zod_1.z.string().optional(),
 });
 // Get all MK Studio posts (admin)
-var getAdminMkStudioPosts = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var posts, error_1;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, prisma.mkStudioPost.findMany({
+var getAdminMkStudioPosts = function (req, res) {
+    return __awaiter(void 0, void 0, void 0, function () {
+        var posts, error_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, prisma.mkStudioPost.findMany({
                         orderBy: { publishedAt: 'desc' },
                     })];
-            case 1:
-                posts = _a.sent();
-                res.json({
-                    data: posts,
-                });
-                return [3 /*break*/, 3];
-            case 2:
-                error_1 = _a.sent();
-                console.error('Get admin MK Studio posts error:', error_1);
-                res.status(500).json({ message: 'Error retrieving MK Studio posts' });
-                return [3 /*break*/, 3];
-            case 3: return [2 /*return*/];
-        }
+                case 1:
+                    posts = _a.sent();
+                    res.json({
+                        data: posts,
+                    });
+                    return [3 /*break*/, 3];
+                case 2:
+                    error_1 = _a.sent();
+                    console.error('Get admin MK Studio posts error:', error_1);
+                    res.status(500).json({ message: 'Error retrieving MK Studio posts' });
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
+            }
+        });
     });
-}); };
+};
 exports.getAdminMkStudioPosts = getAdminMkStudioPosts;
 // Get MK Studio post by ID (admin)
-var getAdminMkStudioPostById = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var id, post, error_2;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                _a.trys.push([0, 2, , 3]);
-                id = req.params.id;
-                return [4 /*yield*/, prisma.mkStudioPost.findUnique({
+var getAdminMkStudioPostById = function (req, res) {
+    return __awaiter(void 0, void 0, void 0, function () {
+        var id, post, error_2;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    id = req.params.id;
+                    return [4 /*yield*/, prisma.mkStudioPost.findUnique({
                         where: { id: id },
                     })];
-            case 1:
-                post = _a.sent();
-                if (!post) {
-                    return [2 /*return*/, res.status(404).json({ message: 'MK Studio post not found' })];
-                }
-                res.json({ data: post });
-                return [3 /*break*/, 3];
-            case 2:
-                error_2 = _a.sent();
-                console.error('Get admin MK Studio post error:', error_2);
-                res.status(500).json({ message: 'Error retrieving MK Studio post' });
-                return [3 /*break*/, 3];
-            case 3: return [2 /*return*/];
-        }
+                case 1:
+                    post = _a.sent();
+                    if (!post) {
+                        return [2 /*return*/, res.status(404).json({ message: 'MK Studio post not found' })];
+                    }
+                    res.json({ data: post });
+                    return [3 /*break*/, 3];
+                case 2:
+                    error_2 = _a.sent();
+                    console.error('Get admin MK Studio post error:', error_2);
+                    res.status(500).json({ message: 'Error retrieving MK Studio post' });
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
+            }
+        });
     });
-}); };
+};
 exports.getAdminMkStudioPostById = getAdminMkStudioPostById;
 // Create MK Studio post (admin)
-var createMkStudioPost = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var postData, post, error_3;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                _a.trys.push([0, 2, , 3]);
-                postData = mkStudioPostSchema.parse(req.body);
-                return [4 /*yield*/, prisma.mkStudioPost.create({
+var createMkStudioPost = function (req, res) {
+    return __awaiter(void 0, void 0, void 0, function () {
+        var postData, post, error_3;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    postData = mkStudioPostSchema.parse(req.body);
+                    if (req.file) {
+                        const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+                            folder: "uttarane/mkstudio-posts",
+                        });
+                        postData.thumbnail = uploadResult.secure_url;
+                    }
+                    return [4 /*yield*/, prisma.mkStudioPost.create({
                         data: {
                             youtubeId: postData.youtubeId,
                             title: postData.title,
@@ -121,47 +133,55 @@ var createMkStudioPost = function (req, res) { return __awaiter(void 0, void 0, 
                             thumbnail: postData.thumbnail,
                         },
                     })];
-            case 1:
-                post = _a.sent();
-                res.status(201).json({
-                    message: 'MK Studio post created successfully',
-                    data: post,
-                });
-                return [3 /*break*/, 3];
-            case 2:
-                error_3 = _a.sent();
-                if (error_3 instanceof zod_1.z.ZodError) {
-                    return [2 /*return*/, res.status(400).json({
+                case 1:
+                    post = _a.sent();
+                    res.status(201).json({
+                        message: 'MK Studio post created successfully',
+                        data: post,
+                    });
+                    return [3 /*break*/, 3];
+                case 2:
+                    error_3 = _a.sent();
+                    if (error_3 instanceof zod_1.z.ZodError) {
+                        return [2 /*return*/, res.status(400).json({
                             message: 'Invalid input',
                             errors: error_3.errors,
                         })];
-                }
-                console.error('Create MK Studio post error:', error_3);
-                res.status(500).json({ message: 'Error creating MK Studio post' });
-                return [3 /*break*/, 3];
-            case 3: return [2 /*return*/];
-        }
+                    }
+                    console.error('Create MK Studio post error:', error_3);
+                    res.status(500).json({ message: 'Error creating MK Studio post' });
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
+            }
+        });
     });
-}); };
+};
 exports.createMkStudioPost = createMkStudioPost;
 // Update MK Studio post (admin)
-var updateMkStudioPost = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var id, postData, existingPost, post, error_4;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                _a.trys.push([0, 3, , 4]);
-                id = req.params.id;
-                postData = mkStudioPostSchema.parse(req.body);
-                return [4 /*yield*/, prisma.mkStudioPost.findUnique({
+var updateMkStudioPost = function (req, res) {
+    return __awaiter(void 0, void 0, void 0, function () {
+        var id, postData, existingPost, post, error_4;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 3, , 4]);
+                    id = req.params.id;
+                    postData = mkStudioPostSchema.parse(req.body);
+                    if (req.file) {
+                        const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+                            folder: "uttarane/mkstudio-posts",
+                        });
+                        postData.thumbnail = uploadResult.secure_url;
+                    }
+                    return [4 /*yield*/, prisma.mkStudioPost.findUnique({
                         where: { id: id },
                     })];
-            case 1:
-                existingPost = _a.sent();
-                if (!existingPost) {
-                    return [2 /*return*/, res.status(404).json({ message: 'MK Studio post not found' })];
-                }
-                return [4 /*yield*/, prisma.mkStudioPost.update({
+                case 1:
+                    existingPost = _a.sent();
+                    if (!existingPost) {
+                        return [2 /*return*/, res.status(404).json({ message: 'MK Studio post not found' })];
+                    }
+                    return [4 /*yield*/, prisma.mkStudioPost.update({
                         where: { id: id },
                         data: {
                             youtubeId: postData.youtubeId,
@@ -173,61 +193,64 @@ var updateMkStudioPost = function (req, res) { return __awaiter(void 0, void 0, 
                             thumbnail: postData.thumbnail,
                         },
                     })];
-            case 2:
-                post = _a.sent();
-                res.json({
-                    message: 'MK Studio post updated successfully',
-                    data: post,
-                });
-                return [3 /*break*/, 4];
-            case 3:
-                error_4 = _a.sent();
-                if (error_4 instanceof zod_1.z.ZodError) {
-                    return [2 /*return*/, res.status(400).json({
+                case 2:
+                    post = _a.sent();
+                    res.json({
+                        message: 'MK Studio post updated successfully',
+                        data: post,
+                    });
+                    return [3 /*break*/, 4];
+                case 3:
+                    error_4 = _a.sent();
+                    if (error_4 instanceof zod_1.z.ZodError) {
+                        return [2 /*return*/, res.status(400).json({
                             message: 'Invalid input',
                             errors: error_4.errors,
                         })];
-                }
-                console.error('Update MK Studio post error:', error_4);
-                res.status(500).json({ message: 'Error updating MK Studio post' });
-                return [3 /*break*/, 4];
-            case 4: return [2 /*return*/];
-        }
+                    }
+                    console.error('Update MK Studio post error:', error_4);
+                    res.status(500).json({ message: 'Error updating MK Studio post' });
+                    return [3 /*break*/, 4];
+                case 4: return [2 /*return*/];
+            }
+        });
     });
-}); };
+};
 exports.updateMkStudioPost = updateMkStudioPost;
 // Delete MK Studio post (admin)
-var deleteMkStudioPost = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var id, existingPost, error_5;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                _a.trys.push([0, 3, , 4]);
-                id = req.params.id;
-                return [4 /*yield*/, prisma.mkStudioPost.findUnique({
+var deleteMkStudioPost = function (req, res) {
+    return __awaiter(void 0, void 0, void 0, function () {
+        var id, existingPost, error_5;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 3, , 4]);
+                    id = req.params.id;
+                    return [4 /*yield*/, prisma.mkStudioPost.findUnique({
                         where: { id: id },
                     })];
-            case 1:
-                existingPost = _a.sent();
-                if (!existingPost) {
-                    return [2 /*return*/, res.status(404).json({ message: 'MK Studio post not found' })];
-                }
-                // Delete the post
-                return [4 /*yield*/, prisma.mkStudioPost.delete({
+                case 1:
+                    existingPost = _a.sent();
+                    if (!existingPost) {
+                        return [2 /*return*/, res.status(404).json({ message: 'MK Studio post not found' })];
+                    }
+                    // Delete the post
+                    return [4 /*yield*/, prisma.mkStudioPost.delete({
                         where: { id: id },
                     })];
-            case 2:
-                // Delete the post
-                _a.sent();
-                res.json({ message: 'MK Studio post deleted successfully' });
-                return [3 /*break*/, 4];
-            case 3:
-                error_5 = _a.sent();
-                console.error('Delete MK Studio post error:', error_5);
-                res.status(500).json({ message: 'Error deleting MK Studio post' });
-                return [3 /*break*/, 4];
-            case 4: return [2 /*return*/];
-        }
+                case 2:
+                    // Delete the post
+                    _a.sent();
+                    res.json({ message: 'MK Studio post deleted successfully' });
+                    return [3 /*break*/, 4];
+                case 3:
+                    error_5 = _a.sent();
+                    console.error('Delete MK Studio post error:', error_5);
+                    res.status(500).json({ message: 'Error deleting MK Studio post' });
+                    return [3 /*break*/, 4];
+                case 4: return [2 /*return*/];
+            }
+        });
     });
-}); };
+};
 exports.deleteMkStudioPost = deleteMkStudioPost;

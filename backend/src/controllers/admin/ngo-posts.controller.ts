@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { z } from 'zod';
+import cloudinary from '../../config/cloudinary';
 
 const prisma = new PrismaClient();
 
@@ -49,7 +50,15 @@ export const getAdminNgoPostById = async (req: Request, res: Response) => {
 // Create NGO post (admin)
 export const createNgoPost = async (req: Request, res: Response) => {
   try {
-    const imageUrl = req.file?.path || req.body.imageUrl;
+    let imageUrl = req.body.imageUrl;
+
+    if (req.file) {
+      const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+        folder: 'uttarane/ngo-posts',
+      });
+      imageUrl = uploadResult.secure_url;
+    }
+
     const postData = ngoPostSchema.parse({ ...req.body, imageUrl });
 
     const post = await prisma.ngoPost.create({
@@ -80,7 +89,15 @@ export const createNgoPost = async (req: Request, res: Response) => {
 export const updateNgoPost = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const imageUrl = req.file?.path || req.body.imageUrl;
+    let imageUrl = req.body.imageUrl;
+
+    if (req.file) {
+      const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+        folder: 'uttarane/ngo-posts',
+      });
+      imageUrl = uploadResult.secure_url;
+    }
+
     const postData = ngoPostSchema.parse({ ...req.body, imageUrl });
 
     // Check if post exists

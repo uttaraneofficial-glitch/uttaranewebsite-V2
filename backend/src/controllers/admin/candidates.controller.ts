@@ -5,6 +5,7 @@ import {
   candidateSchema,
   candidateUpdateSchema,
 } from '../../schemas/candidates.schema';
+import cloudinary from '../../config/cloudinary';
 
 const prisma = new PrismaClient();
 
@@ -53,7 +54,15 @@ export const getAdminCandidateById = async (req: Request, res: Response) => {
 // Create candidate (admin)
 export const createCandidate = async (req: Request, res: Response) => {
   try {
-    const profileImageUrl = req.file?.path || req.body.profileImageUrl;
+    let profileImageUrl = req.body.profileImageUrl;
+
+    if (req.file) {
+      const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+        folder: 'uttarane/candidates',
+      });
+      profileImageUrl = uploadResult.secure_url;
+    }
+
     const candidateData = candidateSchema.parse({
       ...req.body,
       profileImageUrl,
@@ -106,7 +115,15 @@ export const createCandidate = async (req: Request, res: Response) => {
 export const updateCandidate = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const profileImageUrl = req.file?.path || req.body.profileImageUrl;
+    let profileImageUrl = req.body.profileImageUrl;
+
+    if (req.file) {
+      const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+        folder: 'uttarane/candidates',
+      });
+      profileImageUrl = uploadResult.secure_url;
+    }
+
     const candidateData = candidateUpdateSchema.parse({
       ...req.body,
       profileImageUrl,

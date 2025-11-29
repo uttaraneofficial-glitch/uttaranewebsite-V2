@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { z } from 'zod';
+import cloudinary from '../../config/cloudinary';
 
 const prisma = new PrismaClient();
 
@@ -64,6 +65,13 @@ export const createVideo = async (req: Request, res: Response) => {
   try {
     const videoData = videoSchema.parse(req.body);
 
+    if (req.file) {
+      const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+        folder: 'uttarane/videos',
+      });
+      videoData.thumbnail = uploadResult.secure_url;
+    }
+
     // Check if company exists
     const company = await prisma.company.findUnique({
       where: { id: videoData.companyId },
@@ -124,6 +132,13 @@ export const updateVideo = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const videoData = videoSchema.parse(req.body);
+
+    if (req.file) {
+      const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+        folder: 'uttarane/videos',
+      });
+      videoData.thumbnail = uploadResult.secure_url;
+    }
 
     // Check if video exists
     const existingVideo = await prisma.video.findUnique({

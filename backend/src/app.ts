@@ -10,6 +10,7 @@ import {
     preventPollution,
     additionalSecurityHeaders,
 } from './middleware/security';
+import cloudinary from './config/cloudinary';
 
 // Load environment variables
 dotenv.config();
@@ -81,6 +82,17 @@ app.use('/api/admin', adminRoutes);
 // Health check endpoint
 app.get('/health', (req, res) => {
     res.json({ status: 'ok' });
+});
+
+app.get('/cloudinary-test', async (req, res) => {
+    try {
+        const result = await cloudinary.uploader.upload(
+            'https://res.cloudinary.com/demo/image/upload/sample.jpg'
+        );
+        return res.json({ ok: true, url: result.secure_url });
+    } catch (err: any) {
+        return res.status(500).json({ ok: false, error: err.message });
+    }
 });
 
 export default app;

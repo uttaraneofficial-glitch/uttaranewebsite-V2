@@ -9,8 +9,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
-    return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    var _ = { label: 0, sent: function () { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
+    return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function () { return this; }), g;
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
@@ -38,6 +38,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteCompany = exports.updateCompany = exports.createCompany = exports.getAdminCompanyById = exports.getAdminCompanies = void 0;
 var client_1 = require("@prisma/client");
+var cloudinary = require("../../config/cloudinary");
 var zod_1 = require("zod");
 var prisma = new client_1.PrismaClient();
 // Validation schemas
@@ -51,86 +52,97 @@ var companySchema = zod_1.z.object({
     bannerUrl: zod_1.z.string().optional(),
 });
 // Get all companies (admin)
-var getAdminCompanies = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var companies, error_1;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, prisma.company.findMany({
+var getAdminCompanies = function (req, res) {
+    return __awaiter(void 0, void 0, void 0, function () {
+        var companies, error_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, prisma.company.findMany({
                         include: {
                             candidates: true, // Include candidates in response
                         },
                         orderBy: { name: 'asc' },
                     })];
-            case 1:
-                companies = _a.sent();
-                res.json({
-                    data: companies,
-                });
-                return [3 /*break*/, 3];
-            case 2:
-                error_1 = _a.sent();
-                console.error('Get admin companies error:', error_1);
-                res.status(500).json({ message: 'Error retrieving companies' });
-                return [3 /*break*/, 3];
-            case 3: return [2 /*return*/];
-        }
+                case 1:
+                    companies = _a.sent();
+                    res.json({
+                        data: companies,
+                    });
+                    return [3 /*break*/, 3];
+                case 2:
+                    error_1 = _a.sent();
+                    console.error('Get admin companies error:', error_1);
+                    res.status(500).json({ message: 'Error retrieving companies' });
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
+            }
+        });
     });
-}); };
+};
 exports.getAdminCompanies = getAdminCompanies;
 // Get company by ID (admin)
-var getAdminCompanyById = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var id, company, error_2;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                _a.trys.push([0, 2, , 3]);
-                id = req.params.id;
-                return [4 /*yield*/, prisma.company.findUnique({
+var getAdminCompanyById = function (req, res) {
+    return __awaiter(void 0, void 0, void 0, function () {
+        var id, company, error_2;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    id = req.params.id;
+                    return [4 /*yield*/, prisma.company.findUnique({
                         where: { id: id },
                         include: {
                             candidates: true, // Include candidates in response
                         },
                     })];
-            case 1:
-                company = _a.sent();
-                if (!company) {
-                    return [2 /*return*/, res.status(404).json({ message: 'Company not found' })];
-                }
-                res.json({ data: company });
-                return [3 /*break*/, 3];
-            case 2:
-                error_2 = _a.sent();
-                console.error('Get admin company error:', error_2);
-                res.status(500).json({ message: 'Error retrieving company' });
-                return [3 /*break*/, 3];
-            case 3: return [2 /*return*/];
-        }
+                case 1:
+                    company = _a.sent();
+                    if (!company) {
+                        return [2 /*return*/, res.status(404).json({ message: 'Company not found' })];
+                    }
+                    res.json({ data: company });
+                    return [3 /*break*/, 3];
+                case 2:
+                    error_2 = _a.sent();
+                    console.error('Get admin company error:', error_2);
+                    res.status(500).json({ message: 'Error retrieving company' });
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
+            }
+        });
     });
-}); };
+};
 exports.getAdminCompanyById = getAdminCompanyById;
 // Create company (admin)
-var createCompany = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var companyData, existingCompany, company, error_3;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                _a.trys.push([0, 3, , 4]);
-                companyData = companySchema.parse(req.body);
-                return [4 /*yield*/, prisma.company.findFirst({
+var createCompany = function (req, res) {
+    return __awaiter(void 0, void 0, void 0, function () {
+        var companyData, existingCompany, company, error_3;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 3, , 4]);
+                    companyData = companySchema.parse(req.body);
+                    if (req.file) {
+                        const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+                            folder: "uttarane/companies",
+                        });
+                        companyData.logoUrl = uploadResult.secure_url;
+                    }
+                    return [4 /*yield*/, prisma.company.findFirst({
                         where: {
                             OR: [{ name: companyData.name }, { slug: companyData.slug }],
                         },
                     })];
-            case 1:
-                existingCompany = _a.sent();
-                if (existingCompany) {
-                    return [2 /*return*/, res.status(400).json({
+                case 1:
+                    existingCompany = _a.sent();
+                    if (existingCompany) {
+                        return [2 /*return*/, res.status(400).json({
                             message: 'Company with this name or slug already exists',
                         })];
-                }
-                return [4 /*yield*/, prisma.company.create({
+                    }
+                    return [4 /*yield*/, prisma.company.create({
                         data: {
                             name: companyData.name,
                             slug: companyData.slug,
@@ -141,60 +153,68 @@ var createCompany = function (req, res) { return __awaiter(void 0, void 0, void 
                             bannerUrl: companyData.bannerUrl,
                         },
                     })];
-            case 2:
-                company = _a.sent();
-                res.status(201).json({
-                    message: 'Company created successfully',
-                    data: company,
-                });
-                return [3 /*break*/, 4];
-            case 3:
-                error_3 = _a.sent();
-                if (error_3 instanceof zod_1.z.ZodError) {
-                    return [2 /*return*/, res.status(400).json({
+                case 2:
+                    company = _a.sent();
+                    res.status(201).json({
+                        message: 'Company created successfully',
+                        data: company,
+                    });
+                    return [3 /*break*/, 4];
+                case 3:
+                    error_3 = _a.sent();
+                    if (error_3 instanceof zod_1.z.ZodError) {
+                        return [2 /*return*/, res.status(400).json({
                             message: 'Invalid input',
                             errors: error_3.errors,
                         })];
-                }
-                console.error('Create company error:', error_3);
-                res.status(500).json({ message: 'Error creating company' });
-                return [3 /*break*/, 4];
-            case 4: return [2 /*return*/];
-        }
+                    }
+                    console.error('Create company error:', error_3);
+                    res.status(500).json({ message: 'Error creating company' });
+                    return [3 /*break*/, 4];
+                case 4: return [2 /*return*/];
+            }
+        });
     });
-}); };
+};
 exports.createCompany = createCompany;
 // Update company (admin)
-var updateCompany = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var id, companyData, existingCompany, duplicateCompany, company, error_4;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                _a.trys.push([0, 4, , 5]);
-                id = req.params.id;
-                companyData = companySchema.parse(req.body);
-                return [4 /*yield*/, prisma.company.findUnique({
+var updateCompany = function (req, res) {
+    return __awaiter(void 0, void 0, void 0, function () {
+        var id, companyData, existingCompany, duplicateCompany, company, error_4;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 4, , 5]);
+                    id = req.params.id;
+                    companyData = companySchema.parse(req.body);
+                    if (req.file) {
+                        const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+                            folder: "uttarane/companies",
+                        });
+                        companyData.logoUrl = uploadResult.secure_url;
+                    }
+                    return [4 /*yield*/, prisma.company.findUnique({
                         where: { id: id },
                     })];
-            case 1:
-                existingCompany = _a.sent();
-                if (!existingCompany) {
-                    return [2 /*return*/, res.status(404).json({ message: 'Company not found' })];
-                }
-                return [4 /*yield*/, prisma.company.findFirst({
+                case 1:
+                    existingCompany = _a.sent();
+                    if (!existingCompany) {
+                        return [2 /*return*/, res.status(404).json({ message: 'Company not found' })];
+                    }
+                    return [4 /*yield*/, prisma.company.findFirst({
                         where: {
                             id: { not: id },
                             OR: [{ name: companyData.name }, { slug: companyData.slug }],
                         },
                     })];
-            case 2:
-                duplicateCompany = _a.sent();
-                if (duplicateCompany) {
-                    return [2 /*return*/, res.status(400).json({
+                case 2:
+                    duplicateCompany = _a.sent();
+                    if (duplicateCompany) {
+                        return [2 /*return*/, res.status(400).json({
                             message: 'Another company with this name or slug already exists',
                         })];
-                }
-                return [4 /*yield*/, prisma.company.update({
+                    }
+                    return [4 /*yield*/, prisma.company.update({
                         where: { id: id },
                         data: {
                             name: companyData.name,
@@ -206,68 +226,71 @@ var updateCompany = function (req, res) { return __awaiter(void 0, void 0, void 
                             bannerUrl: companyData.bannerUrl,
                         },
                     })];
-            case 3:
-                company = _a.sent();
-                res.json({
-                    message: 'Company updated successfully',
-                    data: company,
-                });
-                return [3 /*break*/, 5];
-            case 4:
-                error_4 = _a.sent();
-                if (error_4 instanceof zod_1.z.ZodError) {
-                    return [2 /*return*/, res.status(400).json({
+                case 3:
+                    company = _a.sent();
+                    res.json({
+                        message: 'Company updated successfully',
+                        data: company,
+                    });
+                    return [3 /*break*/, 5];
+                case 4:
+                    error_4 = _a.sent();
+                    if (error_4 instanceof zod_1.z.ZodError) {
+                        return [2 /*return*/, res.status(400).json({
                             message: 'Invalid input',
                             errors: error_4.errors,
                         })];
-                }
-                console.error('Update company error:', error_4);
-                res.status(500).json({ message: 'Error updating company' });
-                return [3 /*break*/, 5];
-            case 5: return [2 /*return*/];
-        }
+                    }
+                    console.error('Update company error:', error_4);
+                    res.status(500).json({ message: 'Error updating company' });
+                    return [3 /*break*/, 5];
+                case 5: return [2 /*return*/];
+            }
+        });
     });
-}); };
+};
 exports.updateCompany = updateCompany;
 // Delete company (admin)
-var deleteCompany = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var id, existingCompany, error_5;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                _a.trys.push([0, 4, , 5]);
-                id = req.params.id;
-                return [4 /*yield*/, prisma.company.findUnique({
+var deleteCompany = function (req, res) {
+    return __awaiter(void 0, void 0, void 0, function () {
+        var id, existingCompany, error_5;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 4, , 5]);
+                    id = req.params.id;
+                    return [4 /*yield*/, prisma.company.findUnique({
                         where: { id: id },
                     })];
-            case 1:
-                existingCompany = _a.sent();
-                if (!existingCompany) {
-                    return [2 /*return*/, res.status(404).json({ message: 'Company not found' })];
-                }
-                // Delete associated videos first (due to foreign key constraint)
-                return [4 /*yield*/, prisma.video.deleteMany({
+                case 1:
+                    existingCompany = _a.sent();
+                    if (!existingCompany) {
+                        return [2 /*return*/, res.status(404).json({ message: 'Company not found' })];
+                    }
+                    // Delete associated videos first (due to foreign key constraint)
+                    return [4 /*yield*/, prisma.video.deleteMany({
                         where: { companyId: id },
                     })];
-            case 2:
-                // Delete associated videos first (due to foreign key constraint)
-                _a.sent();
-                // Delete the company
-                return [4 /*yield*/, prisma.company.delete({
+                case 2:
+                    // Delete associated videos first (due to foreign key constraint)
+                    _a.sent();
+                    // Delete the company
+                    return [4 /*yield*/, prisma.company.delete({
                         where: { id: id },
                     })];
-            case 3:
-                // Delete the company
-                _a.sent();
-                res.json({ message: 'Company deleted successfully' });
-                return [3 /*break*/, 5];
-            case 4:
-                error_5 = _a.sent();
-                console.error('Delete company error:', error_5);
-                res.status(500).json({ message: 'Error deleting company' });
-                return [3 /*break*/, 5];
-            case 5: return [2 /*return*/];
-        }
+                case 3:
+                    // Delete the company
+                    _a.sent();
+                    res.json({ message: 'Company deleted successfully' });
+                    return [3 /*break*/, 5];
+                case 4:
+                    error_5 = _a.sent();
+                    console.error('Delete company error:', error_5);
+                    res.status(500).json({ message: 'Error deleting company' });
+                    return [3 /*break*/, 5];
+                case 5: return [2 /*return*/];
+            }
+        });
     });
-}); };
+};
 exports.deleteCompany = deleteCompany;

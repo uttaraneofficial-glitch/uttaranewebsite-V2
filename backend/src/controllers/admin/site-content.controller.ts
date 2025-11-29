@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { z } from 'zod';
+import cloudinary from '../../config/cloudinary';
 
 const prisma = new PrismaClient();
 
@@ -42,6 +43,13 @@ export const updateSiteContent = async (req: Request, res: Response) => {
   try {
     const { key } = req.params;
     const contentData = siteContentSchema.parse(req.body);
+
+    if (req.file) {
+      const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+        folder: 'uttarane/site-content',
+      });
+      contentData.value = uploadResult.secure_url;
+    }
 
     console.log(`Updating site content for key: ${key}`, contentData);
 

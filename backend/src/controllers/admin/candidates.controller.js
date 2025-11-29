@@ -1,6 +1,6 @@
 "use strict";
 var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
+    __assign = Object.assign || function (t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
             s = arguments[i];
             for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
@@ -20,8 +20,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
-    return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    var _ = { label: 0, sent: function () { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
+    return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function () { return this; }), g;
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
@@ -49,88 +49,101 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteCandidate = exports.updateCandidate = exports.createCandidate = exports.getAdminCandidateById = exports.getAdminCandidates = void 0;
 var client_1 = require("@prisma/client");
+var cloudinary = require("../../config/cloudinary");
 var zod_1 = require("zod");
 var candidates_schema_1 = require("../../schemas/candidates.schema");
 var prisma = new client_1.PrismaClient();
 // Get all candidates (admin)
-var getAdminCandidates = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var candidates, error_1;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, prisma.candidate.findMany({
+var getAdminCandidates = function (req, res) {
+    return __awaiter(void 0, void 0, void 0, function () {
+        var candidates, error_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, prisma.candidate.findMany({
                         include: {
                             company: true,
                         },
                         orderBy: { createdAt: 'desc' },
                     })];
-            case 1:
-                candidates = _a.sent();
-                res.json({
-                    data: candidates,
-                });
-                return [3 /*break*/, 3];
-            case 2:
-                error_1 = _a.sent();
-                console.error('Get admin candidates error:', error_1);
-                res.status(500).json({ message: 'Error retrieving candidates' });
-                return [3 /*break*/, 3];
-            case 3: return [2 /*return*/];
-        }
+                case 1:
+                    candidates = _a.sent();
+                    res.json({
+                        data: candidates,
+                    });
+                    return [3 /*break*/, 3];
+                case 2:
+                    error_1 = _a.sent();
+                    console.error('Get admin candidates error:', error_1);
+                    res.status(500).json({ message: 'Error retrieving candidates' });
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
+            }
+        });
     });
-}); };
+};
 exports.getAdminCandidates = getAdminCandidates;
 // Get candidate by ID (admin)
-var getAdminCandidateById = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var id, candidate, error_2;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                _a.trys.push([0, 2, , 3]);
-                id = req.params.id;
-                return [4 /*yield*/, prisma.candidate.findUnique({
+var getAdminCandidateById = function (req, res) {
+    return __awaiter(void 0, void 0, void 0, function () {
+        var id, candidate, error_2;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    id = req.params.id;
+                    return [4 /*yield*/, prisma.candidate.findUnique({
                         where: { id: id },
                         include: {
                             company: true,
                         },
                     })];
-            case 1:
-                candidate = _a.sent();
-                if (!candidate) {
-                    return [2 /*return*/, res.status(404).json({ message: 'Candidate not found' })];
-                }
-                res.json({ data: candidate });
-                return [3 /*break*/, 3];
-            case 2:
-                error_2 = _a.sent();
-                console.error('Get admin candidate error:', error_2);
-                res.status(500).json({ message: 'Error retrieving candidate' });
-                return [3 /*break*/, 3];
-            case 3: return [2 /*return*/];
-        }
+                case 1:
+                    candidate = _a.sent();
+                    if (!candidate) {
+                        return [2 /*return*/, res.status(404).json({ message: 'Candidate not found' })];
+                    }
+                    res.json({ data: candidate });
+                    return [3 /*break*/, 3];
+                case 2:
+                    error_2 = _a.sent();
+                    console.error('Get admin candidate error:', error_2);
+                    res.status(500).json({ message: 'Error retrieving candidate' });
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
+            }
+        });
     });
-}); };
+};
 exports.getAdminCandidateById = getAdminCandidateById;
 // Create candidate (admin)
-var createCandidate = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var profileImageUrl, candidateData, company, candidate, error_3;
-    var _a;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
-            case 0:
-                _b.trys.push([0, 3, , 4]);
-                profileImageUrl = ((_a = req.file) === null || _a === void 0 ? void 0 : _a.path) || req.body.profileImageUrl;
-                candidateData = candidates_schema_1.candidateSchema.parse(__assign(__assign({}, req.body), { profileImageUrl: profileImageUrl }));
-                return [4 /*yield*/, prisma.company.findUnique({
+var createCandidate = function (req, res) {
+    return __awaiter(void 0, void 0, void 0, function () {
+        var profileImageUrl, candidateData, company, candidate, error_3;
+        var _a;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    _b.trys.push([0, 3, , 4]);
+                    _b.trys.push([0, 3, , 4]);
+                    profileImageUrl = req.body.profileImageUrl;
+                    if (req.file) {
+                        const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+                            folder: "uttarane/candidates",
+                        });
+                        profileImageUrl = uploadResult.secure_url;
+                    }
+                    candidateData = candidates_schema_1.candidateSchema.parse(__assign(__assign({}, req.body), { profileImageUrl: profileImageUrl }));
+                    return [4 /*yield*/, prisma.company.findUnique({
                         where: { id: candidateData.companyId },
                     })];
-            case 1:
-                company = _b.sent();
-                if (!company) {
-                    return [2 /*return*/, res.status(400).json({ message: 'Company not found' })];
-                }
-                return [4 /*yield*/, prisma.candidate.create({
+                case 1:
+                    company = _b.sent();
+                    if (!company) {
+                        return [2 /*return*/, res.status(400).json({ message: 'Company not found' })];
+                    }
+                    return [4 /*yield*/, prisma.candidate.create({
                         data: {
                             name: candidateData.name,
                             college: candidateData.college,
@@ -147,59 +160,69 @@ var createCandidate = function (req, res) { return __awaiter(void 0, void 0, voi
                             company: true,
                         },
                     })];
-            case 2:
-                candidate = _b.sent();
-                res.status(201).json({
-                    message: 'Candidate created successfully',
-                    data: candidate,
-                });
-                return [3 /*break*/, 4];
-            case 3:
-                error_3 = _b.sent();
-                if (error_3 instanceof zod_1.z.ZodError) {
-                    return [2 /*return*/, res.status(400).json({
+                case 2:
+                    candidate = _b.sent();
+                    res.status(201).json({
+                        message: 'Candidate created successfully',
+                        data: candidate,
+                    });
+                    return [3 /*break*/, 4];
+                case 3:
+                    error_3 = _b.sent();
+                    if (error_3 instanceof zod_1.z.ZodError) {
+                        return [2 /*return*/, res.status(400).json({
                             message: 'Invalid input',
                             errors: error_3.errors,
                         })];
-                }
-                console.error('Create candidate error:', error_3);
-                res.status(500).json({ message: 'Error creating candidate' });
-                return [3 /*break*/, 4];
-            case 4: return [2 /*return*/];
-        }
+                    }
+                    console.error('Create candidate error:', error_3);
+                    res.status(500).json({ message: 'Error creating candidate' });
+                    return [3 /*break*/, 4];
+                case 4: return [2 /*return*/];
+            }
+        });
     });
-}); };
+};
 exports.createCandidate = createCandidate;
 // Update candidate (admin)
-var updateCandidate = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var id, profileImageUrl, candidateData, existingCandidate, company, candidate, error_4;
-    var _a;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
-            case 0:
-                _b.trys.push([0, 5, , 6]);
-                id = req.params.id;
-                profileImageUrl = ((_a = req.file) === null || _a === void 0 ? void 0 : _a.path) || req.body.profileImageUrl;
-                candidateData = candidates_schema_1.candidateUpdateSchema.parse(__assign(__assign({}, req.body), { profileImageUrl: profileImageUrl }));
-                return [4 /*yield*/, prisma.candidate.findUnique({
+var updateCandidate = function (req, res) {
+    return __awaiter(void 0, void 0, void 0, function () {
+        var id, profileImageUrl, candidateData, existingCandidate, company, candidate, error_4;
+        var _a;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    _b.trys.push([0, 5, , 6]);
+                    id = req.params.id;
+                    _b.trys.push([0, 5, , 6]);
+                    id = req.params.id;
+                    profileImageUrl = req.body.profileImageUrl;
+                    if (req.file) {
+                        const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+                            folder: "uttarane/candidates",
+                        });
+                        profileImageUrl = uploadResult.secure_url;
+                    }
+                    candidateData = candidates_schema_1.candidateUpdateSchema.parse(__assign(__assign({}, req.body), { profileImageUrl: profileImageUrl }));
+                    return [4 /*yield*/, prisma.candidate.findUnique({
                         where: { id: id },
                     })];
-            case 1:
-                existingCandidate = _b.sent();
-                if (!existingCandidate) {
-                    return [2 /*return*/, res.status(404).json({ message: 'Candidate not found' })];
-                }
-                if (!candidateData.companyId) return [3 /*break*/, 3];
-                return [4 /*yield*/, prisma.company.findUnique({
+                case 1:
+                    existingCandidate = _b.sent();
+                    if (!existingCandidate) {
+                        return [2 /*return*/, res.status(404).json({ message: 'Candidate not found' })];
+                    }
+                    if (!candidateData.companyId) return [3 /*break*/, 3];
+                    return [4 /*yield*/, prisma.company.findUnique({
                         where: { id: candidateData.companyId },
                     })];
-            case 2:
-                company = _b.sent();
-                if (!company) {
-                    return [2 /*return*/, res.status(400).json({ message: 'Company not found' })];
-                }
-                _b.label = 3;
-            case 3: return [4 /*yield*/, prisma.candidate.update({
+                case 2:
+                    company = _b.sent();
+                    if (!company) {
+                        return [2 /*return*/, res.status(400).json({ message: 'Company not found' })];
+                    }
+                    _b.label = 3;
+                case 3: return [4 /*yield*/, prisma.candidate.update({
                     where: { id: id },
                     data: {
                         name: candidateData.name,
@@ -217,61 +240,64 @@ var updateCandidate = function (req, res) { return __awaiter(void 0, void 0, voi
                         company: true,
                     },
                 })];
-            case 4:
-                candidate = _b.sent();
-                res.json({
-                    message: 'Candidate updated successfully',
-                    data: candidate,
-                });
-                return [3 /*break*/, 6];
-            case 5:
-                error_4 = _b.sent();
-                if (error_4 instanceof zod_1.z.ZodError) {
-                    return [2 /*return*/, res.status(400).json({
+                case 4:
+                    candidate = _b.sent();
+                    res.json({
+                        message: 'Candidate updated successfully',
+                        data: candidate,
+                    });
+                    return [3 /*break*/, 6];
+                case 5:
+                    error_4 = _b.sent();
+                    if (error_4 instanceof zod_1.z.ZodError) {
+                        return [2 /*return*/, res.status(400).json({
                             message: 'Invalid input',
                             errors: error_4.errors,
                         })];
-                }
-                console.error('Update candidate error:', error_4);
-                res.status(500).json({ message: 'Error updating candidate' });
-                return [3 /*break*/, 6];
-            case 6: return [2 /*return*/];
-        }
+                    }
+                    console.error('Update candidate error:', error_4);
+                    res.status(500).json({ message: 'Error updating candidate' });
+                    return [3 /*break*/, 6];
+                case 6: return [2 /*return*/];
+            }
+        });
     });
-}); };
+};
 exports.updateCandidate = updateCandidate;
 // Delete candidate (admin)
-var deleteCandidate = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var id, existingCandidate, error_5;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                _a.trys.push([0, 3, , 4]);
-                id = req.params.id;
-                return [4 /*yield*/, prisma.candidate.findUnique({
+var deleteCandidate = function (req, res) {
+    return __awaiter(void 0, void 0, void 0, function () {
+        var id, existingCandidate, error_5;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 3, , 4]);
+                    id = req.params.id;
+                    return [4 /*yield*/, prisma.candidate.findUnique({
                         where: { id: id },
                     })];
-            case 1:
-                existingCandidate = _a.sent();
-                if (!existingCandidate) {
-                    return [2 /*return*/, res.status(404).json({ message: 'Candidate not found' })];
-                }
-                // Delete the candidate
-                return [4 /*yield*/, prisma.candidate.delete({
+                case 1:
+                    existingCandidate = _a.sent();
+                    if (!existingCandidate) {
+                        return [2 /*return*/, res.status(404).json({ message: 'Candidate not found' })];
+                    }
+                    // Delete the candidate
+                    return [4 /*yield*/, prisma.candidate.delete({
                         where: { id: id },
                     })];
-            case 2:
-                // Delete the candidate
-                _a.sent();
-                res.json({ message: 'Candidate deleted successfully' });
-                return [3 /*break*/, 4];
-            case 3:
-                error_5 = _a.sent();
-                console.error('Delete candidate error:', error_5);
-                res.status(500).json({ message: 'Error deleting candidate' });
-                return [3 /*break*/, 4];
-            case 4: return [2 /*return*/];
-        }
+                case 2:
+                    // Delete the candidate
+                    _a.sent();
+                    res.json({ message: 'Candidate deleted successfully' });
+                    return [3 /*break*/, 4];
+                case 3:
+                    error_5 = _a.sent();
+                    console.error('Delete candidate error:', error_5);
+                    res.status(500).json({ message: 'Error deleting candidate' });
+                    return [3 /*break*/, 4];
+                case 4: return [2 /*return*/];
+            }
+        });
     });
-}); };
+};
 exports.deleteCandidate = deleteCandidate;
