@@ -84,14 +84,22 @@ app.get('/health', (req, res) => {
     res.json({ status: 'ok' });
 });
 
-app.get('/cloudinary-test', async (req, res) => {
+app.get('/api/cloudinary-test', async (req, res) => {
     try {
         const result = await cloudinary.uploader.upload(
-            'https://res.cloudinary.com/demo/image/upload/sample.jpg'
+            'https://res.cloudinary.com/demo/image/upload/sample.jpg',
+            { folder: 'uttarane-test' }
         );
-        return res.json({ ok: true, url: result.secure_url });
-    } catch (err: any) {
-        return res.status(500).json({ ok: false, error: err.message });
+
+        res.json({
+            success: true,
+            url: result.secure_url,
+        });
+    } catch (error: any) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        });
     }
 });
 
