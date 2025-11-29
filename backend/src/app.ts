@@ -87,6 +87,14 @@ app.get('/health', (req, res) => {
     res.json({ status: 'ok' });
 });
 
+app.get('/api/version', (req, res) => {
+    res.json({
+        version: 'v2.4.2',
+        message: 'Upload route isolated',
+        timestamp: new Date().toISOString()
+    });
+});
+
 app.get('/api/cloudinary-test', async (req, res) => {
     try {
         const result = await cloudinary.uploader.upload(
