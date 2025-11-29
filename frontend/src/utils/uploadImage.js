@@ -1,4 +1,5 @@
 import axios from "axios";
+import { API_BASE_URL } from './config'; // Assuming API_BASE_URL is exported from a config file
 
 export async function uploadImage(file) {
     const formData = new FormData();
@@ -7,7 +8,7 @@ export async function uploadImage(file) {
     const token = localStorage.getItem('accessToken');
 
     const res = await axios.post(
-        "https://uttaranewebsite-v2-4.onrender.com/api/admin/upload-image",
+        `${API_BASE_URL}/api/admin/upload-image`,
         formData,
         {
             headers: {
