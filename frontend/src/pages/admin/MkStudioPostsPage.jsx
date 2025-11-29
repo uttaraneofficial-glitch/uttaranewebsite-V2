@@ -98,17 +98,27 @@ const MkStudioPostsPage = () => {
 
       const method = editingPost ? 'PUT' : 'POST';
 
+      const formDataToSend = new FormData();
+      formDataToSend.append('youtubeId', formData.youtubeId);
+      formDataToSend.append('title', formData.title);
+      formDataToSend.append('description', formData.description || '');
+      formDataToSend.append('publishedAt', formData.publishedAt);
+
+      // Check if we have a file in the file input
+      const fileInput = document.querySelector('input[type="file"]');
+      if (fileInput && fileInput.files[0]) {
+        formDataToSend.append('image', fileInput.files[0]);
+      } else if (formData.thumbnail) {
+        formDataToSend.append('thumbnail', formData.thumbnail);
+      }
+
       const response = await fetch(url, {
         method,
         headers: {
-          'Content-Type': 'application/json',
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+          // Content-Type is automatically set for FormData
         },
-        body: JSON.stringify({
-          ...formData,
-          // Keep the date format consistent - send as is since it's already in YYYY-MM-DD format
-          publishedAt: formData.publishedAt, // Don't convert to ISO string here
-        }),
+        body: formDataToSend,
       });
 
       if (!response.ok) {

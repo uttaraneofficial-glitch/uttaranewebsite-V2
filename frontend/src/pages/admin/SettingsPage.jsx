@@ -89,6 +89,9 @@ const SettingsPage = () => {
     }));
   };
 
+  // State for file objects
+  const [files, setFiles] = useState({});
+
   const handleImageUpload = (file, fieldName, setPreview) => {
     if (!file) return;
 
@@ -97,21 +100,18 @@ const SettingsPage = () => {
       return;
     }
 
+    // Store the file object
+    setFiles(prev => ({
+      ...prev,
+      [fieldName]: file,
+    }));
+
     const reader = new FileReader();
     reader.onloadend = () => {
       const imageDataUrl = reader.result;
-      if (
-        typeof imageDataUrl === 'string' &&
-        imageDataUrl.length > 10 * 1024 * 1024
-      ) {
-        setError('Image is too large. Please select a smaller image.');
-        return;
-      }
       setPreview(imageDataUrl);
-      setSettings(prev => ({
-        ...prev,
-        [fieldName]: imageDataUrl,
-      }));
+      // We don't update settings[fieldName] with base64 anymore for upload
+      // but we keep it for preview consistency if needed
     };
     reader.readAsDataURL(file);
   };
@@ -140,22 +140,45 @@ const SettingsPage = () => {
         // Skip primary_color as it's not in DB yet or handled differently
         if (key === 'primary_color') continue;
 
-        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/admin/site-content/${key}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-          },
-          body: JSON.stringify({ value: settings[key] }),
-        });
+        let response;
+
+        // Check if we have a new file for this key
+        if (files[key]) {
+          const formData = new FormData();
+          formData.append('image', files[key]);
+
+          response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/admin/site-content/${key}`, {
+            method: 'PUT',
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+              // Content-Type is automatically set for FormData
+            },
+            body: formData,
+          });
+        } else {
+          // Regular JSON update for text fields or if no new image
+          response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/admin/site-content/${key}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            },
+            body: JSON.stringify({ value: settings[key] }),
+          });
+        }
 
         if (!response.ok) {
           throw new Error(`Failed to save ${key}`);
         }
       }
 
+      // Clear files after successful save
+      setFiles({});
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
+
+      // Refresh settings to get the new URLs
+      fetchSettings();
     } catch (err) {
       setError('Failed to save settings: ' + err.message);
     } finally {
