@@ -17,6 +17,9 @@ dotenv.config();
 
 const app = express();
 
+console.log('Backend Version: v2.4.1 - Upload Route Added');
+
+
 const allowedOrigins = [
     "https://uttarane.com",
     "https://www.uttarane.com",
