@@ -1,23 +1,23 @@
-export async function uploadImage(file) {
+import axios from "axios";
+import { API_BASE_URL } from "../config/api";
+
+export async function uploadImage(file, folder = "Uttarane-images") {
     const formData = new FormData();
     formData.append("image", file);
+    formData.append("folder", folder);
 
     const token = localStorage.getItem('accessToken');
 
-    const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/admin/upload-image`, {
-        method: 'POST',
-        headers: {
-            Authorization: `Bearer ${token}`,
-            // Content-Type is automatically set for FormData
-        },
-        body: formData,
-    });
+    const response = await axios.post(
+        `${API_BASE_URL}/api/admin/upload-image`,
+        formData,
+        {
+            headers: {
+                "Content-Type": "multipart/form-data",
+                Authorization: `Bearer ${token}`,
+            },
+        }
+    );
 
-    if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.error || `Upload failed with status ${res.status}`);
-    }
-
-    const data = await res.json();
-    return data.url;
+    return response.data.url;
 }
