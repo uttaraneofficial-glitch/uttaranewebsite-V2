@@ -61,11 +61,17 @@ import { uploadImage } from '../controllers/admin/upload.controller';
 
 const router = Router();
 
+// Test route (No Auth)
+router.get('/test-upload', (req, res) => {
+  res.json({ message: 'Upload route is reachable' });
+});
+
+// Generic Image Upload Route (Moved before auth for debugging)
+router.post('/upload-image', upload.single('image'), uploadImage);
+
 // Apply authentication middleware to all admin routes
 router.use(authenticate, requireRole([Role.ADMIN]));
 
-// Generic Image Upload Route
-router.post('/upload-image', upload.single('image'), uploadImage);
 
 // Dashboard routes
 router.get('/dashboard/stats', getDashboardStats);
