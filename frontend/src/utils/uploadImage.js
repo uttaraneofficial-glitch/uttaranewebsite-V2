@@ -1,5 +1,5 @@
 import axios from "axios";
-import { API_BASE_URL } from './config'; // Assuming API_BASE_URL is exported from a config file
+import { API_BASE_URL } from '../config/api';
 
 export async function uploadImage(file) {
     const formData = new FormData();
