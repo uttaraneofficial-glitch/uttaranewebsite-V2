@@ -5,6 +5,7 @@ import MkStudioVideo from '../components/MkStudioVideo';
 import LogoBar from '../components/LogoBar';
 import { SkeletonCard, SkeletonHero } from '../components/SkeletonLoader';
 import InstructorSection from '../components/InstructorSection';
+import { API_BASE_URL } from '../config/api';
 
 // Add a function to test if the image URL is valid
 const testImageUrl = url => {
@@ -37,7 +38,7 @@ const Homepage = () => {
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/public/companies`);
+        const response = await fetch(`${API_BASE_URL}/api/public/companies`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -54,7 +55,7 @@ const Homepage = () => {
 
     const fetchHeroContent = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/public/hero`);
+        const response = await fetch(`${API_BASE_URL}/api/public/hero`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
