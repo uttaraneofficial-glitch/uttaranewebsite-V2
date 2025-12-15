@@ -23,8 +23,7 @@ console.log('Backend Version: v2.4.1 - Upload Route Added');
 const allowedOrigins = [
     "https://uttarane.com",
     "https://www.uttarane.com",
-    "https://uttaranewebsite-v2-4.onrender.com", // backend render URL (for testing)
-    "https://uttaranewebsite-v2-3.onrender.com"  // old frontend (optional, can remove later)
+    "http://localhost:5173" // optional, for local dev
 ];
 
 // Trust proxy for proper request handling
@@ -38,15 +37,13 @@ app.use(additionalSecurityHeaders); // Custom security headers
 // Basic Middleware
 app.use(
     cors({
-        origin: function (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) {
-            // allow REST tools and server-to-server (no origin)
-            if (!origin || allowedOrigins.includes(origin)) {
-                callback(null, true);
-            } else {
-                callback(new Error("Not allowed by CORS"));
-            }
-        },
-        credentials: true,
+        origin: [
+            "https://uttarane.com",
+            "https://www.uttarane.com",
+            "http://localhost:5173" // optional, for local dev
+        ],
+        methods: ["GET", "POST", "PUT", "DELETE"],
+        credentials: true
     })
 );
 app.use(express.json({ limit: '50mb' })); // Increase limit for larger payloads
