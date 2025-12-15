@@ -6,19 +6,24 @@ const prisma = new PrismaClient();
 // Get hero content
 export const getHeroContent = async (req: Request, res: Response) => {
   try {
+    console.log("👉 Fetching hero content...");
+
     const hero = await prisma.hero.findFirst();
+
+    console.log("👉 Hero result:", hero);
 
     if (!hero) {
       return res.status(404).json({
-        message: "Hero content not found"
+        message: "Hero table exists, but no data found"
       });
     }
 
-    res.json(hero);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      message: "Error retrieving hero content"
+    return res.json(hero);
+  } catch (error: any) {
+    console.error("❌ Hero API error:", error);
+    return res.status(500).json({
+      message: "Error retrieving hero content",
+      error: error.message
     });
   }
 };
