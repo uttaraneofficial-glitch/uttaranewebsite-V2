@@ -10,14 +10,13 @@ export const uploadImage = async (req: Request, res: Response) => {
             });
         }
 
-        const result = await cloudinary.uploader.upload(req.file.path, {
-            folder: 'uttarane',
-        });
-
+        // The file is already uploaded to Cloudinary by the middleware
+        // req.file.path contains the secure URL
+        // req.file.filename contains the public_id provided by Cloudinary
         res.json({
             success: true,
-            url: result.secure_url,
-            public_id: result.public_id,
+            url: req.file.path,
+            public_id: req.file.filename,
         });
     } catch (error) {
         console.error('Upload error:', error);
