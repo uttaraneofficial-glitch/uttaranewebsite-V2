@@ -6,54 +6,20 @@ const prisma = new PrismaClient();
 // Get hero content
 export const getHeroContent = async (req: Request, res: Response) => {
   try {
-    const [
-      tagline,
-      imageUrl,
-      headline,
-      description,
-      youtube,
-      instagram,
-      twitter,
-      linkedin,
-      logoUrl,
-    ] = await Promise.all([
-      prisma.siteContent.findUnique({ where: { key: 'hero_tagline' } }),
-      prisma.siteContent.findUnique({ where: { key: 'hero_image_url' } }),
-      prisma.siteContent.findUnique({ where: { key: 'hero_headline' } }),
-      prisma.siteContent.findUnique({ where: { key: 'hero_description' } }),
-      prisma.siteContent.findUnique({ where: { key: 'social_youtube' } }),
-      prisma.siteContent.findUnique({ where: { key: 'social_instagram' } }),
-      prisma.siteContent.findUnique({ where: { key: 'social_twitter' } }),
-      prisma.siteContent.findUnique({ where: { key: 'social_linkedin' } }),
-      prisma.siteContent.findUnique({ where: { key: 'navbar_logo_url' } }),
-    ]);
+    const hero = await prisma.hero.findFirst();
 
-    console.log('Retrieved hero content from DB:', {
-      tagline: tagline?.value,
-      imageUrl: imageUrl?.value,
-      headline: headline?.value,
-      description: description?.value,
-    });
+    if (!hero) {
+      return res.status(404).json({
+        message: "Hero content not found"
+      });
+    }
 
-    // Log the full imageUrl object for debugging
-    console.log('Full imageUrl object:', imageUrl);
-
-    res.json({
-      tagline: tagline?.value || 'Discover Amazing Opportunities',
-      imageUrl: imageUrl?.value || 'https://placehold.co/1200x400',
-      headline: headline?.value || '',
-      description: description?.value || '',
-      logoUrl: logoUrl?.value || '',
-      socialLinks: {
-        youtube: youtube?.value || '',
-        instagram: instagram?.value || '',
-        twitter: twitter?.value || '',
-        linkedin: linkedin?.value || '',
-      },
-    });
+    res.json(hero);
   } catch (error) {
-    console.error('Get hero content error:', error);
-    res.status(500).json({ message: 'Error retrieving hero content' });
+    console.error(error);
+    res.status(500).json({
+      message: "Error retrieving hero content"
+    });
   }
 };
 
@@ -76,28 +42,28 @@ export const getAboutContent = async (req: Request, res: Response) => {
       teamMembers = teamMembersData?.value
         ? JSON.parse(teamMembersData.value)
         : [
-            {
-              id: '1',
-              name: 'John Doe',
-              role: 'CEO & Founder',
-              imageUrl: '',
-              linkedinUrl: '',
-            },
-            {
-              id: '2',
-              name: 'Jane Smith',
-              role: 'CTO',
-              imageUrl: '',
-              linkedinUrl: '',
-            },
-            {
-              id: '3',
-              name: 'Mike Johnson',
-              role: 'Head of Operations',
-              imageUrl: '',
-              linkedinUrl: '',
-            },
-          ];
+          {
+            id: '1',
+            name: 'John Doe',
+            role: 'CEO & Founder',
+            imageUrl: '',
+            linkedinUrl: '',
+          },
+          {
+            id: '2',
+            name: 'Jane Smith',
+            role: 'CTO',
+            imageUrl: '',
+            linkedinUrl: '',
+          },
+          {
+            id: '3',
+            name: 'Mike Johnson',
+            role: 'Head of Operations',
+            imageUrl: '',
+            linkedinUrl: '',
+          },
+        ];
     } catch (e) {
       teamMembers = [];
     }

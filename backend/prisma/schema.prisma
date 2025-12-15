@@ -11,6 +11,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+
+model Hero {
+  id          Int    @id @default(autoincrement())
+  title       String
+  subtitle    String
+  description String
+}
+
 model User {
   id          String   @id @default(uuid())
   username    String   @unique
