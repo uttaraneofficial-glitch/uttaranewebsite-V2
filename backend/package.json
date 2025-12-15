@@ -4,8 +4,9 @@
   "private": true,
   "main": "dist/index.js",
   "scripts": {
-    "build": "rm -rf dist && npx prisma generate && tsc -p tsconfig.build.json",
-    "start": "node dist/index.js"
+    "build": "prisma generate && tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node-dev src/index.ts"
   },
   "engines": {
     "node": "20.x"
