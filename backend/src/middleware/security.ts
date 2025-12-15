@@ -3,7 +3,9 @@ import helmet from 'helmet';
 import hpp from 'hpp';
 
 // Basic security headers using helmet
-export const securityHeaders = helmet();
+export const securityHeaders = helmet({
+  crossOriginResourcePolicy: false,
+});
 
 // Prevent HTTP Parameter Pollution
 export const preventPollution = hpp();

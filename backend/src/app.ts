@@ -29,23 +29,25 @@ const allowedOrigins = [
 // Trust proxy for proper request handling
 app.set('trust proxy', 1);
 
+// CORS Configuration (Must be first)
+app.use(
+    cors({
+        origin: [
+            "https://uttarane.com",
+            "https://www.uttarane.com",
+            "http://localhost:5173"
+        ],
+        methods: ["GET", "POST", "PUT", "DELETE"],
+        credentials: true
+    })
+);
+
 // Security Middleware
 app.use(securityHeaders); // Helmet security headers
 app.use(preventPollution); // Prevent HTTP Parameter Pollution
 app.use(additionalSecurityHeaders); // Custom security headers
 
 // Basic Middleware
-app.use(
-    cors({
-        origin: [
-            "https://uttarane.com",
-            "https://www.uttarane.com",
-            "http://localhost:5173" // optional, for local dev
-        ],
-        methods: ["GET", "POST", "PUT", "DELETE"],
-        credentials: true
-    })
-);
 app.use(express.json({ limit: '50mb' })); // Increase limit for larger payloads
 app.use(express.urlencoded({ extended: true, limit: '50mb' })); // For parsing form data
 app.use(cookieParser()); // Cookie parser middleware
