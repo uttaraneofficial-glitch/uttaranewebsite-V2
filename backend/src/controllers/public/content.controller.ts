@@ -7,6 +7,7 @@ const prisma = new PrismaClient();
 // Get hero content
 export const getHeroContent = async (req: Request, res: Response) => {
   try {
+    console.log("Fetching hero content (deployment verification)...");
     const [
       headline,
       tagline,
