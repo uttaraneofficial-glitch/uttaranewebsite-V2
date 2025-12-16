@@ -123,6 +123,7 @@ const InstructorSection = () => {
                       src={logo}
                       alt="Company Logo"
                       className="h-6 object-contain"
+                      loading="lazy"
                     />
                   ))}
                 </div>
@@ -143,6 +144,7 @@ const InstructorSection = () => {
                   src={imageUrl}
                   alt={name}
                   className="relative z-10 w-full h-auto object-cover drop-shadow-2xl transform hover:scale-105 transition-transform duration-500"
+                  loading="lazy"
                 />
               ) : (
                 <div className="relative z-10 w-full aspect-square bg-gray-800 rounded-full flex items-center justify-center text-gray-600">
@@ -158,6 +160,7 @@ const InstructorSection = () => {
                       src={imageUrl}
                       alt="Profile"
                       className="w-full h-full object-cover"
+                      loading="lazy"
                     />
                   )}
                 </div>

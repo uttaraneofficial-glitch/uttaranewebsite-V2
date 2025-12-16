@@ -78,6 +78,7 @@ const MkStudioVideo = () => {
                 src={channel.imageUrl}
                 alt={channel.name}
                 className="w-full h-full rounded-full object-cover"
+                loading="lazy"
               />
             ) : (
               <div className="w-full h-full rounded-full bg-black flex items-center justify-center text-white font-bold text-lg">
@@ -115,6 +116,7 @@ const MkStudioVideo = () => {
               src={getThumbnail(video)}
               alt={video.title}
               className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
+              loading="lazy"
             />
             <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
               <a

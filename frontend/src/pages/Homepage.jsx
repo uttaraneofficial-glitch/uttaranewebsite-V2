@@ -8,14 +8,8 @@ import InstructorSection from '../components/InstructorSection';
 import { API_BASE_URL } from '../config/api';
 
 // Add a function to test if the image URL is valid
-const testImageUrl = url => {
-  return new Promise(resolve => {
-    const img = new Image();
-    img.onload = () => resolve(true);
-    img.onerror = () => resolve(false);
-    img.src = url;
-  });
-};
+// Image validation removed for performance
+
 
 const Homepage = () => {
   const [companies, setCompanies] = useState([]);
@@ -38,13 +32,13 @@ const Homepage = () => {
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/public/companies`);
+        const response = await fetch(`${API_BASE_URL}/api/public/companies?limit=6`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
         // Show only top 6 companies on homepage
-        setCompanies(data.data.slice(0, 6));
+        setCompanies(data.data);
       } catch (err) {
         console.error('Failed to load companies:', err);
         // Don't set main error state here to avoid blocking hero
@@ -77,18 +71,8 @@ const Homepage = () => {
           imageUrl = imageUrl.replace(/^"|"$/g, '');
         }
 
-        // Test if the image URL is actually valid by loading it
-        if (imageUrl) {
-          testImageUrl(imageUrl).then(isValid => {
-            if (!isValid) {
-              console.warn(
-                'Image URL failed to load, using fallback:',
-                imageUrl
-              );
-              imageUrl = '';
-            }
-          });
-        }
+        // Image validation removed
+
 
         setHeroContent({
           tagline: data.tagline || 'Welcome to Our Platform',
@@ -313,6 +297,7 @@ const Homepage = () => {
                         src={getCompanyThumbnail(company)}
                         alt={company.name}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        loading="lazy"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-800 to-black">
@@ -335,6 +320,7 @@ const Homepage = () => {
                             src={company.logoUrl}
                             alt=""
                             className="w-full h-full object-cover"
+                            loading="lazy"
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center text-white text-[10px] md:text-xs font-bold">

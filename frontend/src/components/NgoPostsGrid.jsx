@@ -42,6 +42,7 @@ const NgoPostsGrid = () => {
               src={post.imageUrl}
               alt={post.caption || 'NGO post'}
               className="w-full h-40 md:h-48 object-cover"
+              loading="lazy"
             />
             {post.caption && (
               <div className="p-4">

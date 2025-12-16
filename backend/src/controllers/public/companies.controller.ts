@@ -4,14 +4,33 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 // Get all public companies (alphabetical order)
+// Get all public companies (alphabetical order)
 export const getPublicCompanies = async (req: Request, res: Response) => {
   try {
-    const companies = await prisma.company.findMany({
-      include: {
-        candidates: true, // Include candidates in response
-      },
+    const { limit } = req.query;
+
+    const queryOptions: any = {
       orderBy: { name: 'asc' },
-    });
+    };
+
+    // If limit is provided, use it and don't include candidates which are heavy
+    if (limit) {
+      const parsedLimit = parseInt(limit as string);
+      if (!isNaN(parsedLimit) && parsedLimit > 0) {
+        queryOptions.take = parsedLimit;
+        // Optimization: For homepage (limited results), typically we don't need full candidate list
+        // But if we do need it, we can keep it. Homepage doesn't use candidates.
+        queryOptions.include = {
+          candidates: false, // Don't fetch candidates when limiting (usually homepage)
+        };
+      } else {
+        queryOptions.include = { candidates: true };
+      }
+    } else {
+      queryOptions.include = { candidates: true };
+    }
+
+    const companies = await prisma.company.findMany(queryOptions);
 
     res.json({
       data: companies,
