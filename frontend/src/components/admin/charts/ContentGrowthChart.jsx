@@ -15,7 +15,7 @@ const ContentGrowthChart = ({ data }) => {
     <div className="bg-[#1a1a1a] border border-gray-800 rounded-xl p-6">
       <h3 className="text-lg font-bold text-white mb-6">Content Growth</h3>
       <div className="h-80">
-        <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
           <LineChart
             data={data}
             margin={{

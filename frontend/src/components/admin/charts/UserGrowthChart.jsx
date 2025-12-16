@@ -17,7 +17,7 @@ const UserGrowthChart = ({ data }) => {
         User Growth (Last 7 Days)
       </h3>
       <div className="h-80">
-        <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
           <BarChart
             data={data}
             margin={{
