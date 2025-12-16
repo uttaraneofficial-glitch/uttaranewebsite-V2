@@ -32,7 +32,7 @@ const Homepage = () => {
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/public/companies?limit=6`);
+        const response = await fetch(`${API_BASE_URL}/api/public/companies?limit=6`, { cache: 'no-store' });
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -49,7 +49,7 @@ const Homepage = () => {
 
     const fetchHeroContent = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/public/hero`);
+        const response = await fetch(`${API_BASE_URL}/api/public/hero`, { cache: 'no-store' });
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }

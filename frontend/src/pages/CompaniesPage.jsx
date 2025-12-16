@@ -24,7 +24,7 @@ const CompaniesPage = () => {
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/public/companies`);
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/public/companies`, { cache: 'no-store' });
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -84,8 +84,8 @@ const CompaniesPage = () => {
                 key={category}
                 onClick={() => setSelectedCategory(category)}
                 className={`px-4 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${selectedCategory === category
-                    ? 'bg-white text-black'
-                    : 'bg-white/10 text-white hover:bg-white/20'
+                  ? 'bg-white text-black'
+                  : 'bg-white/10 text-white hover:bg-white/20'
                   }`}
               >
                 {category}
