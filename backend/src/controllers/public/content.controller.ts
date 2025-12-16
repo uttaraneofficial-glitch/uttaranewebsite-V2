@@ -4,21 +4,41 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 // Get hero content
+// Get hero content
 export const getHeroContent = async (req: Request, res: Response) => {
   try {
-    console.log("👉 Fetching hero content...");
+    const [
+      headline,
+      tagline,
+      description,
+      imageUrl,
+      youtube,
+      instagram,
+      twitter,
+      linkedin,
+    ] = await Promise.all([
+      prisma.siteContent.findUnique({ where: { key: 'hero_headline' } }),
+      prisma.siteContent.findUnique({ where: { key: 'hero_tagline' } }),
+      prisma.siteContent.findUnique({ where: { key: 'hero_description' } }),
+      prisma.siteContent.findUnique({ where: { key: 'hero_image_url' } }),
+      prisma.siteContent.findUnique({ where: { key: 'social_youtube' } }),
+      prisma.siteContent.findUnique({ where: { key: 'social_instagram' } }),
+      prisma.siteContent.findUnique({ where: { key: 'social_twitter' } }),
+      prisma.siteContent.findUnique({ where: { key: 'social_linkedin' } }),
+    ]);
 
-    const hero = await prisma.hero.findFirst();
-
-    console.log("👉 Hero result:", hero);
-
-    if (!hero) {
-      return res.status(404).json({
-        message: "Hero table exists, but no data found"
-      });
-    }
-
-    return res.json(hero);
+    res.json({
+      headline: headline?.value || '',
+      tagline: tagline?.value || '',
+      description: description?.value || '',
+      imageUrl: imageUrl?.value || '',
+      socialLinks: {
+        youtube: youtube?.value || '',
+        instagram: instagram?.value || '',
+        twitter: twitter?.value || '',
+        linkedin: linkedin?.value || '',
+      },
+    });
   } catch (error: any) {
     console.error("❌ Hero API error:", error);
     return res.status(500).json({
