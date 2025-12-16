@@ -10,7 +10,7 @@ const Navbar = () => {
     // Fetch logo URL from the hero content API
     const fetchLogo = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/public/hero`);
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/public/hero`, { cache: 'no-store' });
         if (response.ok) {
           const data = await response.json();
           setLogoUrl(data.logoUrl || '');

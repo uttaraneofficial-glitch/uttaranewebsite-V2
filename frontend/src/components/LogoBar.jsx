@@ -8,7 +8,7 @@ const LogoBar = () => {
     const fetchData = async () => {
       try {
         // Try the new optimized endpoint first
-        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/public/candidates`);
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/public/candidates`, { cache: 'no-store' });
 
         if (response.ok) {
           const data = await response.json();
@@ -20,7 +20,7 @@ const LogoBar = () => {
 
         // Fallback: If the new endpoint fails (e.g., backend mismatch), fetch companies and extract candidates
         console.warn('Primary candidates endpoint failed, falling back to companies endpoint.');
-        const fallbackResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/public/companies`);
+        const fallbackResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/public/companies`, { cache: 'no-store' });
 
         if (fallbackResponse.ok) {
           const data = await fallbackResponse.json();
@@ -95,6 +95,7 @@ const LogoBar = () => {
                         }
                         alt={candidate.company.name}
                         className="w-full h-full object-cover"
+                        loading="lazy"
                       />
                     ) : (
                       <span className="contrast-text-light font-bold text-base">
@@ -118,6 +119,7 @@ const LogoBar = () => {
                         src={candidate.profileImageUrl}
                         alt={candidate.name}
                         className="w-full h-full object-cover"
+                        loading="lazy"
                       />
                     ) : (
                       <span className="contrast-text-light font-bold text-xl">

@@ -16,6 +16,7 @@ export const getHeroContent = async (req: Request, res: Response) => {
       instagram,
       twitter,
       linkedin,
+      siteLogo, // Add this
     ] = await Promise.all([
       prisma.siteContent.findUnique({ where: { key: 'hero_headline' } }),
       prisma.siteContent.findUnique({ where: { key: 'hero_tagline' } }),
@@ -25,6 +26,7 @@ export const getHeroContent = async (req: Request, res: Response) => {
       prisma.siteContent.findUnique({ where: { key: 'social_instagram' } }),
       prisma.siteContent.findUnique({ where: { key: 'social_twitter' } }),
       prisma.siteContent.findUnique({ where: { key: 'social_linkedin' } }),
+      prisma.siteContent.findUnique({ where: { key: 'navbar_logo_url' } }), // Add this
     ]);
 
     res.json({
@@ -32,6 +34,7 @@ export const getHeroContent = async (req: Request, res: Response) => {
       tagline: tagline?.value || '',
       description: description?.value || '',
       imageUrl: imageUrl?.value || '',
+      logoUrl: siteLogo?.value || '', // Use the destructured variable
       socialLinks: {
         youtube: youtube?.value || '',
         instagram: instagram?.value || '',
